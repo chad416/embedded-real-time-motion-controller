@@ -37,6 +37,8 @@ All adapters must use the shared contract in [`../../include/emrtc/process_image
 
 Adapter-specific scaling may vary by drive, but the conversion must be documented in the commissioning logbook and validated by a low-speed move before nominal motion.
 
+Stale receive data and invalid mapping behavior must follow the [Adapter Exchange Contract](exchange_contract.md).
+
 ## Claim Boundary
 
 Passing this checklist still does not create a SIL/PL claim. It only moves the project from simulation-only evidence toward a hardware commissioning record.

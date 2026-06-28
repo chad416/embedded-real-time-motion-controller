@@ -19,6 +19,7 @@ Last updated: 2026-06-28
 | Adapter skeletons | Expanded | SOEM, EtherLab, SocketCAN, and CANopenNode skeletons have CMake build flags, status reporting, CI smoke build, and adapter-specific README files. |
 | Adapter dependency discovery | Added | CMake now performs non-fatal discovery for SOEM, EtherLab, SocketCAN headers, and CANopenNode when flags are enabled. |
 | Process-image mapping contract | Added | CiA 402 object indexes, bit widths, directions, and counts/unit encode-decode helpers are tested independently of hardware stacks. |
+| Adapter exchange contract | Added | Mapping validation, stale receive-data detection, heartbeat health, bus-offline, and invalid-response handling are covered by adapter-level tests. |
 | Adapter lifecycle checklist | Added | Discovery, configure, cyclic exchange, fault reaction, recovery, and shutdown gates are documented for each future backend. |
 | Motion performance metrics | Added | Runtime JSON/Markdown reports include overshoot, settling time, steady-state error, max following error, and two-axis path metrics. |
 | Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, and two-axis path plot. |
@@ -33,13 +34,13 @@ Last updated: 2026-06-28
 
 ## Current Completion Estimate
 
-Software/simulation/documentation side against the portfolio PDF target: about 73%.
+Software/simulation/documentation side against the portfolio PDF target: about 75%.
 
 The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes optional dependency discovery, adapter mapping tests, richer article visuals, and eventually live bench commissioning.
 
 ## Immediate Next Actions
 
-1. Add adapter-level mocked exchange tests for stale PDOs and invalid object mapping.
-2. Expand the graph-first technical article with capture-manifest and profile evidence.
-3. Add a portfolio demo script that walks through CLI commands, reports, and graphs.
+1. Expand the graph-first technical article with capture-manifest and adapter-contract evidence.
+2. Add a portfolio demo script that walks through CLI commands, reports, and graphs.
+3. Add richer two-axis coordinated-motion plots and acceptance thresholds.
 4. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.

@@ -27,6 +27,8 @@ emrtc_cli show adapters
 
 The adapter-neutral CiA 402 object contract is implemented in [`../../include/emrtc/process_image_mapping.hpp`](../../include/emrtc/process_image_mapping.hpp) and tested by the no-dependency C++ test runner. Hardware adapters should use that contract before adding stack-specific PDO/SDO exchange code.
 
+Stale process-data and invalid object-map handling are captured in [Adapter Exchange Contract](exchange_contract.md).
+
 The required runtime bring-up sequence is captured in [Adapter Lifecycle Checklist](lifecycle_checklist.md).
 
 ## Commissioning Rule

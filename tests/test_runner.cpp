@@ -1,3 +1,4 @@
+#include "emrtc/adapter_contract.hpp"
 #include "emrtc/controller.hpp"
 #include "emrtc/hardware_adapters.hpp"
 #include "emrtc/multi_axis.hpp"
@@ -341,6 +342,56 @@ TestResult test_cia402_process_image_mapping_contract() {
             "object indexes and engineering-unit scaling round trip"};
 }
 
+TestResult test_adapter_mapping_validator_rejects_invalid_object_map() {
+    auto valid = emrtc::expected_adapter_mapping();
+    const auto valid_result = emrtc::validate_adapter_mapping(valid);
+    valid[2].object_index = 0x6064;
+    const auto invalid_result = emrtc::validate_adapter_mapping(valid);
+
+    return {"adapter mapping validator rejects invalid object map",
+            valid_result.ok &&
+                !invalid_result.ok &&
+                invalid_result.fault == emrtc::FaultCode::InvalidDriveTransition,
+            "bad PDO/object mapping is rejected before hardware exchange"};
+}
+
+TestResult test_adapter_exchange_monitor_detects_stale_pdo_data() {
+    emrtc::AdapterExchangeMonitor monitor(3);
+    emrtc::BusDiagnostics diagnostics;
+    diagnostics.rx_packets = 1;
+    diagnostics.online = true;
+    diagnostics.heartbeat_ok = true;
+
+    emrtc::BusExchangeResult exchange;
+    const auto initial = monitor.observe(0, exchange, diagnostics);
+    const auto still_fresh = monitor.observe(2, exchange, diagnostics);
+    const auto stale = monitor.observe(3, exchange, diagnostics);
+
+    return {"adapter exchange monitor detects stale PDO data",
+            initial.ok &&
+                still_fresh.ok &&
+                !stale.ok &&
+                stale.fault == emrtc::FaultCode::BusDropout,
+            "stale receive process image becomes a bus watchdog fault"};
+}
+
+TestResult test_adapter_exchange_monitor_detects_invalid_response() {
+    emrtc::AdapterExchangeMonitor monitor;
+    emrtc::BusDiagnostics diagnostics;
+    diagnostics.rx_packets = 1;
+    diagnostics.online = true;
+    diagnostics.heartbeat_ok = true;
+
+    emrtc::BusExchangeResult exchange;
+    exchange.invalid_response = true;
+    exchange.ok = false;
+    const auto result = monitor.observe(10, exchange, diagnostics);
+
+    return {"adapter exchange monitor detects invalid response",
+            !result.ok && result.fault == emrtc::FaultCode::InvalidDriveTransition,
+            "invalid PDO/object response is surfaced as an adapter contract fault"};
+}
+
 TestResult test_benchmark_motion_performance_metrics() {
     const auto metrics = emrtc::run_benchmark(2500);
     return {"benchmark motion performance metrics",
@@ -385,6 +436,9 @@ int main() {
         test_two_axis_coordinated_move(),
         test_hardware_adapter_skeletons_are_not_claiming_commissioning(),
         test_cia402_process_image_mapping_contract(),
+        test_adapter_mapping_validator_rejects_invalid_object_map(),
+        test_adapter_exchange_monitor_detects_stale_pdo_data(),
+        test_adapter_exchange_monitor_detects_invalid_response(),
         test_benchmark_motion_performance_metrics(),
     };
 

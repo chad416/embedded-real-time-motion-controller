@@ -19,6 +19,7 @@ include(EmrtcAdapterDiscovery)
 
 add_library(emrtc
     src/axis.cpp
+    src/adapter_contract.cpp
     src/bus.cpp
     src/controller.cpp
     src/fault_injector.cpp
