@@ -66,6 +66,7 @@ $docs = @(
     "docs/hardware_checkout.md",
     "docs/hardware_target_profiles.md",
     "docs/local_toolchain_setup.md",
+    "docs/bench_run_playbook.md",
     "docs/commissioning_logbook.md",
     "docs/data_capture_profiles.md",
     "docs/bom.md"
@@ -76,6 +77,7 @@ foreach ($doc in $docs) {
 }
 
 Copy-RequiredDirectory "docs/adapters" "docs/adapters"
+Copy-RequiredDirectory ".github/ISSUE_TEMPLATE" ".github/ISSUE_TEMPLATE"
 Copy-RequiredDirectory "config/capture_profiles" "config/capture_profiles"
 Copy-RequiredDirectory "config/hardware_targets" "config/hardware_targets"
 

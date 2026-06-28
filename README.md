@@ -126,6 +126,7 @@ Key committed visuals include jitter, scenario matrix, control response, two-axi
 - [Data Capture Profiles](docs/data_capture_profiles.md)
 - [Hardware Target Profiles](docs/hardware_target_profiles.md)
 - [Local Toolchain Setup](docs/local_toolchain_setup.md)
+- [Bench Run Playbook](docs/bench_run_playbook.md)
 - [Hardware Adapter Integration Notes](docs/adapters/README.md)
 - [Architecture Overview](docs/architecture.md)
 - [Timing Budget](docs/timing_budget.md)
