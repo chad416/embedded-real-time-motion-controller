@@ -16,7 +16,7 @@ This project maps to the embedded real-time motion controller blueprint in the p
 | Graph-first article | `docs/technical_article.md` with capture-profile and adapter-contract evidence | Add screenshots/plots after more generated artifacts. |
 | Recruiter-facing summary | `docs/recruiter_one_pager.md` generated from metrics and capture manifest | Keep synchronized with future hardware evidence. |
 | Evidence packaging | `scripts/package_portfolio.ps1` exports docs, reports, graphs, capture profiles, and manifest | Add live bench evidence once available. |
-| Hardware evidence archive | Immutable run-folder convention, structured manifest schema, hashes, parameter backups, raw traces, media, and review rules | Populate it with real bench evidence after hardware exists. |
+| Hardware evidence archive | Immutable run-folder convention, structured manifest schema, archive validator, digest/completeness tests, parameter backups, raw traces, media, and review rules | Populate it with real bench evidence after hardware exists. |
 | Software release gate | Versioned `0.2.0` milestone definition and CI-enforced quantitative checks | Preserve the gate as future hardware work is added. |
 | Hardware target planning | Vendor-neutral simulated/EtherCAT/CANopen target profiles and generated manifest | Select a real drive only after current availability and safety documentation are reviewed. |
 | Local native workflow | Pinned portable CMake/MinGW-w64 installer, runner, toolchain checker, and passing Windows validation record | Repeat on any future target-specific toolchain. |

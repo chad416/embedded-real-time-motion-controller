@@ -93,6 +93,12 @@ Simulation-complete release gate:
 python scripts/check_simulation_milestone.py
 ```
 
+Evidence archive integrity check:
+
+```powershell
+python scripts/validate_evidence_archive.py reports/generated/hardware/<run-directory> --require-complete
+```
+
 If CMake or a compiler is missing, install CMake and a C++17 toolchain such as MSVC Build Tools, LLVM/Clang, or GCC/MinGW, then rerun the scripts.
 
 Use the local toolchain checker before a native build:

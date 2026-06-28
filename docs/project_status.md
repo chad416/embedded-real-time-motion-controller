@@ -29,6 +29,7 @@ Last updated: 2026-06-29
 | Bench-run tracking | Added | GitHub issue templates and a bench-run playbook define required evidence for future simulated and hardware runs. |
 | Hardware runbooks | Added | Simulated, EtherCAT CiA 402, and CANopen CiA 402 runbooks define future run order, evidence, and stop conditions. |
 | Hardware evidence archive | Added | Immutable run folders, SHA-256 artifact records, structured run manifest, configuration backups, and review gates are defined. |
+| Evidence archive validator | Added | CI tests manifest fields, safe paths, exact files, byte counts, SHA-256 digests, profile requirements, and hardware-claim prerequisites. |
 | Simulation-complete milestone | Released | Tag `v0.2.0-simulation-complete` points to CI-verified commit `b86ba1a`; the release gate remains enforced on `master`. |
 | Motion performance metrics | Added | Runtime JSON/Markdown reports include overshoot, settling time, steady-state error, max following error, and two-axis path metrics. |
 | Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, two-axis path plot, and two-axis acceptance plot. |
@@ -51,7 +52,7 @@ The split estimate prevents the mature simulation package from hiding the substa
 
 ## Immediate Next Actions
 
-1. Add machine validation for future hardware evidence run manifests and archive completeness.
+1. Add a replay-backed adapter harness that feeds recorded process-image exchanges through the production adapter contract.
 2. Select a real EtherCAT or CANopen bench only after current drive documentation, interfaces, and safety constraints are reviewed.
 3. Implement one production-backed fieldbus adapter behind the tested exchange contract.
 4. Execute the relevant hardware runbook and archive the complete evidence set before changing any validation claim.

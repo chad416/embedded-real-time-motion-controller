@@ -59,6 +59,27 @@ The manifest records:
 
 Set `hardware_claim_allowed` to `false` during capture. It may become `true` only after a reviewer confirms the hardware checkout, required artifacts, acceptance criteria, and manifest hashes.
 
+## Archive Validation
+
+Validate a captured run before review:
+
+```powershell
+python scripts/validate_evidence_archive.py reports/generated/hardware/<run-directory> --require-complete
+```
+
+The validator checks:
+
+- required manifest fields and nested record types;
+- run-directory, target-profile, capture-profile, fieldbus, and claim-boundary consistency;
+- safe relative paths with no traversal, absolute paths, backslashes, or symlinks;
+- duplicate, missing, and unlisted files;
+- recorded byte counts and SHA-256 digests;
+- capture-profile required artifacts and operator notes;
+- hardware inventory and mapping records for hardware runs;
+- accepted review, clean source state, media, and drive-parameter backup before a hardware claim.
+
+The CI fixture proves that a complete simulation archive passes while corruption, unlisted files, and a simulation hardware-claim request fail.
+
 ## Integrity Rules
 
 1. Finish writing all raw captures before calculating hashes.

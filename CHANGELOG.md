@@ -8,6 +8,8 @@ All notable project changes are recorded here.
 
 - Pinned, checksum-verified portable Windows CMake and MinGW-w64 installer and runner.
 - Committed local Windows native build, CTest, benchmark, and report-generation validation record.
+- Evidence archive validator with digest, completeness, profile, review, and claim-boundary checks.
+- Positive, corruption, unlisted-file, and forbidden-claim archive tests.
 
 ### Changed
 

@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-06-29_simulated_loopback_target_nominal_profile_position_001",
+  "run_type": "simulation",
+  "target_profile": "simulated_loopback_target",
+  "capture_profile": "nominal_profile_position",
+  "started_at_utc": "2026-06-29T12:00:00Z",
+  "operator": "automated-test-fixture",
+  "software": {
+    "version": "0.2.0",
+    "commit": "b86ba1ac75ac2c51dd40bbc1921f6d363ca241b0",
+    "worktree_clean": true,
+    "build_type": "Release"
+  },
+  "environment": {
+    "host": "deterministic-fixture",
+    "operating_system": "platform-independent test data",
+    "runtime": "archive validator unit test",
+    "cycle_time_ns": 1000000
+  },
+  "hardware": [],
+  "artifacts": [
+    {
+      "path": "operator_notes.md",
+      "role": "operator notes",
+      "required": true,
+      "bytes": 298,
+      "sha256": "5be350b18ae88f3b7c9ce5aeb27b09c62fe10e8a8ec16fe367dbc0f5acf3d220"
+    },
+    {
+      "path": "raw/trace.csv",
+      "role": "cyclic telemetry",
+      "required": true,
+      "bytes": 52,
+      "sha256": "1ab83d6d00d16d1931611983c0a79c1bef79068b5669fce7cd972d4cccbdc86c"
+    },
+    {
+      "path": "metrics/metrics.json",
+      "role": "quantitative metrics",
+      "required": true,
+      "bytes": 158,
+      "sha256": "40ac9c8bd40f5dc947e294497efa91d35ace13114ec95524112ddc9886121be9"
+    },
+    {
+      "path": "reports/validation_report.md",
+      "role": "validation summary",
+      "required": true,
+      "bytes": 167,
+      "sha256": "3e03832576e8c03d0f2394dc84fdbf8b5c44a62f84df1ca49c4d91e53524d739"
+    },
+    {
+      "path": "reports/control_response.svg",
+      "role": "control response graph",
+      "required": true,
+      "bytes": 332,
+      "sha256": "2ae4fcf8767f4d13ad2a87a086acf2cf4bd20b1f68f21a37a8c16e1c769f3d57"
+    }
+  ],
+  "result": "PASS",
+  "review": {
+    "status": "accepted",
+    "reviewer": "automated-test",
+    "reviewed_at_utc": "2026-06-29T12:05:00Z"
+  },
+  "hardware_claim_allowed": false,
+  "deviations": [
+    "This fixture validates archive mechanics only."
+  ]
+}

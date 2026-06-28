@@ -17,6 +17,7 @@
 - Passing native Windows build, CTest, benchmark, and report workflow with a pinned portable toolchain.
 - Machine-enforced simulation-complete release gate.
 - Hardware evidence archive and run-manifest convention.
+- Evidence archive integrity and hardware-claim validator with CI tests.
 - Professional documentation set.
 
 ## Hardware Only Remaining

@@ -1,0 +1,8 @@
+{
+  "fixture": true,
+  "profile": "nominal_profile_position",
+  "result": "PASS",
+  "overshoot": 0.0,
+  "settling_time_s": 0.8,
+  "steady_state_error": 0.0
+}

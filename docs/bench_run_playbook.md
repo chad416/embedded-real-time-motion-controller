@@ -20,7 +20,8 @@ Use a bench-run issue for each capture-profile execution. Use an adapter-commiss
 5. Confirm hosted CI is green for the commit being tested.
 6. For hardware runs, complete the hardware checkout checklist first.
 7. Run the profile and attach raw artifacts.
-8. Review pass/fail criteria before changing any project claim language.
+8. Run `python scripts/validate_evidence_archive.py <run-directory> --require-complete`.
+9. Review pass/fail criteria before changing any project claim language.
 
 ## Adapter Commissioning Sequence
 

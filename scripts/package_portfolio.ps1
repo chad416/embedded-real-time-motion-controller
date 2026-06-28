@@ -95,6 +95,7 @@ Copy-RequiredDirectory "config/toolchains" "config/toolchains"
 Copy-RequiredFile "config/hardware_evidence_run_manifest.schema.json" "config/hardware_evidence_run_manifest.schema.json"
 Copy-RequiredDirectory "examples/hardware_evidence" "examples/hardware_evidence"
 Copy-RequiredFile "scripts/check_simulation_milestone.py" "scripts/check_simulation_milestone.py"
+Copy-RequiredFile "scripts/validate_evidence_archive.py" "scripts/validate_evidence_archive.py"
 Copy-RequiredFile "scripts/install_portable_toolchain.ps1" "scripts/install_portable_toolchain.ps1"
 Copy-RequiredFile "scripts/run_all_portable.ps1" "scripts/run_all_portable.ps1"
 
