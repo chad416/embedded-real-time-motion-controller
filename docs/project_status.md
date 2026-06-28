@@ -21,6 +21,7 @@ Last updated: 2026-06-28
 | Process-image mapping contract | Added | CiA 402 object indexes, bit widths, directions, and counts/unit encode-decode helpers are tested independently of hardware stacks. |
 | Adapter exchange contract | Added | Mapping validation, stale receive-data detection, heartbeat health, bus-offline, and invalid-response handling are covered by adapter-level tests. |
 | Adapter lifecycle checklist | Added | Discovery, configure, cyclic exchange, fault reaction, recovery, and shutdown gates are documented for each future backend. |
+| Portfolio demo script | Added | `scripts/demo_portfolio.ps1` runs CLI status, adapters, two-axis demo, JSON scenario, benchmark, sample evidence, and capture manifest generation. |
 | Motion performance metrics | Added | Runtime JSON/Markdown reports include overshoot, settling time, steady-state error, max following error, and two-axis path metrics. |
 | Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, and two-axis path plot. |
 | Data capture profiles | Added | Versioned profiles define simulation and future bench evidence requirements for timing, motion, jitter stress, heartbeat, bus dropout, and feedback faults. |
@@ -34,13 +35,13 @@ Last updated: 2026-06-28
 
 ## Current Completion Estimate
 
-Software/simulation/documentation side against the portfolio PDF target: about 75%.
+Software/simulation/documentation side against the portfolio PDF target: about 77%.
 
-The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes optional dependency discovery, adapter mapping tests, richer article visuals, and eventually live bench commissioning.
+The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes richer two-axis evidence, recruiter-facing packaging, deeper adapter recovery tests, and eventually live bench commissioning.
 
 ## Immediate Next Actions
 
-1. Expand the graph-first technical article with capture-manifest and adapter-contract evidence.
-2. Add a portfolio demo script that walks through CLI commands, reports, and graphs.
-3. Add richer two-axis coordinated-motion plots and acceptance thresholds.
+1. Add richer two-axis coordinated-motion plots and acceptance thresholds.
+2. Add a compact recruiter-facing project one-pager generated from the repo evidence.
+3. Add hardware adapter mocked recovery tests for bus-offline to restored-exchange behavior.
 4. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.

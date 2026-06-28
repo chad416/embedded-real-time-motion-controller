@@ -65,6 +65,12 @@ One-command native validation:
 scripts/run_all.ps1
 ```
 
+Portfolio demo walkthrough:
+
+```powershell
+scripts/demo_portfolio.ps1 -BuildDir build -OutDir reports/generated/demo
+```
+
 If CMake or a compiler is missing, install CMake and a C++17 toolchain such as MSVC Build Tools, LLVM/Clang, or GCC/MinGW, then rerun the scripts.
 
 ## Simulation And CLI
@@ -96,6 +102,7 @@ The committed files under `reports/` are deterministic sample artifacts. Native 
 
 - [Project Status](docs/project_status.md)
 - [Portfolio Alignment](docs/portfolio_alignment.md)
+- [Portfolio Demo Walkthrough](docs/demo_walkthrough.md)
 - [Graph-First Technical Article](docs/technical_article.md)
 - [Preliminary BOM](docs/bom.md)
 - [Commissioning Logbook Template](docs/commissioning_logbook.md)

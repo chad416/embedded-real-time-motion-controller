@@ -40,6 +40,7 @@ REQUIRED_FILES = [
     "docs/architecture.md",
     "docs/bom.md",
     "docs/commissioning_logbook.md",
+    "docs/demo_walkthrough.md",
     "docs/hardware_checkout.md",
     "docs/data_capture_profiles.md",
     "docs/timing_budget.md",
@@ -89,6 +90,7 @@ REQUIRED_FILES = [
     "examples/scenarios/timing_stress.json",
     "scripts/generate_graphs.py",
     "scripts/generate_capture_manifest.py",
+    "scripts/demo_portfolio.ps1",
 ]
 
 EXPECTED_SCENARIOS = {

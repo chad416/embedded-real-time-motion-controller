@@ -43,6 +43,10 @@ jobs:
       - name: Run deterministic benchmark
         run: ./build/emrtc_benchmark --cycles 10000 --out reports/generated/ci-benchmark
 
+      - name: Run portfolio demo walkthrough
+        shell: pwsh
+        run: ./scripts/demo_portfolio.ps1 -BuildDir build -OutDir reports/generated/ci-demo
+
       - name: Install report generation dependencies
         run: python3 -m pip install reportlab
 
