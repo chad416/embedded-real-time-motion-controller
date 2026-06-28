@@ -137,12 +137,21 @@ def build_two_axis_performance() -> dict[str, object]:
         "available": True,
         "target_reached": True,
         "path_within_limit": True,
+        "acceptance_pass": True,
         "cycle_count": 1200,
+        "target_x": 1.0,
+        "target_y": 1.0,
         "final_x": 1.0,
         "final_y": 1.0,
+        "final_x_error": 0.0,
+        "final_y_error": 0.0,
+        "final_position_error": 0.0,
         "rms_path_error": 0.0,
         "max_path_error": 0.0,
+        "path_error_limit": 0.01,
         "settling_time_s": 0.936,
+        "settling_time_limit_s": 1.2,
+        "target_tolerance": 0.005,
     }
 
 
@@ -246,12 +255,19 @@ def write_markdown(path: Path, metrics: dict[str, object]) -> None:
         assert isinstance(two_axis, dict)
         handle.write("\n## Two-Axis Performance\n\n| Metric | Value |\n| --- | ---: |\n")
         for key in (
+            "acceptance_pass",
             "cycle_count",
+            "target_x",
+            "target_y",
             "final_x",
             "final_y",
+            "final_position_error",
+            "target_tolerance",
             "rms_path_error",
             "max_path_error",
+            "path_error_limit",
             "settling_time_s",
+            "settling_time_limit_s",
         ):
             handle.write(f"| {key} | {two_axis[key]} |\n")
         handle.write("\n## Jitter Histogram\n\n| Bucket | Count |\n| --- | ---: |\n")

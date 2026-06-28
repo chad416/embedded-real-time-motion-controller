@@ -22,7 +22,7 @@ scripts/demo_portfolio.ps1 -SkipNative -OutDir reports/generated/demo
 | --- | --- |
 | Diagnostic status | Drive state, mode, position, velocity, and fault status from the CLI. |
 | Adapter status | SOEM, EtherLab, SocketCAN, and CANopenNode discovery/configuration boundary. |
-| Two-axis coordinated motion | Final X/Y position, RMS path error, max path error, and settling time. |
+| Two-axis coordinated motion | Final X/Y position, RMS path error, max path error, final position error, settling time, and pass/fail thresholds. |
 | Fault-matrix scenario | JSON scenario loading plus packet loss, CPU jitter, sensor noise, and missed-cycle evidence. |
 | Deterministic benchmark | Timing, bus, motion, and two-axis metrics. |
 | Sample report generation | CSV, JSON, fault log, and validation report artifacts. |

@@ -98,6 +98,8 @@ python scripts/generate_capture_manifest.py --profiles config/capture_profiles -
 
 The committed files under `reports/` are deterministic sample artifacts. Native C++ validation should be rerun after installing the toolchain.
 
+Key committed visuals include jitter, scenario matrix, control response, two-axis path, and two-axis acceptance plots under `reports/`.
+
 ## Documentation Index
 
 - [Project Status](docs/project_status.md)

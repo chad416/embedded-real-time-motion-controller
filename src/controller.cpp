@@ -510,12 +510,21 @@ RuntimeMetrics run_benchmark(std::uint64_t cycles) {
     metrics.two_axis.available = true;
     metrics.two_axis.target_reached = two_axis.target_reached;
     metrics.two_axis.path_within_limit = two_axis.path_within_limit;
+    metrics.two_axis.acceptance_pass = two_axis.acceptance_pass;
     metrics.two_axis.cycle_count = two_axis.cycle_count;
+    metrics.two_axis.target_x = two_axis.target_x;
+    metrics.two_axis.target_y = two_axis.target_y;
     metrics.two_axis.final_x = two_axis.final_x;
     metrics.two_axis.final_y = two_axis.final_y;
+    metrics.two_axis.final_x_error = two_axis.final_x_error;
+    metrics.two_axis.final_y_error = two_axis.final_y_error;
+    metrics.two_axis.final_position_error = two_axis.final_position_error;
     metrics.two_axis.rms_path_error = two_axis.rms_path_error;
     metrics.two_axis.max_path_error = two_axis.max_path_error;
+    metrics.two_axis.path_error_limit = two_axis.path_error_limit;
     metrics.two_axis.settling_time_s = two_axis.settling_time_s;
+    metrics.two_axis.settling_time_limit_s = two_axis.settling_time_limit_s;
+    metrics.two_axis.target_tolerance = two_axis.target_tolerance;
     return metrics;
 }
 

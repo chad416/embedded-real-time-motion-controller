@@ -11,7 +11,7 @@ This project maps to the embedded real-time motion controller blueprint in the p
 | CANopen/CiA 402 abstraction | CiA 402-style drive state machine, tested process-image object contract, stale-PDO contract checks, SocketCAN/CANopenNode flags, and adapter docs | Real CANopen PDO/SDO exchange pending. |
 | Timing instrumentation | Cycle samples, jitter, missed-cycle, deadline counters | Real hardware timestamp source pending. |
 | Fault injector | Required fault classes covered in code, tests, and JSON scenario suite | More cross-fault combinations can still be added. |
-| Quantitative report | Markdown, JSON, CSV, timing PDF, jitter SVG, scenario SVG, and capture-profile manifest | Hardware reports pending. |
+| Quantitative report | Markdown, JSON, CSV, timing PDF, jitter SVG, scenario SVG, two-axis path/acceptance SVGs, and capture-profile manifest | Hardware reports pending. |
 | Diagnostic shell | CLI with status, scenario, fault injection, reset, report export, two-axis demo | Interactive shell mode could be added later. |
 | Graph-first article | `docs/technical_article.md` with capture-profile and adapter-contract evidence | Add screenshots/plots after more generated artifacts. |
 | Live bench demo | Hardware integration plan and repeatable portfolio demo script | Real bench unavailable in this phase. |
@@ -19,6 +19,6 @@ This project maps to the embedded real-time motion controller blueprint in the p
 
 ## Honest Completion Estimate
 
-Against the portfolio PDF, this project is about 77% complete as a flagship portfolio artifact.
+Against the portfolio PDF, this project is about 79% complete as a flagship portfolio artifact.
 
 The implemented software core is strong enough to compile and pass hosted CI, and the repo now has graph-first software evidence, versioned capture profiles, adapter contracts, and a repeatable demo walkthrough. The PDF target still includes more than software: real hardware commissioning, deeper adapter integration, richer plots, and eventually a live bench demo.

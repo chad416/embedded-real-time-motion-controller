@@ -45,12 +45,21 @@ struct TwoAxisPerformanceMetrics {
     bool available{false};
     bool target_reached{false};
     bool path_within_limit{false};
+    bool acceptance_pass{false};
     std::uint64_t cycle_count{0};
+    double target_x{0.0};
+    double target_y{0.0};
     double final_x{0.0};
     double final_y{0.0};
+    double final_x_error{0.0};
+    double final_y_error{0.0};
+    double final_position_error{0.0};
     double rms_path_error{0.0};
     double max_path_error{0.0};
+    double path_error_limit{0.0};
     double settling_time_s{0.0};
+    double settling_time_limit_s{0.0};
+    double target_tolerance{0.0};
 };
 
 struct RuntimeMetrics {

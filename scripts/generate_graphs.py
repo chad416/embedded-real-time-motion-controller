@@ -171,6 +171,56 @@ def write_two_axis_path(path: Path) -> None:
     path.write_text("\n".join(parts), encoding="utf-8")
 
 
+def write_two_axis_acceptance(metrics: dict, path: Path) -> None:
+    two_axis = metrics.get("two_axis_performance", {})
+    max_path_error = float(two_axis.get("max_path_error", 0.0))
+    path_error_limit = float(two_axis.get("path_error_limit", 0.01))
+    final_position_error = float(two_axis.get("final_position_error", 0.0))
+    target_tolerance = float(two_axis.get("target_tolerance", 0.005))
+    settling_time_s = float(two_axis.get("settling_time_s", 0.0))
+    settling_time_limit_s = float(two_axis.get("settling_time_limit_s", 1.2))
+    acceptance_pass = bool(two_axis.get("acceptance_pass", False))
+
+    rows = [
+        ("Max path error", max_path_error, path_error_limit, "units"),
+        ("Final position error", final_position_error, target_tolerance, "units"),
+        ("Settling time", settling_time_s, settling_time_limit_s, "s"),
+    ]
+    width = 1000
+    height = 360
+    margin_left = 260
+    bar_width = 560
+    y_start = 120
+    row_gap = 64
+    status_color = "#16a34a" if acceptance_pass else "#dc2626"
+    status_text = "PASS" if acceptance_pass else "FAIL"
+
+    parts = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
+        '<rect width="100%" height="100%" fill="#ffffff"/>',
+        '<text x="30" y="38" font-family="Arial" font-size="24" font-weight="700" fill="#1f2937">Two-Axis Acceptance Summary</text>',
+        '<text x="30" y="66" font-family="Arial" font-size="13" fill="#4b5563">Measured coordinated-motion evidence against configured thresholds</text>',
+        f'<rect x="845" y="28" width="110" height="36" rx="4" fill="{status_color}"/>',
+        f'<text x="900" y="52" text-anchor="middle" font-family="Arial" font-size="16" font-weight="700" fill="#ffffff">{status_text}</text>',
+    ]
+
+    for index, (label, measured, limit, unit) in enumerate(rows):
+        y = y_start + index * row_gap
+        scale = max(limit, measured, 1.0e-9)
+        measured_width = max(2.0, bar_width * measured / scale)
+        limit_x = margin_left + bar_width * limit / scale
+        color = "#16a34a" if measured <= limit else "#dc2626"
+        parts.append(f'<text x="30" y="{y + 6}" font-family="Arial" font-size="14" fill="#111827">{svg_escape(label)}</text>')
+        parts.append(f'<rect x="{margin_left}" y="{y - 14}" width="{bar_width}" height="26" fill="#f3f4f6" stroke="#d1d5db"/>')
+        parts.append(f'<rect x="{margin_left}" y="{y - 14}" width="{measured_width:.1f}" height="26" fill="{color}"/>')
+        parts.append(f'<line x1="{limit_x:.1f}" y1="{y - 20}" x2="{limit_x:.1f}" y2="{y + 18}" stroke="#111827" stroke-width="2"/>')
+        parts.append(f'<text x="{margin_left + bar_width + 18}" y="{y - 2}" font-family="Arial" font-size="12" fill="#374151">measured {measured:.6g} {unit}</text>')
+        parts.append(f'<text x="{margin_left + bar_width + 18}" y="{y + 15}" font-family="Arial" font-size="12" fill="#6b7280">limit {limit:.6g} {unit}</text>')
+
+    parts.append('</svg>')
+    path.write_text("\n".join(parts), encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--metrics", default="reports/sample_metrics.json")
@@ -183,6 +233,7 @@ def main() -> int:
     write_scenario_matrix(metrics, out / "sample_scenario_matrix.svg")
     write_control_response(out / "sample_control_response.svg")
     write_two_axis_path(out / "sample_two_axis_path.svg")
+    write_two_axis_acceptance(metrics, out / "sample_two_axis_acceptance.svg")
     print(out)
     return 0
 

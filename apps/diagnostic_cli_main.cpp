@@ -113,9 +113,13 @@ int main(int argc, char** argv) {
         std::cout << "final_y=" << metrics.final_y << "\n";
         std::cout << "rms_path_error=" << metrics.rms_path_error << "\n";
         std::cout << "max_path_error=" << metrics.max_path_error << "\n";
+        std::cout << "path_error_limit=" << metrics.path_error_limit << "\n";
+        std::cout << "final_position_error=" << metrics.final_position_error << "\n";
         std::cout << "settling_time_s=" << metrics.settling_time_s << "\n";
+        std::cout << "settling_time_limit_s=" << metrics.settling_time_limit_s << "\n";
         std::cout << "target_reached=" << (metrics.target_reached ? "true" : "false") << "\n";
-        return metrics.target_reached && metrics.path_within_limit ? 0 : 1;
+        std::cout << "acceptance_pass=" << (metrics.acceptance_pass ? "true" : "false") << "\n";
+        return metrics.acceptance_pass ? 0 : 1;
     }
 
     if (verb == "inject" && noun == "fault" && argc > 3) {

@@ -18,5 +18,6 @@ reports/generated/
 !reports/sample_scenario_matrix.svg
 !reports/sample_control_response.svg
 !reports/sample_two_axis_path.svg
+!reports/sample_two_axis_acceptance.svg
 !reports/sample_capture_manifest.json
 !reports/sample_capture_manifest.md

@@ -221,12 +221,21 @@ bool TelemetryRecorder::write_metrics_json(const RuntimeMetrics& metrics, const 
     write_json_bool_field(out, "available", metrics.two_axis.available);
     write_json_bool_field(out, "target_reached", metrics.two_axis.target_reached);
     write_json_bool_field(out, "path_within_limit", metrics.two_axis.path_within_limit);
+    write_json_bool_field(out, "acceptance_pass", metrics.two_axis.acceptance_pass);
     write_json_field(out, "cycle_count", metrics.two_axis.cycle_count);
+    write_json_field(out, "target_x", metrics.two_axis.target_x);
+    write_json_field(out, "target_y", metrics.two_axis.target_y);
     write_json_field(out, "final_x", metrics.two_axis.final_x);
     write_json_field(out, "final_y", metrics.two_axis.final_y);
+    write_json_field(out, "final_x_error", metrics.two_axis.final_x_error);
+    write_json_field(out, "final_y_error", metrics.two_axis.final_y_error);
+    write_json_field(out, "final_position_error", metrics.two_axis.final_position_error);
     write_json_field(out, "rms_path_error", metrics.two_axis.rms_path_error);
     write_json_field(out, "max_path_error", metrics.two_axis.max_path_error);
-    write_json_field(out, "settling_time_s", metrics.two_axis.settling_time_s, false);
+    write_json_field(out, "path_error_limit", metrics.two_axis.path_error_limit);
+    write_json_field(out, "settling_time_s", metrics.two_axis.settling_time_s);
+    write_json_field(out, "settling_time_limit_s", metrics.two_axis.settling_time_limit_s);
+    write_json_field(out, "target_tolerance", metrics.two_axis.target_tolerance, false);
     out << "  },\n";
     out << "  \"bus\": {\n";
     write_json_field(out, "tx_packets", metrics.bus.tx_packets);
@@ -313,11 +322,18 @@ bool TelemetryRecorder::write_validation_markdown(const RuntimeMetrics& metrics,
         out << "| Metric | Value |\n";
         out << "| --- | ---: |\n";
         out << "| Cycle count | " << metrics.two_axis.cycle_count << " |\n";
+        out << "| Acceptance pass | " << (metrics.two_axis.acceptance_pass ? "true" : "false") << " |\n";
+        out << "| Target X | " << metrics.two_axis.target_x << " |\n";
+        out << "| Target Y | " << metrics.two_axis.target_y << " |\n";
         out << "| Final X | " << metrics.two_axis.final_x << " |\n";
         out << "| Final Y | " << metrics.two_axis.final_y << " |\n";
+        out << "| Final position error | " << metrics.two_axis.final_position_error << " |\n";
+        out << "| Target tolerance | " << metrics.two_axis.target_tolerance << " |\n";
         out << "| RMS path error | " << metrics.two_axis.rms_path_error << " |\n";
         out << "| Max path error | " << metrics.two_axis.max_path_error << " |\n";
-        out << "| Settling time (s) | " << metrics.two_axis.settling_time_s << " |\n\n";
+        out << "| Path error limit | " << metrics.two_axis.path_error_limit << " |\n";
+        out << "| Settling time (s) | " << metrics.two_axis.settling_time_s << " |\n";
+        out << "| Settling time limit (s) | " << metrics.two_axis.settling_time_limit_s << " |\n\n";
     }
 
     out << "## Bus Diagnostics\n\n";

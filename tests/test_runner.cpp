@@ -271,9 +271,11 @@ TestResult test_two_axis_coordinated_move() {
     const auto metrics = emrtc::simulate_two_axis_linear_move();
     return {"two-axis coordinated move",
             metrics.target_reached && metrics.path_within_limit &&
+                metrics.acceptance_pass &&
                 near(metrics.final_x, 1.0, 0.01) &&
-                near(metrics.final_y, 1.0, 0.01),
-            "two simulated axes settle on a bounded straight-line path"};
+                near(metrics.final_y, 1.0, 0.01) &&
+                metrics.final_position_error <= metrics.target_tolerance,
+            "two simulated axes settle on a bounded straight-line path within acceptance limits"};
 }
 
 TestResult test_hardware_adapter_skeletons_are_not_claiming_commissioning() {
@@ -401,9 +403,10 @@ TestResult test_benchmark_motion_performance_metrics() {
                 std::abs(metrics.motion.steady_state_error) <= 0.01 &&
                 metrics.motion.settling_time_s > 0.0 &&
                 metrics.two_axis.available &&
-                metrics.two_axis.target_reached &&
-                metrics.two_axis.path_within_limit,
-            "benchmark reports overshoot, settling, steady-state, and two-axis path metrics"};
+                metrics.two_axis.acceptance_pass &&
+                metrics.two_axis.path_within_limit &&
+                metrics.two_axis.final_position_error <= metrics.two_axis.target_tolerance,
+            "benchmark reports overshoot, settling, steady-state, and two-axis acceptance metrics"};
 }
 
 }  // namespace

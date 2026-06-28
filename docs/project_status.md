@@ -15,7 +15,7 @@ Last updated: 2026-06-28
 | Fault injector | Implemented | Required fault classes are represented in code and validation scenarios. |
 | Telemetry and diagnostics | Implemented | CSV trace, JSON metrics, fault log, Markdown reports, and CLI commands. |
 | Automated scenarios | Expanded | Built-in scenarios plus JSON scenario suite covering fault matrix, heartbeat timeout, bus disconnect, command abuse, encoder loss, and timing stress. |
-| Two-axis coordination | Added | Optional two-axis straight-line coordinated move simulation and test evidence. |
+| Two-axis coordination | Expanded | Optional two-axis straight-line coordinated move simulation now reports path error, final position error, settling limits, and acceptance pass/fail. |
 | Adapter skeletons | Expanded | SOEM, EtherLab, SocketCAN, and CANopenNode skeletons have CMake build flags, status reporting, CI smoke build, and adapter-specific README files. |
 | Adapter dependency discovery | Added | CMake now performs non-fatal discovery for SOEM, EtherLab, SocketCAN headers, and CANopenNode when flags are enabled. |
 | Process-image mapping contract | Added | CiA 402 object indexes, bit widths, directions, and counts/unit encode-decode helpers are tested independently of hardware stacks. |
@@ -23,7 +23,7 @@ Last updated: 2026-06-28
 | Adapter lifecycle checklist | Added | Discovery, configure, cyclic exchange, fault reaction, recovery, and shutdown gates are documented for each future backend. |
 | Portfolio demo script | Added | `scripts/demo_portfolio.ps1` runs CLI status, adapters, two-axis demo, JSON scenario, benchmark, sample evidence, and capture manifest generation. |
 | Motion performance metrics | Added | Runtime JSON/Markdown reports include overshoot, settling time, steady-state error, max following error, and two-axis path metrics. |
-| Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, and two-axis path plot. |
+| Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, two-axis path plot, and two-axis acceptance plot. |
 | Data capture profiles | Added | Versioned profiles define simulation and future bench evidence requirements for timing, motion, jitter stress, heartbeat, bus dropout, and feedback faults. |
 | Commissioning templates | Added | Hardware checkout checklist and commissioning logbook template are present for future bench validation. |
 | Documentation | Implemented | Architecture, timing, bus map, drive state machine, watchdogs, fault matrix, test plan, validation, benchmark, tradeoffs, hardware plan. |
@@ -35,13 +35,13 @@ Last updated: 2026-06-28
 
 ## Current Completion Estimate
 
-Software/simulation/documentation side against the portfolio PDF target: about 77%.
+Software/simulation/documentation side against the portfolio PDF target: about 79%.
 
-The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes richer two-axis evidence, recruiter-facing packaging, deeper adapter recovery tests, and eventually live bench commissioning.
+The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes recruiter-facing packaging, deeper adapter recovery tests, hardware-run planning, and eventually live bench commissioning.
 
 ## Immediate Next Actions
 
-1. Add richer two-axis coordinated-motion plots and acceptance thresholds.
-2. Add a compact recruiter-facing project one-pager generated from the repo evidence.
-3. Add hardware adapter mocked recovery tests for bus-offline to restored-exchange behavior.
+1. Add a compact recruiter-facing project one-pager generated from the repo evidence.
+2. Add hardware adapter mocked recovery tests for bus-offline to restored-exchange behavior.
+3. Add hardware-run planning records for candidate EtherCAT/CANopen drive families.
 4. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.

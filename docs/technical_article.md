@@ -18,7 +18,7 @@ The deterministic benchmark currently generates:
 - Scenario pass/fail table.
 - Replayable CSV trace and persistent JSON fault log.
 - Closed-loop motion performance: overshoot, settling time, steady-state error, and following error.
-- Coordinated two-axis path performance: RMS path error, max path error, and settling time.
+- Coordinated two-axis path performance: RMS path error, max path error, final position error, settling time, and acceptance thresholds.
 - Capture profile manifest for simulation and future bench evidence.
 - Adapter contract evidence for object-map validation, stale receive data, and invalid responses.
 
@@ -30,6 +30,7 @@ Visual evidence is generated under `reports/`:
 - `sample_scenario_matrix.svg`
 - `sample_control_response.svg`
 - `sample_two_axis_path.svg`
+- `sample_two_axis_acceptance.svg`
 - `sample_timing_report.pdf`
 - `sample_capture_manifest.md`
 

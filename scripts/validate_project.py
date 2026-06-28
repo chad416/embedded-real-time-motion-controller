@@ -74,6 +74,7 @@ REQUIRED_FILES = [
     "reports/sample_scenario_matrix.svg",
     "reports/sample_control_response.svg",
     "reports/sample_two_axis_path.svg",
+    "reports/sample_two_axis_acceptance.svg",
     "reports/sample_capture_manifest.json",
     "reports/sample_capture_manifest.md",
     "config/capture_profiles/idle_bus_online.json",
@@ -176,6 +177,14 @@ def check_json_reports() -> None:
     two_axis = metrics.get("two_axis_performance", {})
     if not two_axis.get("available") or not two_axis.get("path_within_limit"):
         fail("sample metrics must include bounded two-axis path evidence")
+    if not two_axis.get("acceptance_pass"):
+        fail("sample metrics must include passing two-axis acceptance evidence")
+    if two_axis.get("max_path_error", 999.0) > two_axis.get("path_error_limit", 0.0):
+        fail("sample two-axis path error exceeds configured limit")
+    if two_axis.get("final_position_error", 999.0) > two_axis.get("target_tolerance", 0.0):
+        fail("sample two-axis final error exceeds configured tolerance")
+    if two_axis.get("settling_time_s", 999.0) > two_axis.get("settling_time_limit_s", 0.0):
+        fail("sample two-axis settling time exceeds configured limit")
     if not fault_log:
         fail("sample fault log must contain replayable entries")
 
