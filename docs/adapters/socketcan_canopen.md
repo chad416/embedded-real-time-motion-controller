@@ -17,6 +17,8 @@ cmake -S . -B build -DEMRTC_ENABLE_SOCKETCAN=ON
 - Configured bitrate matching the drive/device chain.
 - CANopen SDO/PDO layer implemented above SocketCAN.
 
+When `EMRTC_ENABLE_SOCKETCAN=ON`, CMake performs a non-fatal search for Linux CAN headers such as `linux/can.h`. If they are found, `EMRTC_HAS_SOCKETCAN=1` is exposed to the C++ build and `emrtc_cli show adapters` reports `dependency_available=true`.
+
 ## Mapping Scope
 
 | Process Image Field | CANopen Object |

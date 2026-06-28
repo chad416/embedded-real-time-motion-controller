@@ -55,6 +55,9 @@ jobs:
       - name: Generate validation graphics
         run: python3 scripts/generate_graphs.py --metrics reports/sample_metrics.json --out reports/generated/ci-python
 
+      - name: Generate capture profile manifest
+        run: python3 scripts/generate_capture_manifest.py --profiles config/capture_profiles --out reports/generated/ci-python
+
       - name: Repository health checks
         run: python3 scripts/validate_project.py
 

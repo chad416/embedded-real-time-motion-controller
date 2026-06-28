@@ -1,0 +1,49 @@
+{
+  "profile_name": "idle_bus_online",
+  "purpose": "Verify deterministic cyclic timing and bus supervision while the controller is enabled but no motion command is active.",
+  "backend": "simulated_or_hardware",
+  "hardware_required": false,
+  "cycle_time_ns": 1000000,
+  "duration_cycles": 3000,
+  "preconditions": [
+    "Controller starts from a cleared fault log.",
+    "Axis is configured with nominal position and velocity limits.",
+    "For hardware runs, fieldbus link is online and drive torque remains inhibited until the enable step is commanded."
+  ],
+  "commands": [
+    {"cycle": 0, "type": "enable", "axis": 0, "value": 0.0},
+    {"cycle": 50, "type": "hold_position", "axis": 0, "value": 0.0}
+  ],
+  "fault_injections": [],
+  "data_channels": [
+    "cycle_period_ns",
+    "jitter_ns",
+    "axis_state",
+    "bus_rx_packets",
+    "bus_tx_packets",
+    "heartbeat_age_cycles",
+    "fault_state"
+  ],
+  "required_artifacts": [
+    "trace.csv",
+    "metrics.json",
+    "fault_log.json",
+    "timing_report.pdf"
+  ],
+  "acceptance_criteria": {
+    "max_jitter_ns": 100000,
+    "missed_cycles_max": 0,
+    "deadline_overruns_max": 0,
+    "packet_loss_max": 0,
+    "final_fault": "None",
+    "operation_enabled_required": true
+  },
+  "bench_extension": {
+    "hardware_required": true,
+    "operator_action": "Record selected NIC/CAN device, drive model, bus topology, and a photo or screenshot of the online fieldbus state."
+  },
+  "operator_notes": [
+    "Use this as the first profile after power-up because it exercises timing and supervision without requesting motion.",
+    "Do not use this run as a hardware validation claim unless the bench-extension evidence is attached."
+  ]
+}

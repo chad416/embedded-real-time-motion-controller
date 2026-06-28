@@ -17,8 +17,12 @@ Last updated: 2026-06-28
 | Automated scenarios | Expanded | Built-in scenarios plus JSON scenario suite covering fault matrix, heartbeat timeout, bus disconnect, command abuse, encoder loss, and timing stress. |
 | Two-axis coordination | Added | Optional two-axis straight-line coordinated move simulation and test evidence. |
 | Adapter skeletons | Expanded | SOEM, EtherLab, SocketCAN, and CANopenNode skeletons have CMake build flags, status reporting, CI smoke build, and adapter-specific README files. |
+| Adapter dependency discovery | Added | CMake now performs non-fatal discovery for SOEM, EtherLab, SocketCAN headers, and CANopenNode when flags are enabled. |
+| Process-image mapping contract | Added | CiA 402 object indexes, bit widths, directions, and counts/unit encode-decode helpers are tested independently of hardware stacks. |
+| Adapter lifecycle checklist | Added | Discovery, configure, cyclic exchange, fault reaction, recovery, and shutdown gates are documented for each future backend. |
 | Motion performance metrics | Added | Runtime JSON/Markdown reports include overshoot, settling time, steady-state error, max following error, and two-axis path metrics. |
 | Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, and two-axis path plot. |
+| Data capture profiles | Added | Versioned profiles define simulation and future bench evidence requirements for timing, motion, jitter stress, heartbeat, bus dropout, and feedback faults. |
 | Commissioning templates | Added | Hardware checkout checklist and commissioning logbook template are present for future bench validation. |
 | Documentation | Implemented | Architecture, timing, bus map, drive state machine, watchdogs, fault matrix, test plan, validation, benchmark, tradeoffs, hardware plan. |
 | Sample reports | Implemented | Deterministic sample artifacts committed under `reports/`. |
@@ -29,13 +33,13 @@ Last updated: 2026-06-28
 
 ## Current Completion Estimate
 
-Software/simulation/documentation side against the portfolio PDF target: about 65%.
+Software/simulation/documentation side against the portfolio PDF target: about 73%.
 
-The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes richer scenario configuration, multi-axis evidence, adapter skeletons, graph-first reporting, deterministic timing PDF output, hardware BOM, and eventually live bench commissioning.
+The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes optional dependency discovery, adapter mapping tests, richer article visuals, and eventually live bench commissioning.
 
 ## Immediate Next Actions
 
-1. Add hardware-facing data capture profiles for future bench runs.
-2. Add optional real dependency discovery for SOEM/EtherLab/SocketCAN/CANopenNode.
-3. Add adapter-level unit tests for real process-image mapping once hardware libraries are available.
+1. Add adapter-level mocked exchange tests for stale PDOs and invalid object mapping.
+2. Expand the graph-first technical article with capture-manifest and profile evidence.
+3. Add a portfolio demo script that walks through CLI commands, reports, and graphs.
 4. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.

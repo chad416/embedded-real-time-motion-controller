@@ -4,12 +4,12 @@ The repository is simulation-first. These notes define how future fieldbus adapt
 
 ## Build Flags
 
-| Adapter | CMake Flag | Default | Current Status |
+| Adapter | CMake Flag | Default | Discovery |
 | --- | --- | --- | --- |
-| SOEM EtherCAT | `EMRTC_ENABLE_SOEM` | `OFF` | Skeleton only |
-| EtherLab EtherCAT | `EMRTC_ENABLE_ETHERLAB` | `OFF` | Skeleton only |
-| SocketCAN CANopen | `EMRTC_ENABLE_SOCKETCAN` | `OFF` | Skeleton only |
-| CANopenNode | `EMRTC_ENABLE_CANOPENNODE` | `OFF` | Skeleton only |
+| SOEM EtherCAT | `EMRTC_ENABLE_SOEM` | `OFF` | Non-fatal `ethercat.h` + `soem` library discovery |
+| EtherLab EtherCAT | `EMRTC_ENABLE_ETHERLAB` | `OFF` | Non-fatal `ecrt.h` + `ethercat` library discovery |
+| SocketCAN CANopen | `EMRTC_ENABLE_SOCKETCAN` | `OFF` | Non-fatal Linux CAN header discovery |
+| CANopenNode | `EMRTC_ENABLE_CANOPENNODE` | `OFF` | Non-fatal `CANopen.h` + CANopenNode library discovery |
 
 Example:
 
@@ -17,13 +17,17 @@ Example:
 cmake -S . -B build -DEMRTC_ENABLE_SOEM=ON
 ```
 
-Enabling a flag currently marks the adapter integration point at compile time. It does not link or commission real hardware libraries yet.
+Enabling a flag asks CMake to discover the matching external dependency. If the dependency is missing, the build stays in skeleton mode and reports `dependency_available=false`. If the dependency is found, the project records `dependency_available=true`, but the adapter still reports `configured=false` until process-image mapping, bench configuration, and commissioning evidence are complete.
 
 Runtime status can be inspected with:
 
 ```bash
 emrtc_cli show adapters
 ```
+
+The adapter-neutral CiA 402 object contract is implemented in [`../../include/emrtc/process_image_mapping.hpp`](../../include/emrtc/process_image_mapping.hpp) and tested by the no-dependency C++ test runner. Hardware adapters should use that contract before adding stack-specific PDO/SDO exchange code.
+
+The required runtime bring-up sequence is captured in [Adapter Lifecycle Checklist](lifecycle_checklist.md).
 
 ## Commissioning Rule
 

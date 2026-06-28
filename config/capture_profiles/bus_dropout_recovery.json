@@ -1,0 +1,52 @@
+{
+  "profile_name": "bus_dropout_recovery",
+  "purpose": "Verify bus watchdog reaction, fault logging, and recovery path when process-data exchange is interrupted.",
+  "backend": "simulated_or_hardware",
+  "hardware_required": false,
+  "cycle_time_ns": 1000000,
+  "duration_cycles": 4500,
+  "preconditions": [
+    "Axis can reach Operation Enabled in the selected backend.",
+    "Fault reset command has been tested without motion.",
+    "For hardware runs, a safe low-energy motion profile is selected before any cable-disconnect test."
+  ],
+  "commands": [
+    {"cycle": 0, "type": "enable", "axis": 0, "value": 0.0},
+    {"cycle": 100, "type": "move_absolute", "axis": 0, "value": 0.5},
+    {"cycle": 2200, "type": "reset_fault", "axis": 0, "value": 0.0},
+    {"cycle": 2350, "type": "enable", "axis": 0, "value": 0.0}
+  ],
+  "fault_injections": [
+    {"cycle": 900, "kind": "bus_disconnect", "magnitude": 1.0, "duration_cycles": 400}
+  ],
+  "data_channels": [
+    "cycle_period_ns",
+    "bus_state",
+    "bus_dropout_count",
+    "axis_state",
+    "fault_state",
+    "fault_log_sequence",
+    "recovery_cycles"
+  ],
+  "required_artifacts": [
+    "trace.csv",
+    "metrics.json",
+    "fault_log.json",
+    "validation_report.md"
+  ],
+  "acceptance_criteria": {
+    "bus_dropout_count_min": 1,
+    "fault_expected": "Bus Watchdog",
+    "recovery_cycles_max": 300,
+    "final_fault": "None",
+    "operation_enabled_required": true
+  },
+  "bench_extension": {
+    "hardware_required": true,
+    "operator_action": "Use a controlled cable-disconnect or interface-down action only after confirming torque limits, travel limits, and stop path."
+  },
+  "operator_notes": [
+    "The simulated version proves software reaction and evidence capture.",
+    "A future physical cable-pull run must be labeled separately from the simulated run."
+  ]
+}

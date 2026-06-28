@@ -1,0 +1,50 @@
+{
+  "profile_name": "cpu_jitter_stress",
+  "purpose": "Demonstrate how the timing watchdog and telemetry report deadline pressure under a deterministic host load spike.",
+  "backend": "simulated_host",
+  "hardware_required": false,
+  "cycle_time_ns": 1000000,
+  "duration_cycles": 5000,
+  "preconditions": [
+    "Nominal timing profile is available for comparison.",
+    "Controller watchdog thresholds are left at the documented defaults.",
+    "No unrelated benchmark or package installation tasks are running on the host."
+  ],
+  "commands": [
+    {"cycle": 0, "type": "enable", "axis": 0, "value": 0.0},
+    {"cycle": 100, "type": "move_absolute", "axis": 0, "value": 1.0}
+  ],
+  "fault_injections": [
+    {"cycle": 1200, "kind": "cpu_load_spike", "magnitude": 1.25, "duration_cycles": 1},
+    {"cycle": 3200, "kind": "cpu_load_spike", "magnitude": 1.10, "duration_cycles": 2}
+  ],
+  "data_channels": [
+    "cycle_period_ns",
+    "jitter_ns",
+    "deadline_overruns",
+    "missed_cycles",
+    "watchdog_state",
+    "fault_state"
+  ],
+  "required_artifacts": [
+    "trace.csv",
+    "metrics.json",
+    "timing_report.pdf",
+    "jitter_histogram.svg"
+  ],
+  "acceptance_criteria": {
+    "deadline_overruns_min": 1,
+    "missed_cycles_max": 1,
+    "max_jitter_ns": 1500000,
+    "watchdog_fault_expected": false,
+    "final_fault": "None"
+  },
+  "bench_extension": {
+    "hardware_required": true,
+    "operator_action": "Repeat on a PREEMPT_RT or real-time target and record scheduler, kernel, CPU isolation, and timer source."
+  },
+  "operator_notes": [
+    "This is not a performance brag profile; it is a visibility profile showing the controller reports stress instead of hiding it.",
+    "If hardware timing is later captured, keep host and hardware plots separate."
+  ]
+}

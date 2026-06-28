@@ -7,6 +7,7 @@ out/
 *.ilk
 *.pdb
 *.log
+__pycache__/
 reports/generated/
 !reports/sample_validation_report.md
 !reports/sample_metrics.json
@@ -17,3 +18,5 @@ reports/generated/
 !reports/sample_scenario_matrix.svg
 !reports/sample_control_response.svg
 !reports/sample_two_axis_path.svg
+!reports/sample_capture_manifest.json
+!reports/sample_capture_manifest.md

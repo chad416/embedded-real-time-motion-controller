@@ -27,6 +27,8 @@ The C++ test runner is intentionally dependency-free and is registered with CTes
 | Warm restart | Re-enable succeeds while preserving position model. |
 | Cold restart | Position model resets and re-enable succeeds. |
 | Persistent fault log replay | Fault log contains cycle/time/fault record. |
+| Hardware adapter skeleton status | Adapters stay uncommissioned even when optional dependency discovery is enabled. |
+| CiA 402 process-image mapping contract | Object indexes and counts-per-unit scaling round trip. |
 
 ## Commands
 

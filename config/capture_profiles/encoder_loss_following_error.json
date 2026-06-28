@@ -1,0 +1,54 @@
+{
+  "profile_name": "encoder_loss_following_error",
+  "purpose": "Verify encoder feedback-loss and following-error watchdog evidence under a bounded motion command.",
+  "backend": "simulated_or_hardware",
+  "hardware_required": false,
+  "cycle_time_ns": 1000000,
+  "duration_cycles": 5000,
+  "preconditions": [
+    "Nominal profile-position response has passed.",
+    "Following-error limit is documented.",
+    "For hardware runs, the actuator is unloaded or mechanically constrained to a safe travel range."
+  ],
+  "commands": [
+    {"cycle": 0, "type": "enable", "axis": 0, "value": 0.0},
+    {"cycle": 100, "type": "move_absolute", "axis": 0, "value": 0.75},
+    {"cycle": 3000, "type": "reset_fault", "axis": 0, "value": 0.0},
+    {"cycle": 3150, "type": "enable", "axis": 0, "value": 0.0}
+  ],
+  "fault_injections": [
+    {"cycle": 1100, "kind": "encoder_feedback_loss", "magnitude": 1.0, "duration_cycles": 250},
+    {"cycle": 2200, "kind": "following_error", "magnitude": 0.20, "duration_cycles": 20}
+  ],
+  "data_channels": [
+    "command_position",
+    "actual_position",
+    "following_error",
+    "encoder_valid",
+    "axis_state",
+    "fault_state",
+    "fault_log_sequence"
+  ],
+  "required_artifacts": [
+    "trace.csv",
+    "metrics.json",
+    "fault_log.json",
+    "control_response.svg"
+  ],
+  "acceptance_criteria": {
+    "encoder_loss_count_min": 1,
+    "following_error_count_min": 1,
+    "fault_expected": "Encoder Feedback Loss",
+    "max_abs_following_error": 0.25,
+    "recovery_cycles_max": 350,
+    "final_fault": "None"
+  },
+  "bench_extension": {
+    "hardware_required": true,
+    "operator_action": "Do not physically unplug encoder feedback unless drive documentation confirms the test method and torque-producing motion is made safe."
+  },
+  "operator_notes": [
+    "The simulated test intentionally covers both fault classes so the report has traceable watchdog evidence.",
+    "For real hardware, these may need to be split into separate low-risk tests."
+  ]
+}

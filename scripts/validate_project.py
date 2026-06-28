@@ -13,12 +13,14 @@ ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_FILES = [
     "CMakeLists.txt",
+    "cmake/EmrtcAdapterDiscovery.cmake",
     "README.md",
     "include/emrtc/controller.hpp",
     "include/emrtc/axis.hpp",
     "include/emrtc/bus.hpp",
     "include/emrtc/hardware_adapters.hpp",
     "include/emrtc/multi_axis.hpp",
+    "include/emrtc/process_image_mapping.hpp",
     "include/emrtc/scenario.hpp",
     "include/emrtc/watchdog.hpp",
     "src/controller.cpp",
@@ -26,6 +28,7 @@ REQUIRED_FILES = [
     "src/bus.cpp",
     "src/hardware_adapters.cpp",
     "src/multi_axis.cpp",
+    "src/process_image_mapping.cpp",
     "src/scenario.cpp",
     "src/watchdog.cpp",
     "apps/simulator_main.cpp",
@@ -36,6 +39,7 @@ REQUIRED_FILES = [
     "docs/bom.md",
     "docs/commissioning_logbook.md",
     "docs/hardware_checkout.md",
+    "docs/data_capture_profiles.md",
     "docs/timing_budget.md",
     "docs/portfolio_alignment.md",
     "docs/technical_article.md",
@@ -54,6 +58,7 @@ REQUIRED_FILES = [
     "docs/adapters/etherlab_ethercat.md",
     "docs/adapters/socketcan_canopen.md",
     "docs/adapters/canopennode.md",
+    "docs/adapters/lifecycle_checklist.md",
     "docs/final_report.md",
     "docs/demo_narratives.md",
     "reports/sample_metrics.json",
@@ -65,6 +70,14 @@ REQUIRED_FILES = [
     "reports/sample_scenario_matrix.svg",
     "reports/sample_control_response.svg",
     "reports/sample_two_axis_path.svg",
+    "reports/sample_capture_manifest.json",
+    "reports/sample_capture_manifest.md",
+    "config/capture_profiles/idle_bus_online.json",
+    "config/capture_profiles/nominal_profile_position.json",
+    "config/capture_profiles/cpu_jitter_stress.json",
+    "config/capture_profiles/bus_dropout_recovery.json",
+    "config/capture_profiles/heartbeat_timeout_recovery.json",
+    "config/capture_profiles/encoder_loss_following_error.json",
     "examples/scenarios/fault_matrix.json",
     "examples/scenarios/heartbeat_timeout.json",
     "examples/scenarios/bus_disconnect.json",
@@ -72,6 +85,7 @@ REQUIRED_FILES = [
     "examples/scenarios/encoder_loss.json",
     "examples/scenarios/timing_stress.json",
     "scripts/generate_graphs.py",
+    "scripts/generate_capture_manifest.py",
 ]
 
 EXPECTED_SCENARIOS = {
@@ -96,6 +110,31 @@ EXPECTED_SCENARIOS = {
     "warm restart",
     "cold restart",
     "persistent fault log replay",
+}
+
+EXPECTED_CAPTURE_PROFILES = {
+    "idle_bus_online",
+    "nominal_profile_position",
+    "cpu_jitter_stress",
+    "bus_dropout_recovery",
+    "heartbeat_timeout_recovery",
+    "encoder_loss_following_error",
+}
+
+REQUIRED_CAPTURE_PROFILE_KEYS = {
+    "profile_name",
+    "purpose",
+    "backend",
+    "hardware_required",
+    "cycle_time_ns",
+    "duration_cycles",
+    "preconditions",
+    "commands",
+    "fault_injections",
+    "data_channels",
+    "required_artifacts",
+    "acceptance_criteria",
+    "operator_notes",
 }
 
 
@@ -144,6 +183,49 @@ def check_json_reports() -> None:
         fail("sample metrics contain failing scenarios: " + ", ".join(failed))
 
 
+def check_capture_profiles() -> None:
+    profile_dir = ROOT / "config/capture_profiles"
+    paths = sorted(profile_dir.glob("*.json"))
+    if len(paths) < len(EXPECTED_CAPTURE_PROFILES):
+        fail("capture profile suite is too small")
+
+    observed: set[str] = set()
+    for path in paths:
+        profile = json.loads(path.read_text(encoding="utf-8"))
+        missing = REQUIRED_CAPTURE_PROFILE_KEYS - profile.keys()
+        if missing:
+            fail(f"{path.relative_to(ROOT)} missing keys: " + ", ".join(sorted(missing)))
+        if profile["profile_name"] != path.stem:
+            fail(f"{path.relative_to(ROOT)} profile_name must match filename")
+        observed.add(profile["profile_name"])
+        if not isinstance(profile["hardware_required"], bool):
+            fail(f"{path.relative_to(ROOT)} hardware_required must be a boolean")
+        if int(profile["cycle_time_ns"]) <= 0 or int(profile["duration_cycles"]) <= 0:
+            fail(f"{path.relative_to(ROOT)} cycle_time_ns and duration_cycles must be positive")
+        for key in ("preconditions", "commands", "fault_injections", "data_channels", "required_artifacts", "operator_notes"):
+            if not isinstance(profile[key], list):
+                fail(f"{path.relative_to(ROOT)} {key} must be a list")
+        if not profile["required_artifacts"]:
+            fail(f"{path.relative_to(ROOT)} required_artifacts must not be empty")
+        criteria = profile["acceptance_criteria"]
+        if not isinstance(criteria, dict) or not criteria:
+            fail(f"{path.relative_to(ROOT)} acceptance_criteria must be a non-empty object")
+        if "bench_extension" not in profile:
+            fail(f"{path.relative_to(ROOT)} must include a bench_extension hardware boundary")
+
+    missing_profiles = sorted(EXPECTED_CAPTURE_PROFILES - observed)
+    if missing_profiles:
+        fail("missing expected capture profiles: " + ", ".join(missing_profiles))
+
+    manifest_path = ROOT / "reports/sample_capture_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("profile_count") != len(paths):
+        fail("sample capture manifest profile_count does not match profile suite")
+    manifest_names = {profile["profile_name"] for profile in manifest.get("profiles", [])}
+    if manifest_names != observed:
+        fail("sample capture manifest does not match capture profile suite")
+
+
 def check_markdown_links() -> None:
     markdown_files = sorted((ROOT / "docs").glob("*.md")) + [ROOT / "README.md"]
     pattern = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
@@ -178,6 +260,7 @@ def check_safety_language() -> None:
 def main() -> int:
     check_required_files()
     check_json_reports()
+    check_capture_profiles()
     check_markdown_links()
     check_safety_language()
     print("PASS: repository health checks")

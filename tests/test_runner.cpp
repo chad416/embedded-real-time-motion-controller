@@ -1,6 +1,7 @@
 #include "emrtc/controller.hpp"
 #include "emrtc/hardware_adapters.hpp"
 #include "emrtc/multi_axis.hpp"
+#include "emrtc/process_image_mapping.hpp"
 #include "emrtc/scenario.hpp"
 
 #include <cmath>
@@ -283,14 +284,61 @@ TestResult test_hardware_adapter_skeletons_are_not_claiming_commissioning() {
     const auto etherlab_status = etherlab.status();
     const auto can_status = socket_can.status();
     const auto canopen_node_status = canopen_node.status();
+    const bool uncommissioned = !soem_status.configured && !etherlab_status.configured &&
+                                !can_status.configured && !canopen_node_status.configured;
+    const bool dependency_flags_are_coherent =
+        (!soem_status.dependency_available || soem_status.build_flag_enabled) &&
+        (!etherlab_status.dependency_available || etherlab_status.build_flag_enabled) &&
+        (!can_status.dependency_available || can_status.build_flag_enabled) &&
+        (!canopen_node_status.dependency_available || canopen_node_status.build_flag_enabled);
     return {"hardware adapter skeleton status",
-            !soem_status.configured && !etherlab_status.configured &&
-                !can_status.configured && !canopen_node_status.configured &&
-                soem.diagnostics().online == false &&
-                etherlab.diagnostics().online == false &&
-                socket_can.diagnostics().online == false &&
-                canopen_node.diagnostics().online == false,
+            uncommissioned && dependency_flags_are_coherent &&
+                !soem.diagnostics().online &&
+                !etherlab.diagnostics().online &&
+                !socket_can.diagnostics().online &&
+                !canopen_node.diagnostics().online,
             "future hardware adapters report uncommissioned status"};
+}
+
+TestResult test_cia402_process_image_mapping_contract() {
+    const auto& mapping = emrtc::cia402_process_image_mapping();
+    const auto* controlword = emrtc::find_cia402_mapping("controlword");
+    const auto* statusword = emrtc::find_cia402_mapping("statusword");
+    const auto* target_position = emrtc::find_cia402_mapping("target_position");
+    const bool object_map_ok = mapping.size() == 6U &&
+                               controlword != nullptr &&
+                               statusword != nullptr &&
+                               target_position != nullptr &&
+                               controlword->object_index == 0x6040 &&
+                               controlword->controller_to_drive &&
+                               statusword->object_index == 0x6041 &&
+                               !statusword->controller_to_drive &&
+                               target_position->object_index == 0x607A &&
+                               target_position->bit_length == 32;
+
+    emrtc::ProcessImage image;
+    image.controlword = 0x000F;
+    image.statusword = 0x0027;
+    image.target_position = 1.25;
+    image.target_velocity = 0.50;
+    image.actual_position = 1.24;
+    image.actual_velocity = 0.49;
+    image.drive_fault = emrtc::FaultCode::None;
+
+    const auto wire = emrtc::encode_cia402_wire_image(image, 1000.0);
+    const auto decoded = emrtc::decode_cia402_wire_image(wire, 1000.0);
+    const bool scale_ok = wire.target_position_counts == 1250 &&
+                          wire.target_velocity_counts == 500 &&
+                          wire.actual_position_counts == 1240 &&
+                          wire.actual_velocity_counts == 490 &&
+                          decoded.controlword == image.controlword &&
+                          decoded.statusword == image.statusword &&
+                          near(decoded.target_position, image.target_position, 0.001) &&
+                          near(decoded.actual_velocity, image.actual_velocity, 0.001);
+
+    return {"CiA 402 process-image mapping contract",
+            object_map_ok && scale_ok,
+            "object indexes and engineering-unit scaling round trip"};
 }
 
 TestResult test_benchmark_motion_performance_metrics() {
@@ -336,6 +384,7 @@ int main() {
         test_json_scenario_suite(),
         test_two_axis_coordinated_move(),
         test_hardware_adapter_skeletons_are_not_claiming_commissioning(),
+        test_cia402_process_image_mapping_contract(),
         test_benchmark_motion_performance_metrics(),
     };
 

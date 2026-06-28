@@ -14,6 +14,7 @@ This logbook is for future hardware commissioning. It is included now so the sof
 | Software commit | TBD |
 | Drive/actuator model | TBD |
 | Fieldbus backend | Simulated / SOEM / EtherLab / SocketCAN / CANopenNode |
+| Capture profile manifest | TBD |
 
 ## Pre-Power Checks
 
@@ -50,6 +51,17 @@ This logbook is for future hardware commissioning. It is included now so the sof
 | Nominal move | TBD | TBD | TBD | TBD | TBD |
 | CPU stress | TBD | TBD | TBD | TBD | TBD |
 | Bus fault | TBD | TBD | TBD | TBD | TBD |
+
+## Capture Profile Evidence
+
+| Profile | Backend | Pass/Fail | Required artifacts present | Notes |
+| --- | --- | --- | --- | --- |
+| `idle_bus_online` | TBD | TBD | TBD | TBD |
+| `nominal_profile_position` | TBD | TBD | TBD | TBD |
+| `cpu_jitter_stress` | TBD | TBD | TBD | TBD |
+| `heartbeat_timeout_recovery` | TBD | TBD | TBD | TBD |
+| `bus_dropout_recovery` | TBD | TBD | TBD | TBD |
+| `encoder_loss_following_error` | TBD | TBD | TBD | TBD |
 
 ## Fault Recovery Evidence
 

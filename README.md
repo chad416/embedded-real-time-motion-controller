@@ -22,6 +22,7 @@ This repository does not claim certified SIL/PL safety and does not claim real E
 
 ```text
 apps/                 Simulator, benchmark, and diagnostic CLI entry points
+config/capture_profiles/ Hardware-facing simulation and future bench capture profiles
 docs/                 Architecture, timing, safety-oriented design, tests, reports
 examples/scenarios/   Deterministic scenario definitions
 include/emrtc/        Public C++ interfaces
@@ -86,6 +87,7 @@ For review machines that do not yet have CMake/C++ installed:
 
 ```powershell
 python scripts/generate_report.py --out reports/generated
+python scripts/generate_capture_manifest.py --profiles config/capture_profiles --out reports
 ```
 
 The committed files under `reports/` are deterministic sample artifacts. Native C++ validation should be rerun after installing the toolchain.
@@ -98,6 +100,7 @@ The committed files under `reports/` are deterministic sample artifacts. Native 
 - [Preliminary BOM](docs/bom.md)
 - [Commissioning Logbook Template](docs/commissioning_logbook.md)
 - [Hardware Checkout Checklist](docs/hardware_checkout.md)
+- [Data Capture Profiles](docs/data_capture_profiles.md)
 - [Hardware Adapter Integration Notes](docs/adapters/README.md)
 - [Architecture Overview](docs/architecture.md)
 - [Timing Budget](docs/timing_budget.md)

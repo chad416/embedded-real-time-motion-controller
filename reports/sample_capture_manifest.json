@@ -1,0 +1,163 @@
+{
+  "profile_count": 6,
+  "profiles": [
+    {
+      "profile_name": "bus_dropout_recovery",
+      "purpose": "Verify bus watchdog reaction, fault logging, and recovery path when process-data exchange is interrupted.",
+      "backend": "simulated_or_hardware",
+      "hardware_required": false,
+      "cycle_time_ns": 1000000,
+      "duration_cycles": 4500,
+      "fault_injection_count": 1,
+      "required_artifacts": [
+        "trace.csv",
+        "metrics.json",
+        "fault_log.json",
+        "validation_report.md"
+      ],
+      "acceptance_criteria": {
+        "bus_dropout_count_min": 1,
+        "fault_expected": "Bus Watchdog",
+        "recovery_cycles_max": 300,
+        "final_fault": "None",
+        "operation_enabled_required": true
+      },
+      "bench_extension": {
+        "hardware_required": true,
+        "operator_action": "Use a controlled cable-disconnect or interface-down action only after confirming torque limits, travel limits, and stop path."
+      }
+    },
+    {
+      "profile_name": "cpu_jitter_stress",
+      "purpose": "Demonstrate how the timing watchdog and telemetry report deadline pressure under a deterministic host load spike.",
+      "backend": "simulated_host",
+      "hardware_required": false,
+      "cycle_time_ns": 1000000,
+      "duration_cycles": 5000,
+      "fault_injection_count": 2,
+      "required_artifacts": [
+        "trace.csv",
+        "metrics.json",
+        "timing_report.pdf",
+        "jitter_histogram.svg"
+      ],
+      "acceptance_criteria": {
+        "deadline_overruns_min": 1,
+        "missed_cycles_max": 1,
+        "max_jitter_ns": 1500000,
+        "watchdog_fault_expected": false,
+        "final_fault": "None"
+      },
+      "bench_extension": {
+        "hardware_required": true,
+        "operator_action": "Repeat on a PREEMPT_RT or real-time target and record scheduler, kernel, CPU isolation, and timer source."
+      }
+    },
+    {
+      "profile_name": "encoder_loss_following_error",
+      "purpose": "Verify encoder feedback-loss and following-error watchdog evidence under a bounded motion command.",
+      "backend": "simulated_or_hardware",
+      "hardware_required": false,
+      "cycle_time_ns": 1000000,
+      "duration_cycles": 5000,
+      "fault_injection_count": 2,
+      "required_artifacts": [
+        "trace.csv",
+        "metrics.json",
+        "fault_log.json",
+        "control_response.svg"
+      ],
+      "acceptance_criteria": {
+        "encoder_loss_count_min": 1,
+        "following_error_count_min": 1,
+        "fault_expected": "Encoder Feedback Loss",
+        "max_abs_following_error": 0.25,
+        "recovery_cycles_max": 350,
+        "final_fault": "None"
+      },
+      "bench_extension": {
+        "hardware_required": true,
+        "operator_action": "Do not physically unplug encoder feedback unless drive documentation confirms the test method and torque-producing motion is made safe."
+      }
+    },
+    {
+      "profile_name": "heartbeat_timeout_recovery",
+      "purpose": "Capture heartbeat supervision timeout, safe fault transition, and deterministic recovery after supervision resumes.",
+      "backend": "simulated_or_hardware",
+      "hardware_required": false,
+      "cycle_time_ns": 1000000,
+      "duration_cycles": 3500,
+      "fault_injection_count": 1,
+      "required_artifacts": [
+        "trace.csv",
+        "metrics.json",
+        "fault_log.json",
+        "validation_report.md"
+      ],
+      "acceptance_criteria": {
+        "heartbeat_timeout_count_min": 1,
+        "fault_expected": "Heartbeat Timeout",
+        "recovery_cycles_max": 250,
+        "missed_cycles_max": 0,
+        "final_fault": "None"
+      },
+      "bench_extension": {
+        "hardware_required": true,
+        "operator_action": "Record the device heartbeat period, controller timeout setting, and exact method used to pause or remove heartbeat traffic."
+      }
+    },
+    {
+      "profile_name": "idle_bus_online",
+      "purpose": "Verify deterministic cyclic timing and bus supervision while the controller is enabled but no motion command is active.",
+      "backend": "simulated_or_hardware",
+      "hardware_required": false,
+      "cycle_time_ns": 1000000,
+      "duration_cycles": 3000,
+      "fault_injection_count": 0,
+      "required_artifacts": [
+        "trace.csv",
+        "metrics.json",
+        "fault_log.json",
+        "timing_report.pdf"
+      ],
+      "acceptance_criteria": {
+        "max_jitter_ns": 100000,
+        "missed_cycles_max": 0,
+        "deadline_overruns_max": 0,
+        "packet_loss_max": 0,
+        "final_fault": "None",
+        "operation_enabled_required": true
+      },
+      "bench_extension": {
+        "hardware_required": true,
+        "operator_action": "Record selected NIC/CAN device, drive model, bus topology, and a photo or screenshot of the online fieldbus state."
+      }
+    },
+    {
+      "profile_name": "nominal_profile_position",
+      "purpose": "Capture a bounded profile-position move with overshoot, settling time, steady-state error, and following-error evidence.",
+      "backend": "simulated_or_hardware",
+      "hardware_required": false,
+      "cycle_time_ns": 1000000,
+      "duration_cycles": 4000,
+      "fault_injection_count": 0,
+      "required_artifacts": [
+        "trace.csv",
+        "metrics.json",
+        "validation_report.md",
+        "control_response.svg"
+      ],
+      "acceptance_criteria": {
+        "overshoot_max": 0.02,
+        "settling_time_max_s": 2.5,
+        "steady_state_error_abs_max": 0.01,
+        "max_abs_following_error": 0.05,
+        "final_fault": "None"
+      },
+      "bench_extension": {
+        "hardware_required": true,
+        "operator_action": "Record actuator direction, encoder sign, current limit, and whether the motion was unloaded or coupled to a mechanism."
+      }
+    }
+  ]
+}

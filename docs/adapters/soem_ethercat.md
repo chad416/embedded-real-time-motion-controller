@@ -16,6 +16,8 @@ cmake -S . -B build -DEMRTC_ENABLE_SOEM=ON
 - Raw Ethernet interface access on the host.
 - Platform-specific permissions for opening the EtherCAT NIC.
 
+When `EMRTC_ENABLE_SOEM=ON`, CMake performs a non-fatal search for `ethercat.h` and the `soem` library. If both are found, `EMRTC_HAS_SOEM=1` is exposed to the C++ build and `emrtc_cli show adapters` reports `dependency_available=true`.
+
 ## Mapping Scope
 
 | Process Image Field | EtherCAT Mapping Target |

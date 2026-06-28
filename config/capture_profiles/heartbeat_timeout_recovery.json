@@ -1,0 +1,50 @@
+{
+  "profile_name": "heartbeat_timeout_recovery",
+  "purpose": "Capture heartbeat supervision timeout, safe fault transition, and deterministic recovery after supervision resumes.",
+  "backend": "simulated_or_hardware",
+  "hardware_required": false,
+  "cycle_time_ns": 1000000,
+  "duration_cycles": 3500,
+  "preconditions": [
+    "Heartbeat timeout threshold is documented before the run.",
+    "Fault log export is enabled.",
+    "Axis starts from Operation Enabled with no pending bus fault."
+  ],
+  "commands": [
+    {"cycle": 0, "type": "enable", "axis": 0, "value": 0.0},
+    {"cycle": 1700, "type": "reset_fault", "axis": 0, "value": 0.0},
+    {"cycle": 1850, "type": "enable", "axis": 0, "value": 0.0}
+  ],
+  "fault_injections": [
+    {"cycle": 900, "kind": "heartbeat_timeout", "magnitude": 1.0, "duration_cycles": 300}
+  ],
+  "data_channels": [
+    "heartbeat_age_cycles",
+    "axis_state",
+    "fault_state",
+    "fault_log_sequence",
+    "recovery_cycles",
+    "bus_rx_packets"
+  ],
+  "required_artifacts": [
+    "trace.csv",
+    "metrics.json",
+    "fault_log.json",
+    "validation_report.md"
+  ],
+  "acceptance_criteria": {
+    "heartbeat_timeout_count_min": 1,
+    "fault_expected": "Heartbeat Timeout",
+    "recovery_cycles_max": 250,
+    "missed_cycles_max": 0,
+    "final_fault": "None"
+  },
+  "bench_extension": {
+    "hardware_required": true,
+    "operator_action": "Record the device heartbeat period, controller timeout setting, and exact method used to pause or remove heartbeat traffic."
+  },
+  "operator_notes": [
+    "This profile is useful for proving the difference between timing jitter and device-supervision loss.",
+    "On hardware, use the lowest-risk method available to stop heartbeat traffic."
+  ]
+}

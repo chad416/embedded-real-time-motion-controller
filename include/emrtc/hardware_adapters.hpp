@@ -9,13 +9,14 @@ namespace emrtc {
 struct AdapterStatus {
     bool configured{false};
     bool build_flag_enabled{false};
+    bool dependency_available{false};
     std::string backend;
     std::string detail;
 };
 
 class PlannedHardwareBackend : public IBusBackend {
 public:
-    PlannedHardwareBackend(std::string backend_name, bool build_flag_enabled);
+    PlannedHardwareBackend(std::string backend_name, bool build_flag_enabled, bool dependency_available);
 
     BusExchangeResult exchange(CycleIndex cycle, std::vector<ProcessImage>& images) override;
     const BusDiagnostics& diagnostics() const override;
@@ -24,6 +25,7 @@ public:
 private:
     std::string backend_name_;
     bool build_flag_enabled_{false};
+    bool dependency_available_{false};
     BusDiagnostics diagnostics_;
 };
 

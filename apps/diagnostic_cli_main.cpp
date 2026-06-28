@@ -41,6 +41,7 @@ void print_adapter_status(const emrtc::AdapterStatus& status) {
     std::cout << "backend=" << status.backend << "\n";
     std::cout << "configured=" << (status.configured ? "true" : "false") << "\n";
     std::cout << "build_flag_enabled=" << (status.build_flag_enabled ? "true" : "false") << "\n";
+    std::cout << "dependency_available=" << (status.dependency_available ? "true" : "false") << "\n";
     std::cout << "detail=" << status.detail << "\n";
 }
 

@@ -1,0 +1,49 @@
+{
+  "profile_name": "nominal_profile_position",
+  "purpose": "Capture a bounded profile-position move with overshoot, settling time, steady-state error, and following-error evidence.",
+  "backend": "simulated_or_hardware",
+  "hardware_required": false,
+  "cycle_time_ns": 1000000,
+  "duration_cycles": 4000,
+  "preconditions": [
+    "Idle bus profile has passed for this software commit.",
+    "Axis position is homed or explicitly zeroed in the simulation model.",
+    "Velocity, acceleration, and following-error limits are documented before the run."
+  ],
+  "commands": [
+    {"cycle": 0, "type": "enable", "axis": 0, "value": 0.0},
+    {"cycle": 100, "type": "move_absolute", "axis": 0, "value": 1.0},
+    {"cycle": 2500, "type": "hold_position", "axis": 0, "value": 1.0}
+  ],
+  "fault_injections": [],
+  "data_channels": [
+    "cycle_period_ns",
+    "command_position",
+    "actual_position",
+    "actual_velocity",
+    "following_error",
+    "axis_state",
+    "fault_state"
+  ],
+  "required_artifacts": [
+    "trace.csv",
+    "metrics.json",
+    "validation_report.md",
+    "control_response.svg"
+  ],
+  "acceptance_criteria": {
+    "overshoot_max": 0.02,
+    "settling_time_max_s": 2.5,
+    "steady_state_error_abs_max": 0.01,
+    "max_abs_following_error": 0.05,
+    "final_fault": "None"
+  },
+  "bench_extension": {
+    "hardware_required": true,
+    "operator_action": "Record actuator direction, encoder sign, current limit, and whether the motion was unloaded or coupled to a mechanism."
+  },
+  "operator_notes": [
+    "This profile is the baseline graph for the portfolio article because it links command, response, and final error.",
+    "On hardware, start at a reduced travel distance and speed before using the full nominal value."
+  ]
+}

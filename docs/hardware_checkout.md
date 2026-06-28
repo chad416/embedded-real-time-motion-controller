@@ -38,6 +38,7 @@ This checklist defines what must be verified before claiming hardware validation
 
 ## Evidence Required Before Hardware Claim
 
+- Capture profile manifest identifying the exact run definitions used.
 - Raw trace CSV from hardware run.
 - JSON metrics from hardware run.
 - Timing PDF from hardware run.

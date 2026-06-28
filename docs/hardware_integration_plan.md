@@ -17,7 +17,7 @@ Hardware commissioning starts after software validation is passing.
 - Validate statusword/controlword transitions against the real drive manual.
 - Keep simulated backend available for regression tests.
 
-Adapter-specific plans are in [Hardware Adapter Integration Notes](adapters/README.md).
+Adapter-specific plans are in [Hardware Adapter Integration Notes](adapters/README.md), and the required initialization/exchange/fault/recovery sequence is in [Adapter Lifecycle Checklist](adapters/lifecycle_checklist.md).
 
 ## Phase 3: Timing Validation
 
