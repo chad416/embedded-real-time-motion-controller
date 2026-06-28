@@ -1,0 +1,14 @@
+build/
+out/
+*.user
+*.suo
+*.obj
+*.exe
+*.ilk
+*.pdb
+*.log
+reports/generated/
+!reports/sample_validation_report.md
+!reports/sample_metrics.json
+!reports/sample_trace.csv
+!reports/sample_fault_log.json

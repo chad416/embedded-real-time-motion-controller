@@ -1,0 +1,173 @@
+{
+  "cycle_count": 2500,
+  "min_cycle_ns": 990000,
+  "max_cycle_ns": 3000000,
+  "mean_cycle_ns": 1001296,
+  "min_jitter_ns": -10000,
+  "max_jitter_ns": 2000000,
+  "mean_abs_jitter_ns": 6536,
+  "missed_cycles": 2,
+  "deadline_overruns": 2,
+  "jitter_histogram": {
+    "-10us": 120,
+    "+3us": 119,
+    "-5us": 118,
+    "+8us": 119,
+    "+0us": 118,
+    "-8us": 119,
+    "+5us": 119,
+    "-3us": 119,
+    "+10us": 119,
+    "+2us": 119,
+    "-6us": 119,
+    "+7us": 119,
+    "-1us": 119,
+    "-9us": 119,
+    "+4us": 119,
+    "-4us": 119,
+    "+9us": 119,
+    "+1us": 119,
+    "-7us": 119,
+    "+6us": 119,
+    "-2us": 119,
+    "+1245us": 1,
+    "+2000us": 1
+  },
+  "bus": {
+    "tx_packets": 2500,
+    "rx_packets": 2494,
+    "packet_loss_count": 6,
+    "dropout_count": 0,
+    "invalid_response_count": 0,
+    "heartbeat_timeout_count": 0,
+    "cable_disconnect_events": 0
+  },
+  "scenarios": [
+    {
+      "name": "normal startup",
+      "result": "PASS",
+      "evidence": "axis reached Operation Enabled through deterministic CiA 402 sequence",
+      "recovery_cycles": 0
+    },
+    {
+      "name": "drive enable sequence",
+      "result": "PASS",
+      "evidence": "statusword 0x0027 observed",
+      "recovery_cycles": 0
+    },
+    {
+      "name": "absolute move",
+      "result": "PASS",
+      "evidence": "axis settled within 0.01 units of target",
+      "recovery_cycles": 0
+    },
+    {
+      "name": "relative move",
+      "result": "PASS",
+      "evidence": "axis settled within 0.01 units of relative target",
+      "recovery_cycles": 0
+    },
+    {
+      "name": "velocity move",
+      "result": "PASS",
+      "evidence": "velocity command ramped above 0.5 units/s",
+      "recovery_cycles": 0
+    },
+    {
+      "name": "quick stop during motion",
+      "result": "PASS",
+      "evidence": "velocity decayed to safe stop band",
+      "recovery_cycles": 73
+    },
+    {
+      "name": "E-stop safe stop during motion",
+      "result": "PASS",
+      "evidence": "safe stop request recorded as safety-oriented emergency stop",
+      "recovery_cycles": 75
+    },
+    {
+      "name": "fault reset and recovery",
+      "result": "PASS",
+      "evidence": "fault reset returned drive to Operation Enabled",
+      "recovery_cycles": 5
+    },
+    {
+      "name": "invalid state transition rejected",
+      "result": "PASS",
+      "evidence": "invalid transition forced Fault Reaction Active/Fault",
+      "recovery_cycles": 1
+    },
+    {
+      "name": "missed-cycle injection",
+      "result": "PASS",
+      "evidence": "missed cycle counter incremented",
+      "recovery_cycles": 0
+    },
+    {
+      "name": "CPU load jitter stress",
+      "result": "PASS",
+      "evidence": "deadline overrun captured during load spike",
+      "recovery_cycles": 0
+    },
+    {
+      "name": "heartbeat timeout",
+      "result": "PASS",
+      "evidence": "heartbeat supervision tripped after configured timeout",
+      "recovery_cycles": 5
+    },
+    {
+      "name": "bus cable disconnect simulation",
+      "result": "PASS",
+      "evidence": "simulated cable disconnect forced bus watchdog fault",
+      "recovery_cycles": 1
+    },
+    {
+      "name": "packet loss simulation",
+      "result": "PASS",
+      "evidence": "packet loss counter incremented",
+      "recovery_cycles": 0
+    },
+    {
+      "name": "encoder feedback loss",
+      "result": "PASS",
+      "evidence": "encoder watchdog tripped after feedback-loss window",
+      "recovery_cycles": 4
+    },
+    {
+      "name": "following error",
+      "result": "PASS",
+      "evidence": "following-error watchdog tripped above limit",
+      "recovery_cycles": 1
+    },
+    {
+      "name": "command abuse during motion",
+      "result": "PASS",
+      "evidence": "invalid command during motion was rejected and logged",
+      "recovery_cycles": 1
+    },
+    {
+      "name": "sensor noise injection",
+      "result": "PASS",
+      "evidence": "bounded sensor noise did not create false trip",
+      "recovery_cycles": 0
+    },
+    {
+      "name": "warm restart",
+      "result": "PASS",
+      "evidence": "warm restart preserved position and re-enabled drive",
+      "recovery_cycles": 5
+    },
+    {
+      "name": "cold restart",
+      "result": "PASS",
+      "evidence": "cold restart cleared position model and re-enabled drive",
+      "recovery_cycles": 5
+    },
+    {
+      "name": "persistent fault log replay",
+      "result": "PASS",
+      "evidence": "fault log contains replayable cycle/time/fault record",
+      "recovery_cycles": 0
+    }
+  ]
+}

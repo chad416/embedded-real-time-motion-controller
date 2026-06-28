@@ -1,0 +1,94 @@
+# Embedded Real-Time Motion Controller
+
+Software-first embedded real-time motion controller for an industrial automation portfolio. The project demonstrates deterministic cyclic control, CiA 402-style drive handling, bus abstraction for future EtherCAT/CANopen adapters, watchdog supervision, fault injection, telemetry, diagnostics, and validation reporting.
+
+This repository does not claim certified SIL/PL safety and does not claim real EtherCAT/CANopen hardware validation. The current scope is a safety-oriented deterministic software simulation and host validation bench. Hardware commissioning is intentionally isolated as future work.
+
+## What Is Included
+
+- C++17 controller core with a 1 ms default cyclic loop model.
+- CiA 402-style axis state machine.
+- Profile position, profile velocity, and cyclic synchronous mode abstractions.
+- EtherCAT/CANopen-ready bus abstraction with a deterministic simulated backend.
+- Watchdogs for loop timing, heartbeat, bus health, following error, and encoder feedback loss.
+- Fault injector for missed cycle, CPU spike, heartbeat timeout, bus dropout, packet loss, invalid transition, encoder loss, sensor noise, following error, drive fault, watchdog timeout, and command abuse.
+- Timestamped telemetry, CSV trace, JSON metrics, persistent fault log, and Markdown validation report export.
+- No-dependency C++ test runner and CMake build.
+- Deterministic Python sample report generator for review workstations without a native compiler.
+
+## Repository Layout
+
+```text
+apps/                 Simulator, benchmark, and diagnostic CLI entry points
+docs/                 Architecture, timing, safety-oriented design, tests, reports
+examples/scenarios/   Deterministic scenario definitions
+include/emrtc/        Public C++ interfaces
+reports/              Sample generated validation artifacts
+scripts/              Build, test, benchmark, and report generation helpers
+src/                  C++ implementation
+tests/                No-dependency unit/integration test runner
+```
+
+## Build And Test
+
+Requires CMake 3.20+ and a C++17 compiler.
+
+```powershell
+scripts/build.ps1
+scripts/test.ps1
+scripts/benchmark.ps1 -Cycles 10000
+```
+
+If Windows blocks local PowerShell scripts, run the same commands through a process-local bypass:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/build.ps1
+```
+
+One-command native validation:
+
+```powershell
+scripts/run_all.ps1
+```
+
+If CMake or a compiler is missing, install CMake and a C++17 toolchain such as MSVC Build Tools, LLVM/Clang, or GCC/MinGW, then rerun the scripts.
+
+## Simulation And CLI
+
+After building:
+
+```powershell
+build\emrtc_sim.exe --cycles 2500 --out reports/generated
+build\emrtc_benchmark.exe --cycles 10000 --out reports/generated
+build\emrtc_cli.exe show status
+build\emrtc_cli.exe run scenario
+build\emrtc_cli.exe inject fault heartbeat_timeout
+build\emrtc_cli.exe export report reports/generated
+```
+
+## Sample Reports Without Native Toolchain
+
+For review machines that do not yet have CMake/C++ installed:
+
+```powershell
+python scripts/generate_report.py --out reports/generated
+```
+
+The committed files under `reports/` are deterministic sample artifacts. Native C++ validation should be rerun after installing the toolchain.
+
+## Documentation Index
+
+- [Architecture Overview](docs/architecture.md)
+- [Timing Budget](docs/timing_budget.md)
+- [Control Loop Architecture](docs/control_loop_architecture.md)
+- [Bus Map](docs/bus_map.md)
+- [Drive State Machine](docs/drive_state_machine.md)
+- [Watchdog Design](docs/watchdog_design.md)
+- [Fault Handling Matrix](docs/fault_handling_matrix.md)
+- [Test Plan](docs/test_plan.md)
+- [Validation Report](docs/validation_report.md)
+- [Benchmark Appendix](docs/benchmark_appendix.md)
+- [Design Tradeoffs](docs/design_tradeoffs.md)
+- [Hardware Integration Plan](docs/hardware_integration_plan.md)
+- [Final Software-Complete Report](docs/final_report.md)
+- [Demo Narratives](docs/demo_narratives.md)

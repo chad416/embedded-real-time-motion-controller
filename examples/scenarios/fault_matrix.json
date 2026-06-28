@@ -1,0 +1,16 @@
+{
+  "cycle_time_ns": 1000000,
+  "axis_count": 1,
+  "fault_injections": [
+    {"cycle": 300, "kind": "packet_loss", "magnitude": 5, "duration_cycles": 30},
+    {"cycle": 800, "kind": "cpu_load_spike", "magnitude": 1.25, "duration_cycles": 1},
+    {"cycle": 1200, "kind": "sensor_noise", "magnitude": 0.002, "duration_cycles": 1},
+    {"cycle": 1600, "kind": "missed_cycle", "magnitude": 0, "duration_cycles": 1}
+  ],
+  "expected_evidence": {
+    "packet_loss_count_min": 1,
+    "deadline_overruns_min": 1,
+    "missed_cycles_min": 1,
+    "hardware_required": false
+  }
+}

@@ -1,0 +1,11 @@
+cycle,timestamp_ns,event,state,mode,fault,position,velocity,following_error
+0,0,cycle,Not Ready,Disabled,None,0.0,0.0,0.0
+1,1000000,cycle,Switch On Disabled,Disabled,None,0.0,0.0,0.0
+2,2000000,cycle,Ready To Switch On,Disabled,None,0.0,0.0,0.0
+3,3000000,cycle,Switched On,Disabled,None,0.0,0.0,0.0
+4,4000000,cycle,Operation Enabled,Disabled,None,0.0,0.0,0.0
+300,300000000,packet loss injected,Operation Enabled,Profile Position,None,0.543,2.0,0.0
+800,800000000,cpu load spike injected,Operation Enabled,Profile Position,None,1.0,0.0,0.0
+1200,1200000000,sensor noise injected,Operation Enabled,Profile Position,None,1.0,0.0,0.0
+1600,1600000000,missed cycle injected,Operation Enabled,Profile Position,Missed Cycle,1.0,0.0,0.0
+2499,2499000000,cycle,Operation Enabled,Profile Position,None,1.0,0.0,0.0
