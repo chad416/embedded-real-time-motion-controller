@@ -6,6 +6,8 @@ Software-first embedded real-time motion controller for an industrial automation
 
 This repository does not claim certified SIL/PL safety and does not claim real EtherCAT/CANopen hardware validation. The current scope is a safety-oriented deterministic software simulation and host validation bench. Hardware commissioning is intentionally isolated as future work.
 
+Current release line: `0.2.0`, the machine-gated simulation-complete software milestone.
+
 ## What Is Included
 
 - C++17 controller core with a 1 ms default cyclic loop model.
@@ -78,6 +80,12 @@ Portfolio evidence bundle:
 scripts/package_portfolio.ps1 -OutDir reports/generated/portfolio_bundle
 ```
 
+Simulation-complete release gate:
+
+```powershell
+python scripts/check_simulation_milestone.py
+```
+
 If CMake or a compiler is missing, install CMake and a C++17 toolchain such as MSVC Build Tools, LLVM/Clang, or GCC/MinGW, then rerun the scripts.
 
 Use the local toolchain checker before a native build:
@@ -125,7 +133,11 @@ Key committed visuals include jitter, scenario matrix, control response, two-axi
 - [Hardware Checkout Checklist](docs/hardware_checkout.md)
 - [Data Capture Profiles](docs/data_capture_profiles.md)
 - [Hardware Target Profiles](docs/hardware_target_profiles.md)
+- [Hardware Evidence Archive](docs/hardware_evidence_archive.md)
 - [Local Toolchain Setup](docs/local_toolchain_setup.md)
+- [Simulation-Complete Milestone](docs/software_complete_milestone.md)
+- [Release Notes Template](docs/release_notes_template.md)
+- [Changelog](CHANGELOG.md)
 - [Bench Run Playbook](docs/bench_run_playbook.md)
 - [Hardware Runbooks](docs/runbooks/simulated_validation_runbook.md)
 - [Hardware Adapter Integration Notes](docs/adapters/README.md)

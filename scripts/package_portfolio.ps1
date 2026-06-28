@@ -40,7 +40,8 @@ New-Item -ItemType Directory -Force $OutDir | Out-Null
 
 $rootFiles = @(
     "README.md",
-    "CMakeLists.txt"
+    "CMakeLists.txt",
+    "CHANGELOG.md"
 )
 
 foreach ($file in $rootFiles) {
@@ -55,17 +56,24 @@ $docs = @(
     "docs/portfolio_alignment.md",
     "docs/technical_article.md",
     "docs/architecture.md",
+    "docs/timing_budget.md",
     "docs/control_loop_architecture.md",
     "docs/bus_map.md",
+    "docs/drive_state_machine.md",
     "docs/watchdog_design.md",
     "docs/fault_handling_matrix.md",
     "docs/test_plan.md",
     "docs/validation_report.md",
     "docs/benchmark_appendix.md",
+    "docs/design_tradeoffs.md",
+    "docs/final_report.md",
     "docs/hardware_integration_plan.md",
     "docs/hardware_checkout.md",
     "docs/hardware_target_profiles.md",
+    "docs/hardware_evidence_archive.md",
     "docs/local_toolchain_setup.md",
+    "docs/software_complete_milestone.md",
+    "docs/release_notes_template.md",
     "docs/bench_run_playbook.md",
     "docs/commissioning_logbook.md",
     "docs/data_capture_profiles.md",
@@ -81,6 +89,10 @@ Copy-RequiredDirectory "docs/runbooks" "docs/runbooks"
 Copy-RequiredDirectory ".github/ISSUE_TEMPLATE" ".github/ISSUE_TEMPLATE"
 Copy-RequiredDirectory "config/capture_profiles" "config/capture_profiles"
 Copy-RequiredDirectory "config/hardware_targets" "config/hardware_targets"
+Copy-RequiredDirectory "config/milestones" "config/milestones"
+Copy-RequiredFile "config/hardware_evidence_run_manifest.schema.json" "config/hardware_evidence_run_manifest.schema.json"
+Copy-RequiredDirectory "examples/hardware_evidence" "examples/hardware_evidence"
+Copy-RequiredFile "scripts/check_simulation_milestone.py" "scripts/check_simulation_milestone.py"
 
 $reports = @(
     "reports/sample_metrics.json",

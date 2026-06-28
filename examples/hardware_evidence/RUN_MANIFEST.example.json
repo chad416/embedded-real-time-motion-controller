@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-07-15_generic_ethercat_cia402_servo_nominal_profile_position_001",
+  "run_type": "ethercat_hardware",
+  "target_profile": "generic_ethercat_cia402_servo",
+  "capture_profile": "nominal_profile_position",
+  "started_at_utc": "2026-07-15T09:30:00Z",
+  "operator": "operator-name",
+  "software": {
+    "version": "0.2.0",
+    "commit": "0000000000000000000000000000000000000000",
+    "worktree_clean": true,
+    "build_type": "Release"
+  },
+  "environment": {
+    "host": "bench-controller-01",
+    "operating_system": "record exact OS and version",
+    "runtime": "record scheduler, kernel, or real-time runtime",
+    "cycle_time_ns": 1000000
+  },
+  "hardware": [
+    {
+      "role": "servo_drive",
+      "manufacturer": "record manufacturer",
+      "model": "record model",
+      "asset_id": "record serial or bench asset ID",
+      "firmware": "record firmware"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "raw/trace.csv",
+      "role": "cyclic telemetry",
+      "required": true,
+      "bytes": 1,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "result": "INCOMPLETE",
+  "review": {
+    "status": "pending",
+    "reviewer": "",
+    "reviewed_at_utc": null
+  },
+  "hardware_claim_allowed": false,
+  "deviations": [
+    "Template values must be replaced before review."
+  ]
+}

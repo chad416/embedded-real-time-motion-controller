@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(embedded_realtime_motion_controller
-    VERSION 0.1.0
+    VERSION 0.2.0
     DESCRIPTION "Software-first embedded real-time motion controller simulation and validation bench"
     LANGUAGES CXX)
 

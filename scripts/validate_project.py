@@ -12,9 +12,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_FILES = [
+    "CHANGELOG.md",
     "CMakeLists.txt",
     "cmake/EmrtcAdapterDiscovery.cmake",
     "README.md",
+    ".github/workflows/ci.yml",
     ".github/ISSUE_TEMPLATE/bench-run.md",
     ".github/ISSUE_TEMPLATE/adapter-commissioning.md",
     "include/emrtc/adapter_contract.hpp",
@@ -50,8 +52,11 @@ REQUIRED_FILES = [
     "docs/hardware_checkout.md",
     "docs/data_capture_profiles.md",
     "docs/hardware_target_profiles.md",
+    "docs/hardware_evidence_archive.md",
     "docs/local_toolchain_setup.md",
+    "docs/release_notes_template.md",
     "docs/recruiter_one_pager.md",
+    "docs/software_complete_milestone.md",
     "docs/timing_budget.md",
     "docs/portfolio_alignment.md",
     "docs/technical_article.md",
@@ -91,6 +96,8 @@ REQUIRED_FILES = [
     "config/hardware_targets/simulated_loopback_target.json",
     "config/hardware_targets/generic_ethercat_cia402_servo.json",
     "config/hardware_targets/generic_canopen_cia402_servo.json",
+    "config/hardware_evidence_run_manifest.schema.json",
+    "config/milestones/simulation_complete_v0.2.0.json",
     "config/capture_profiles/idle_bus_online.json",
     "config/capture_profiles/nominal_profile_position.json",
     "config/capture_profiles/cpu_jitter_stress.json",
@@ -103,6 +110,8 @@ REQUIRED_FILES = [
     "examples/scenarios/command_abuse.json",
     "examples/scenarios/encoder_loss.json",
     "examples/scenarios/timing_stress.json",
+    "examples/hardware_evidence/RUN_MANIFEST.example.json",
+    "scripts/check_simulation_milestone.py",
     "scripts/generate_graphs.py",
     "scripts/generate_capture_manifest.py",
     "scripts/generate_hardware_target_manifest.py",
@@ -321,6 +330,28 @@ def check_hardware_targets() -> None:
         fail("sample hardware target manifest does not match target profile suite")
 
 
+def check_evidence_manifest_assets() -> None:
+    schema_path = ROOT / "config/hardware_evidence_run_manifest.schema.json"
+    example_path = ROOT / "examples/hardware_evidence/RUN_MANIFEST.example.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    example = json.loads(example_path.read_text(encoding="utf-8"))
+
+    required = set(schema.get("required", []))
+    missing = sorted(required - example.keys())
+    if missing:
+        fail("hardware evidence manifest example missing schema fields: " + ", ".join(missing))
+    if example.get("hardware_claim_allowed") is not False:
+        fail("hardware evidence manifest example must not allow a hardware claim")
+    if example.get("result") not in {"INCOMPLETE", "ABORTED"}:
+        fail("hardware evidence manifest example must be non-accepting")
+    artifacts = example.get("artifacts", [])
+    if not artifacts:
+        fail("hardware evidence manifest example must contain an artifact record")
+    for artifact in artifacts:
+        if not re.fullmatch(r"[0-9a-f]{64}", str(artifact.get("sha256", ""))):
+            fail("hardware evidence manifest example artifact must contain a SHA-256 field")
+
+
 def check_markdown_links() -> None:
     markdown_files = sorted((ROOT / "docs").glob("*.md")) + [ROOT / "README.md"]
     pattern = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
@@ -357,6 +388,7 @@ def main() -> int:
     check_json_reports()
     check_capture_profiles()
     check_hardware_targets()
+    check_evidence_manifest_assets()
     check_markdown_links()
     check_safety_language()
     print("PASS: repository health checks")

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "milestone": "simulation-complete",
+  "version": "0.2.0",
+  "tag": "v0.2.0-simulation-complete",
+  "scope": "software_simulation_documentation",
+  "minimum_scenarios": 21,
+  "minimum_capture_profiles": 6,
+  "minimum_hardware_targets": 3,
+  "motion_limits": {
+    "overshoot_max": 0.02,
+    "settled_required": true
+  },
+  "two_axis_limits": {
+    "acceptance_required": true,
+    "path_within_limit_required": true
+  },
+  "required_files": [
+    "CHANGELOG.md",
+    "docs/software_complete_milestone.md",
+    "docs/release_notes_template.md",
+    "docs/hardware_evidence_archive.md",
+    "config/hardware_evidence_run_manifest.schema.json",
+    "examples/hardware_evidence/RUN_MANIFEST.example.json",
+    "reports/sample_metrics.json",
+    "reports/sample_capture_manifest.json",
+    "reports/sample_hardware_target_manifest.json",
+    "scripts/check_simulation_milestone.py"
+  ]
+}

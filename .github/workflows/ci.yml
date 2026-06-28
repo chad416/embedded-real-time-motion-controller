@@ -79,6 +79,9 @@ jobs:
       - name: Repository health checks
         run: python3 scripts/validate_project.py
 
+      - name: Simulation-complete milestone gate
+        run: python3 scripts/check_simulation_milestone.py
+
       - name: Upload generated reports
         uses: actions/upload-artifact@v4
         with:

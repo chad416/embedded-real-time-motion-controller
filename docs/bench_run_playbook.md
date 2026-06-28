@@ -34,7 +34,7 @@ Use a bench-run issue for each capture-profile execution. Use an adapter-commiss
 
 ## Evidence Naming
 
-Use a stable folder naming convention for future hardware artifacts:
+Use the complete archive convention in [`hardware_evidence_archive.md`](hardware_evidence_archive.md). The stable run-directory form is:
 
 ```text
 reports/generated/hardware/<date>_<target>_<profile>/
@@ -50,6 +50,8 @@ Expected files:
 - `operator_notes.md`
 - `mapping_dump.md`
 - photos or screenshots, if applicable
+
+Each run also requires a `RUN_MANIFEST.json` with relative artifact paths and SHA-256 hashes.
 
 ## Boundary
 
