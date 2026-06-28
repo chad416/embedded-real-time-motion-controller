@@ -54,6 +54,15 @@ REQUIRED_FILES = [
     "reports/sample_trace.csv",
     "reports/sample_validation_report.md",
     "reports/sample_timing_report.pdf",
+    "reports/sample_jitter_histogram.svg",
+    "reports/sample_scenario_matrix.svg",
+    "examples/scenarios/fault_matrix.json",
+    "examples/scenarios/heartbeat_timeout.json",
+    "examples/scenarios/bus_disconnect.json",
+    "examples/scenarios/command_abuse.json",
+    "examples/scenarios/encoder_loss.json",
+    "examples/scenarios/timing_stress.json",
+    "scripts/generate_graphs.py",
 ]
 
 EXPECTED_SCENARIOS = {

@@ -1,0 +1,16 @@
+{
+  "name": "bus disconnect scenario",
+  "cycle_time_ns": 1000000,
+  "run_cycles": 20,
+  "command_events": [
+    {"cycle": 0, "type": "enable", "value": 0}
+  ],
+  "fault_injections": [
+    {"cycle": 3, "kind": "bus_dropout", "magnitude": 1, "duration_cycles": 5}
+  ],
+  "expected_evidence": {
+    "cable_disconnect_events_min": 1,
+    "final_fault": "bus_dropout",
+    "hardware_required": false
+  }
+}

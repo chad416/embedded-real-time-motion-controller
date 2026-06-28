@@ -249,6 +249,22 @@ TestResult test_json_scenario_loader() {
     return {"JSON scenario loader", pass, "fault matrix scenario loads and passes expectations"};
 }
 
+TestResult test_json_scenario_suite() {
+    const auto files = emrtc::list_scenario_files("examples/scenarios");
+    if (files.size() < 6) {
+        return {"JSON scenario suite", false, "expected at least six scenario files"};
+    }
+
+    for (const auto& file : files) {
+        const auto metrics = emrtc::run_scenario_file(file);
+        if (metrics.scenarios.empty() ||
+            metrics.scenarios.front().result != emrtc::ScenarioResult::Pass) {
+            return {"JSON scenario suite", false, "scenario failed: " + file};
+        }
+    }
+    return {"JSON scenario suite", true, "all JSON scenarios pass declared expectations"};
+}
+
 TestResult test_two_axis_coordinated_move() {
     const auto metrics = emrtc::simulate_two_axis_linear_move();
     return {"two-axis coordinated move",
@@ -296,6 +312,7 @@ int main() {
         test_cold_restart(),
         test_fault_log_replay(),
         test_json_scenario_loader(),
+        test_json_scenario_suite(),
         test_two_axis_coordinated_move(),
         test_hardware_adapter_skeletons_are_not_claiming_commissioning(),
     };

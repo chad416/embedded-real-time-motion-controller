@@ -13,3 +13,5 @@ reports/generated/
 !reports/sample_trace.csv
 !reports/sample_fault_log.json
 !reports/sample_timing_report.pdf
+!reports/sample_jitter_histogram.svg
+!reports/sample_scenario_matrix.svg

@@ -20,6 +20,12 @@ The deterministic benchmark currently generates:
 
 The committed sample report shows a 1 ms nominal cycle with bounded synthetic jitter plus injected stress cases. The high-jitter buckets are intentional: one CPU-load spike and one missed-cycle injection prove the timing instrumentation and watchdog path are not decorative.
 
+Visual evidence is generated under `reports/`:
+
+- `sample_jitter_histogram.svg`
+- `sample_scenario_matrix.svg`
+- `sample_timing_report.pdf`
+
 ## Controller Structure
 
 The C++ controller executes a deterministic cycle:

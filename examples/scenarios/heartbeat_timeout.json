@@ -1,0 +1,16 @@
+{
+  "name": "heartbeat timeout scenario",
+  "cycle_time_ns": 1000000,
+  "run_cycles": 30,
+  "command_events": [
+    {"cycle": 0, "type": "enable", "value": 0}
+  ],
+  "fault_injections": [
+    {"cycle": 2, "kind": "heartbeat_timeout", "magnitude": 1, "duration_cycles": 8}
+  ],
+  "expected_evidence": {
+    "heartbeat_timeout_count_min": 5,
+    "final_fault": "heartbeat_timeout",
+    "hardware_required": false
+  }
+}

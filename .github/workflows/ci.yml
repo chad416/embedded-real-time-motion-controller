@@ -46,6 +46,9 @@ jobs:
       - name: Generate deterministic timing PDF
         run: python3 scripts/generate_timing_pdf.py --metrics reports/sample_metrics.json --out reports/generated/ci-python/timing_report.pdf
 
+      - name: Generate validation graphics
+        run: python3 scripts/generate_graphs.py --metrics reports/sample_metrics.json --out reports/generated/ci-python
+
       - name: Repository health checks
         run: python3 scripts/validate_project.py
 

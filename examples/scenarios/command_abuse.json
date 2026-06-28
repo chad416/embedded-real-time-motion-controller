@@ -1,0 +1,16 @@
+{
+  "name": "command abuse scenario",
+  "cycle_time_ns": 1000000,
+  "run_cycles": 40,
+  "command_events": [
+    {"cycle": 0, "type": "enable", "value": 0},
+    {"cycle": 6, "type": "velocity", "value": 0.5}
+  ],
+  "fault_injections": [
+    {"cycle": 20, "kind": "command_abuse", "magnitude": 1, "duration_cycles": 1}
+  ],
+  "expected_evidence": {
+    "final_fault": "command_rejected",
+    "hardware_required": false
+  }
+}

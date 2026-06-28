@@ -1,0 +1,16 @@
+{
+  "name": "encoder feedback loss scenario",
+  "cycle_time_ns": 1000000,
+  "run_cycles": 30,
+  "command_events": [
+    {"cycle": 0, "type": "enable", "value": 0},
+    {"cycle": 6, "type": "move_absolute", "value": 0.2}
+  ],
+  "fault_injections": [
+    {"cycle": 10, "kind": "encoder_feedback_loss", "magnitude": 1, "duration_cycles": 10}
+  ],
+  "expected_evidence": {
+    "final_fault": "encoder_feedback_loss",
+    "hardware_required": false
+  }
+}

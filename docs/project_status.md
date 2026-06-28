@@ -14,10 +14,10 @@ Last updated: 2026-06-28
 | Watchdog/safety-oriented layer | Implemented | Loop, bus, heartbeat, following-error, encoder feedback-loss, and E-stop/safe-stop handling. |
 | Fault injector | Implemented | Required fault classes are represented in code and validation scenarios. |
 | Telemetry and diagnostics | Implemented | CSV trace, JSON metrics, fault log, Markdown reports, and CLI commands. |
-| Automated scenarios | Expanded | Deterministic built-in scenarios plus C++ JSON scenario loader for `examples/scenarios/*.json`. |
+| Automated scenarios | Expanded | Built-in scenarios plus JSON scenario suite covering fault matrix, heartbeat timeout, bus disconnect, command abuse, encoder loss, and timing stress. |
 | Two-axis coordination | Added | Optional two-axis straight-line coordinated move simulation and test evidence. |
 | Adapter skeletons | Added | SOEM, EtherLab, SocketCAN, and CANopenNode skeletons exist and honestly report uncommissioned status. |
-| Timing PDF | Added | Deterministic timing report PDF generated from sample metrics. |
+| Visual evidence | Added | Deterministic timing PDF plus SVG jitter histogram and scenario pass/fail matrix generated from sample metrics. |
 | Documentation | Implemented | Architecture, timing, bus map, drive state machine, watchdogs, fault matrix, test plan, validation, benchmark, tradeoffs, hardware plan. |
 | Sample reports | Implemented | Deterministic sample artifacts committed under `reports/`. |
 | Native local build/test | Blocked | This machine currently lacks CMake and a C++17 compiler on PATH. |
@@ -33,7 +33,7 @@ The earlier 90% estimate was too optimistic because it measured the codebase sca
 
 ## Immediate Next Actions
 
-1. Add more JSON scenario files beyond the initial fault matrix.
-2. Add generated plots or images for timing distributions, not only tables.
-3. Expand the SOEM/EtherLab and SocketCAN/CANopenNode skeletons into compile-time optional real adapters.
+1. Expand the SOEM/EtherLab and SocketCAN/CANopenNode skeletons into compile-time optional real adapters.
+2. Add generated plots for overshoot/settling and two-axis path error.
+3. Add a commissioning logbook template and hardware checkout checklist.
 4. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.

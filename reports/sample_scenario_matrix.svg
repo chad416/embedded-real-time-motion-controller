@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="678" viewBox="0 0 1100 678">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="30" y="36" font-family="Arial" font-size="24" font-weight="700" fill="#1f2937">Scenario Pass/Fail Matrix</text>
+<text x="30" y="62" font-family="Arial" font-size="13" fill="#4b5563">Deterministic automated scenarios and recovery evidence</text>
+<rect x="30" y="64" width="1040" height="28" fill="#f9fafb" stroke="#e5e7eb"/>
+<circle cx="52" cy="79" r="7" fill="#16a34a"/>
+<text x="70" y="83" font-family="Arial" font-size="12" fill="#111827">normal startup</text>
+<text x="430" y="83" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="83" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 0</text>
+<text x="680" y="83" font-family="Arial" font-size="11" fill="#6b7280">axis reached Operation Enabled through deterministic CiA 402 sequence</text>
+<rect x="30" y="92" width="1040" height="28" fill="#ffffff" stroke="#e5e7eb"/>
+<circle cx="52" cy="107" r="7" fill="#16a34a"/>
+<text x="70" y="111" font-family="Arial" font-size="12" fill="#111827">drive enable sequence</text>
+<text x="430" y="111" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="111" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 0</text>
+<text x="680" y="111" font-family="Arial" font-size="11" fill="#6b7280">statusword 0x0027 observed</text>
+<rect x="30" y="120" width="1040" height="28" fill="#f9fafb" stroke="#e5e7eb"/>
+<circle cx="52" cy="135" r="7" fill="#16a34a"/>
+<text x="70" y="139" font-family="Arial" font-size="12" fill="#111827">absolute move</text>
+<text x="430" y="139" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="139" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 0</text>
+<text x="680" y="139" font-family="Arial" font-size="11" fill="#6b7280">axis settled within 0.01 units of target</text>
+<rect x="30" y="148" width="1040" height="28" fill="#ffffff" stroke="#e5e7eb"/>
+<circle cx="52" cy="163" r="7" fill="#16a34a"/>
+<text x="70" y="167" font-family="Arial" font-size="12" fill="#111827">relative move</text>
+<text x="430" y="167" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="167" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 0</text>
+<text x="680" y="167" font-family="Arial" font-size="11" fill="#6b7280">axis settled within 0.01 units of relative target</text>
+<rect x="30" y="176" width="1040" height="28" fill="#f9fafb" stroke="#e5e7eb"/>
+<circle cx="52" cy="191" r="7" fill="#16a34a"/>
+<text x="70" y="195" font-family="Arial" font-size="12" fill="#111827">velocity move</text>
+<text x="430" y="195" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="195" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 0</text>
+<text x="680" y="195" font-family="Arial" font-size="11" fill="#6b7280">velocity command ramped above 0.5 units/s</text>
+<rect x="30" y="204" width="1040" height="28" fill="#ffffff" stroke="#e5e7eb"/>
+<circle cx="52" cy="219" r="7" fill="#16a34a"/>
+<text x="70" y="223" font-family="Arial" font-size="12" fill="#111827">quick stop during motion</text>
+<text x="430" y="223" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="223" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 73</text>
+<text x="680" y="223" font-family="Arial" font-size="11" fill="#6b7280">velocity decayed to safe stop band</text>
+<rect x="30" y="232" width="1040" height="28" fill="#f9fafb" stroke="#e5e7eb"/>
+<circle cx="52" cy="247" r="7" fill="#16a34a"/>
+<text x="70" y="251" font-family="Arial" font-size="12" fill="#111827">E-stop safe stop during motion</text>
+<text x="430" y="251" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="251" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 75</text>
+<text x="680" y="251" font-family="Arial" font-size="11" fill="#6b7280">safe stop request recorded as safety-oriented emergency stop</text>
+<rect x="30" y="260" width="1040" height="28" fill="#ffffff" stroke="#e5e7eb"/>
+<circle cx="52" cy="275" r="7" fill="#16a34a"/>
+<text x="70" y="279" font-family="Arial" font-size="12" fill="#111827">fault reset and recovery</text>
+<text x="430" y="279" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="279" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 5</text>
+<text x="680" y="279" font-family="Arial" font-size="11" fill="#6b7280">fault reset returned drive to Operation Enabled</text>
+<rect x="30" y="288" width="1040" height="28" fill="#f9fafb" stroke="#e5e7eb"/>
+<circle cx="52" cy="303" r="7" fill="#16a34a"/>
+<text x="70" y="307" font-family="Arial" font-size="12" fill="#111827">invalid state transition rejected</text>
+<text x="430" y="307" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="307" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 1</text>
+<text x="680" y="307" font-family="Arial" font-size="11" fill="#6b7280">invalid transition forced Fault Reaction Active/Fault</text>
+<rect x="30" y="316" width="1040" height="28" fill="#ffffff" stroke="#e5e7eb"/>
+<circle cx="52" cy="331" r="7" fill="#16a34a"/>
+<text x="70" y="335" font-family="Arial" font-size="12" fill="#111827">missed-cycle injection</text>
+<text x="430" y="335" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="335" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 0</text>
+<text x="680" y="335" font-family="Arial" font-size="11" fill="#6b7280">missed cycle counter incremented</text>
+<rect x="30" y="344" width="1040" height="28" fill="#f9fafb" stroke="#e5e7eb"/>
+<circle cx="52" cy="359" r="7" fill="#16a34a"/>
+<text x="70" y="363" font-family="Arial" font-size="12" fill="#111827">CPU load jitter stress</text>
+<text x="430" y="363" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="363" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 0</text>
+<text x="680" y="363" font-family="Arial" font-size="11" fill="#6b7280">deadline overrun captured during load spike</text>
+<rect x="30" y="372" width="1040" height="28" fill="#ffffff" stroke="#e5e7eb"/>
+<circle cx="52" cy="387" r="7" fill="#16a34a"/>
+<text x="70" y="391" font-family="Arial" font-size="12" fill="#111827">heartbeat timeout</text>
+<text x="430" y="391" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="391" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 5</text>
+<text x="680" y="391" font-family="Arial" font-size="11" fill="#6b7280">heartbeat supervision tripped after configured timeout</text>
+<rect x="30" y="400" width="1040" height="28" fill="#f9fafb" stroke="#e5e7eb"/>
+<circle cx="52" cy="415" r="7" fill="#16a34a"/>
+<text x="70" y="419" font-family="Arial" font-size="12" fill="#111827">bus cable disconnect simulation</text>
+<text x="430" y="419" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="419" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 1</text>
+<text x="680" y="419" font-family="Arial" font-size="11" fill="#6b7280">simulated cable disconnect forced bus watchdog fault</text>
+<rect x="30" y="428" width="1040" height="28" fill="#ffffff" stroke="#e5e7eb"/>
+<circle cx="52" cy="443" r="7" fill="#16a34a"/>
+<text x="70" y="447" font-family="Arial" font-size="12" fill="#111827">packet loss simulation</text>
+<text x="430" y="447" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="447" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 0</text>
+<text x="680" y="447" font-family="Arial" font-size="11" fill="#6b7280">packet loss counter incremented</text>
+<rect x="30" y="456" width="1040" height="28" fill="#f9fafb" stroke="#e5e7eb"/>
+<circle cx="52" cy="471" r="7" fill="#16a34a"/>
+<text x="70" y="475" font-family="Arial" font-size="12" fill="#111827">encoder feedback loss</text>
+<text x="430" y="475" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="475" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 4</text>
+<text x="680" y="475" font-family="Arial" font-size="11" fill="#6b7280">encoder watchdog tripped after feedback-loss window</text>
+<rect x="30" y="484" width="1040" height="28" fill="#ffffff" stroke="#e5e7eb"/>
+<circle cx="52" cy="499" r="7" fill="#16a34a"/>
+<text x="70" y="503" font-family="Arial" font-size="12" fill="#111827">following error</text>
+<text x="430" y="503" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="503" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 1</text>
+<text x="680" y="503" font-family="Arial" font-size="11" fill="#6b7280">following-error watchdog tripped above limit</text>
+<rect x="30" y="512" width="1040" height="28" fill="#f9fafb" stroke="#e5e7eb"/>
+<circle cx="52" cy="527" r="7" fill="#16a34a"/>
+<text x="70" y="531" font-family="Arial" font-size="12" fill="#111827">command abuse during motion</text>
+<text x="430" y="531" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="531" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 1</text>
+<text x="680" y="531" font-family="Arial" font-size="11" fill="#6b7280">invalid command during motion was rejected and logged</text>
+<rect x="30" y="540" width="1040" height="28" fill="#ffffff" stroke="#e5e7eb"/>
+<circle cx="52" cy="555" r="7" fill="#16a34a"/>
+<text x="70" y="559" font-family="Arial" font-size="12" fill="#111827">sensor noise injection</text>
+<text x="430" y="559" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="559" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 0</text>
+<text x="680" y="559" font-family="Arial" font-size="11" fill="#6b7280">bounded sensor noise did not create false trip</text>
+<rect x="30" y="568" width="1040" height="28" fill="#f9fafb" stroke="#e5e7eb"/>
+<circle cx="52" cy="583" r="7" fill="#16a34a"/>
+<text x="70" y="587" font-family="Arial" font-size="12" fill="#111827">warm restart</text>
+<text x="430" y="587" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="587" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 5</text>
+<text x="680" y="587" font-family="Arial" font-size="11" fill="#6b7280">warm restart preserved position and re-enabled drive</text>
+<rect x="30" y="596" width="1040" height="28" fill="#ffffff" stroke="#e5e7eb"/>
+<circle cx="52" cy="611" r="7" fill="#16a34a"/>
+<text x="70" y="615" font-family="Arial" font-size="12" fill="#111827">cold restart</text>
+<text x="430" y="615" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="615" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 5</text>
+<text x="680" y="615" font-family="Arial" font-size="11" fill="#6b7280">cold restart cleared position model and re-enabled drive</text>
+<rect x="30" y="624" width="1040" height="28" fill="#f9fafb" stroke="#e5e7eb"/>
+<circle cx="52" cy="639" r="7" fill="#16a34a"/>
+<text x="70" y="643" font-family="Arial" font-size="12" fill="#111827">persistent fault log replay</text>
+<text x="430" y="643" font-family="Arial" font-size="12" fill="#16a34a" font-weight="700">PASS</text>
+<text x="510" y="643" font-family="Arial" font-size="12" fill="#374151">recovery cycles: 0</text>
+<text x="680" y="643" font-family="Arial" font-size="11" fill="#6b7280">fault log contains replayable cycle/time/fault record</text>
+</svg>
