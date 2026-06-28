@@ -56,18 +56,6 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    if (verb == "show" && noun == "adapters") {
-        emrtc::SoemEtherCatBackend soem;
-        emrtc::EtherLabEtherCatBackend etherlab;
-        emrtc::SocketCanCanOpenBackend socket_can;
-        emrtc::CanOpenNodeBackend canopen_node;
-        print_adapter_status(soem.status());
-        print_adapter_status(etherlab.status());
-        print_adapter_status(socket_can.status());
-        print_adapter_status(canopen_node.status());
-        return 0;
-    }
-
     const std::string verb = argv[1];
     const std::string noun = argc > 2 ? argv[2] : "";
 
@@ -78,6 +66,18 @@ int main(int argc, char** argv) {
         std::cout << "position=" << feedback.position << "\n";
         std::cout << "velocity=" << feedback.velocity << "\n";
         std::cout << "fault=" << emrtc::to_string(feedback.fault_code) << "\n";
+        return 0;
+    }
+
+    if (verb == "show" && noun == "adapters") {
+        emrtc::SoemEtherCatBackend soem;
+        emrtc::EtherLabEtherCatBackend etherlab;
+        emrtc::SocketCanCanOpenBackend socket_can;
+        emrtc::CanOpenNodeBackend canopen_node;
+        print_adapter_status(soem.status());
+        print_adapter_status(etherlab.status());
+        print_adapter_status(socket_can.status());
+        print_adapter_status(canopen_node.status());
         return 0;
     }
 
