@@ -17,11 +17,12 @@ This project maps to the embedded real-time motion controller blueprint in the p
 | Recruiter-facing summary | `docs/recruiter_one_pager.md` generated from metrics and capture manifest | Keep synchronized with future hardware evidence. |
 | Evidence packaging | `scripts/package_portfolio.ps1` exports docs, reports, graphs, capture profiles, and manifest | Add live bench evidence once available. |
 | Hardware target planning | Vendor-neutral simulated/EtherCAT/CANopen target profiles and generated manifest | Select a real drive only after current availability and safety documentation are reviewed. |
+| Local native workflow | Toolchain checker and Windows setup guide | Actual local compiler install remains pending on this machine. |
 | Live bench demo | Hardware integration plan and repeatable portfolio demo script | Real bench unavailable in this phase. |
 | Commissioning-grade package | README, architecture, timing, bus, watchdog, fault matrix, test plan, validation, benchmark, tradeoffs, status, BOM, commissioning logbook, hardware checkout, capture profiles, adapter lifecycle checklist | Adapter design needs expansion before hardware purchase. |
 
 ## Honest Completion Estimate
 
-Against the portfolio PDF, this project is about 84% complete as a flagship portfolio artifact.
+Against the portfolio PDF, this project is about 85% complete as a flagship portfolio artifact.
 
 The implemented software core is strong enough to compile and pass hosted CI, and the repo now has graph-first software evidence, versioned capture profiles, adapter contracts, a repeatable demo walkthrough, and a recruiter-facing evidence summary. The PDF target still includes more than software: real hardware commissioning, deeper adapter integration, richer plots, and eventually a live bench demo.

@@ -80,6 +80,12 @@ scripts/package_portfolio.ps1 -OutDir reports/generated/portfolio_bundle
 
 If CMake or a compiler is missing, install CMake and a C++17 toolchain such as MSVC Build Tools, LLVM/Clang, or GCC/MinGW, then rerun the scripts.
 
+Use the local toolchain checker before a native build:
+
+```powershell
+scripts/check_toolchain.ps1 -RequireCMake -RequireCompiler
+```
+
 ## Simulation And CLI
 
 After building:
@@ -119,6 +125,7 @@ Key committed visuals include jitter, scenario matrix, control response, two-axi
 - [Hardware Checkout Checklist](docs/hardware_checkout.md)
 - [Data Capture Profiles](docs/data_capture_profiles.md)
 - [Hardware Target Profiles](docs/hardware_target_profiles.md)
+- [Local Toolchain Setup](docs/local_toolchain_setup.md)
 - [Hardware Adapter Integration Notes](docs/adapters/README.md)
 - [Architecture Overview](docs/architecture.md)
 - [Timing Budget](docs/timing_budget.md)

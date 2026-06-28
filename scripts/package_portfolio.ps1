@@ -65,6 +65,7 @@ $docs = @(
     "docs/hardware_integration_plan.md",
     "docs/hardware_checkout.md",
     "docs/hardware_target_profiles.md",
+    "docs/local_toolchain_setup.md",
     "docs/commissioning_logbook.md",
     "docs/data_capture_profiles.md",
     "docs/bom.md"

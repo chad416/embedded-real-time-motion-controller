@@ -16,6 +16,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Check local toolchain helper
+        shell: pwsh
+        run: ./scripts/check_toolchain.ps1 -RequireCMake -RequireCompiler
+
       - name: Configure CMake
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 

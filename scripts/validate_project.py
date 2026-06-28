@@ -44,6 +44,7 @@ REQUIRED_FILES = [
     "docs/hardware_checkout.md",
     "docs/data_capture_profiles.md",
     "docs/hardware_target_profiles.md",
+    "docs/local_toolchain_setup.md",
     "docs/recruiter_one_pager.md",
     "docs/timing_budget.md",
     "docs/portfolio_alignment.md",
@@ -102,6 +103,7 @@ REQUIRED_FILES = [
     "scripts/generate_one_pager.py",
     "scripts/demo_portfolio.ps1",
     "scripts/package_portfolio.ps1",
+    "scripts/check_toolchain.ps1",
 ]
 
 EXPECTED_SCENARIOS = {
