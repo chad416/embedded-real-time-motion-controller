@@ -8,6 +8,8 @@
 namespace emrtc {
 namespace {
 
+constexpr double kPositionLoopGain = 16.0;
+
 double clamp(double value, double low, double high) {
     return std::max(low, std::min(value, high));
 }
@@ -302,7 +304,7 @@ void Axis::update_motion(double dt_s) {
 
     if (mode_ == ControlMode::ProfilePosition || mode_ == ControlMode::CyclicSynchronousPosition) {
         const double position_error = target_position_ - position_;
-        const double desired_velocity = clamp(position_error / std::max(dt_s, 1e-9),
+        const double desired_velocity = clamp(kPositionLoopGain * position_error,
                                               -limits_.max_velocity_units_per_s,
                                               limits_.max_velocity_units_per_s);
         const double accel_step = limits_.max_accel_units_per_s2 * dt_s;
