@@ -394,6 +394,38 @@ TestResult test_adapter_exchange_monitor_detects_invalid_response() {
             "invalid PDO/object response is surfaced as an adapter contract fault"};
 }
 
+TestResult test_adapter_exchange_monitor_accepts_restored_exchange() {
+    emrtc::AdapterExchangeMonitor monitor(3);
+    emrtc::BusDiagnostics diagnostics;
+    diagnostics.rx_packets = 1;
+    diagnostics.online = true;
+    diagnostics.heartbeat_ok = true;
+
+    emrtc::BusExchangeResult exchange;
+    const auto initial = monitor.observe(0, exchange, diagnostics);
+
+    diagnostics.online = false;
+    diagnostics.heartbeat_ok = false;
+    exchange.ok = false;
+    exchange.heartbeat_ok = false;
+    const auto offline = monitor.observe(1, exchange, diagnostics);
+
+    diagnostics.online = true;
+    diagnostics.heartbeat_ok = true;
+    diagnostics.rx_packets = 2;
+    exchange.ok = true;
+    exchange.heartbeat_ok = true;
+    const auto restored = monitor.observe(4, exchange, diagnostics);
+
+    return {"adapter exchange monitor accepts restored exchange",
+            initial.ok &&
+                !offline.ok &&
+                offline.fault == emrtc::FaultCode::BusDropout &&
+                restored.ok &&
+                monitor.last_rx_cycle() == 4,
+            "fresh receive data after bus restoration clears the adapter monitor observation"};
+}
+
 TestResult test_benchmark_motion_performance_metrics() {
     const auto metrics = emrtc::run_benchmark(2500);
     return {"benchmark motion performance metrics",
@@ -442,6 +474,7 @@ int main() {
         test_adapter_mapping_validator_rejects_invalid_object_map(),
         test_adapter_exchange_monitor_detects_stale_pdo_data(),
         test_adapter_exchange_monitor_detects_invalid_response(),
+        test_adapter_exchange_monitor_accepts_restored_exchange(),
         test_benchmark_motion_performance_metrics(),
     };
 

@@ -19,7 +19,7 @@ Last updated: 2026-06-28
 | Adapter skeletons | Expanded | SOEM, EtherLab, SocketCAN, and CANopenNode skeletons have CMake build flags, status reporting, CI smoke build, and adapter-specific README files. |
 | Adapter dependency discovery | Added | CMake now performs non-fatal discovery for SOEM, EtherLab, SocketCAN headers, and CANopenNode when flags are enabled. |
 | Process-image mapping contract | Added | CiA 402 object indexes, bit widths, directions, and counts/unit encode-decode helpers are tested independently of hardware stacks. |
-| Adapter exchange contract | Added | Mapping validation, stale receive-data detection, heartbeat health, bus-offline, and invalid-response handling are covered by adapter-level tests. |
+| Adapter exchange contract | Expanded | Mapping validation, stale receive-data detection, heartbeat health, bus-offline, restored exchange, and invalid-response handling are covered by adapter-level tests. |
 | Adapter lifecycle checklist | Added | Discovery, configure, cyclic exchange, fault reaction, recovery, and shutdown gates are documented for each future backend. |
 | Portfolio demo script | Added | `scripts/demo_portfolio.ps1` runs CLI status, adapters, two-axis demo, JSON scenario, benchmark, sample evidence, and capture manifest generation. |
 | Recruiter one-pager | Added | Generated from sample metrics and capture manifest to summarize evidence, role fit, talking points, and honest boundaries. |
@@ -36,13 +36,13 @@ Last updated: 2026-06-28
 
 ## Current Completion Estimate
 
-Software/simulation/documentation side against the portfolio PDF target: about 80%.
+Software/simulation/documentation side against the portfolio PDF target: about 81%.
 
-The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes deeper adapter recovery tests, hardware-run planning, and eventually live bench commissioning.
+The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes hardware-run planning, artifact bundling, and eventually live bench commissioning.
 
 ## Immediate Next Actions
 
-1. Add hardware adapter mocked recovery tests for bus-offline to restored-exchange behavior.
-2. Add hardware-run planning records for candidate EtherCAT/CANopen drive families.
-3. Add a one-command artifact bundle script for exporting portfolio evidence.
+1. Add hardware-run planning records for candidate EtherCAT/CANopen drive families.
+2. Add a one-command artifact bundle script for exporting portfolio evidence.
+3. Add optional local toolchain install notes for Windows/MSVC and MinGW.
 4. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.

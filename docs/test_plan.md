@@ -32,6 +32,7 @@ The C++ test runner is intentionally dependency-free and is registered with CTes
 | Adapter mapping validator rejects invalid object map | Bad PDO/object dictionary mapping is rejected. |
 | Adapter exchange monitor detects stale PDO data | Stale receive data becomes a bus watchdog fault. |
 | Adapter exchange monitor detects invalid response | Invalid adapter response becomes a contract fault. |
+| Adapter exchange monitor accepts restored exchange | Bus-offline observation is followed by accepted fresh receive data. |
 
 ## Commands
 

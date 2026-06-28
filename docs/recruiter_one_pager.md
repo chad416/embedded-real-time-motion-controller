@@ -30,7 +30,7 @@ A C++17 software-first motion-controller validation bench with deterministic cyc
 - Deterministic 1 ms cyclic controller model with jitter, missed-cycle, and deadline instrumentation.
 - CiA 402-style axis state machine with command guards, statusword/controlword evidence, and fault reset behavior.
 - Simulated fieldbus backend covering packet loss, cable dropout, heartbeat timeout, and invalid responses.
-- Adapter contracts for CiA 402 object mapping, stale receive data, heartbeat health, bus-offline state, and invalid responses.
+- Adapter contracts for CiA 402 object mapping, stale receive data, heartbeat health, bus-offline/restored-exchange behavior, and invalid responses.
 - Quantitative evidence: JSON metrics, CSV traces, fault logs, Markdown report, timing PDF, and SVG plots.
 - Repeatable portfolio demo script: `scripts/demo_portfolio.ps1`.
 

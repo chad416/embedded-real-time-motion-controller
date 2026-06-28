@@ -33,5 +33,6 @@ The no-dependency C++ test runner covers:
 - Invalid object index rejection.
 - Stale receive/PDO data detection.
 - Invalid response detection.
+- Bus-offline detection followed by restored fresh receive data.
 
 These tests do not claim hardware validation. They prove the adapter contract is explicit before a real stack is commissioned.
