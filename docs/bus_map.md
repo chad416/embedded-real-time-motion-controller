@@ -34,3 +34,5 @@ The repository includes non-commissioned adapter skeletons for:
 - CANopenNode.
 
 These classes intentionally report `configured=false` until real hardware libraries, interface names, PDO/object mapping, and bench validation are added.
+
+See [Hardware Adapter Integration Notes](adapters/README.md) for build flags and adapter-specific bring-up plans.

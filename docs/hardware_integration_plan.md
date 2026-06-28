@@ -17,6 +17,8 @@ Hardware commissioning starts after software validation is passing.
 - Validate statusword/controlword transitions against the real drive manual.
 - Keep simulated backend available for regression tests.
 
+Adapter-specific plans are in [Hardware Adapter Integration Notes](adapters/README.md).
+
 ## Phase 3: Timing Validation
 
 - Replace deterministic synthetic timing with hardware timer or `CLOCK_MONOTONIC` captures.

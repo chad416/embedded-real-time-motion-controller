@@ -16,7 +16,7 @@ Last updated: 2026-06-28
 | Telemetry and diagnostics | Implemented | CSV trace, JSON metrics, fault log, Markdown reports, and CLI commands. |
 | Automated scenarios | Expanded | Built-in scenarios plus JSON scenario suite covering fault matrix, heartbeat timeout, bus disconnect, command abuse, encoder loss, and timing stress. |
 | Two-axis coordination | Added | Optional two-axis straight-line coordinated move simulation and test evidence. |
-| Adapter skeletons | Added | SOEM, EtherLab, SocketCAN, and CANopenNode skeletons exist and honestly report uncommissioned status. |
+| Adapter skeletons | Expanded | SOEM, EtherLab, SocketCAN, and CANopenNode skeletons have CMake build flags, status reporting, CI smoke build, and adapter-specific README files. |
 | Motion performance metrics | Added | Runtime JSON/Markdown reports include overshoot, settling time, steady-state error, max following error, and two-axis path metrics. |
 | Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, and two-axis path plot. |
 | Commissioning templates | Added | Hardware checkout checklist and commissioning logbook template are present for future bench validation. |
@@ -35,7 +35,7 @@ The earlier 90% estimate was too optimistic because it measured the codebase sca
 
 ## Immediate Next Actions
 
-1. Expand the SOEM/EtherLab and SocketCAN/CANopenNode skeletons into compile-time optional real adapters.
-2. Add optional hardware adapter build flags and adapter-specific README files.
-3. Add hardware-facing data capture profiles for future bench runs.
+1. Add hardware-facing data capture profiles for future bench runs.
+2. Add optional real dependency discovery for SOEM/EtherLab/SocketCAN/CANopenNode.
+3. Add adapter-level unit tests for real process-image mapping once hardware libraries are available.
 4. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.

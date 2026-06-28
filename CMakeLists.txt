@@ -9,6 +9,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(EMRTC_ENABLE_SOEM "Enable SOEM EtherCAT adapter integration point" OFF)
+option(EMRTC_ENABLE_ETHERLAB "Enable EtherLab EtherCAT adapter integration point" OFF)
+option(EMRTC_ENABLE_SOCKETCAN "Enable SocketCAN CANopen adapter integration point" OFF)
+option(EMRTC_ENABLE_CANOPENNODE "Enable CANopenNode adapter integration point" OFF)
+
 add_library(emrtc
     src/axis.cpp
     src/bus.cpp
@@ -23,11 +28,23 @@ add_library(emrtc
 
 target_include_directories(emrtc PUBLIC include)
 
+target_compile_definitions(emrtc PUBLIC
+    $<$<BOOL:${EMRTC_ENABLE_SOEM}>:EMRTC_ENABLE_SOEM=1>
+    $<$<BOOL:${EMRTC_ENABLE_ETHERLAB}>:EMRTC_ENABLE_ETHERLAB=1>
+    $<$<BOOL:${EMRTC_ENABLE_SOCKETCAN}>:EMRTC_ENABLE_SOCKETCAN=1>
+    $<$<BOOL:${EMRTC_ENABLE_CANOPENNODE}>:EMRTC_ENABLE_CANOPENNODE=1>)
+
 if(MSVC)
     target_compile_options(emrtc PRIVATE /W4 /permissive-)
 else()
     target_compile_options(emrtc PRIVATE -Wall -Wextra -Wpedantic)
 endif()
+
+message(STATUS "EMRTC adapter flags:")
+message(STATUS "  EMRTC_ENABLE_SOEM=${EMRTC_ENABLE_SOEM}")
+message(STATUS "  EMRTC_ENABLE_ETHERLAB=${EMRTC_ENABLE_ETHERLAB}")
+message(STATUS "  EMRTC_ENABLE_SOCKETCAN=${EMRTC_ENABLE_SOCKETCAN}")
+message(STATUS "  EMRTC_ENABLE_CANOPENNODE=${EMRTC_ENABLE_CANOPENNODE}")
 
 add_executable(emrtc_sim apps/simulator_main.cpp)
 target_link_libraries(emrtc_sim PRIVATE emrtc)

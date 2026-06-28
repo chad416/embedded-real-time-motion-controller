@@ -19,8 +19,14 @@ jobs:
       - name: Configure CMake
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
+      - name: Configure adapter-flag smoke build
+        run: cmake -S . -B build-adapter-flags -DCMAKE_BUILD_TYPE=Release -DEMRTC_ENABLE_SOEM=ON -DEMRTC_ENABLE_SOCKETCAN=ON
+
       - name: Build
         run: cmake --build build --config Release --parallel 2
+
+      - name: Build adapter-flag smoke target
+        run: cmake --build build-adapter-flags --config Release --target emrtc_tests --parallel 2
 
       - name: Run unit and integration tests
         run: ctest --test-dir build --build-config Release --output-on-failure

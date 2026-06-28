@@ -41,6 +41,17 @@ scripts/test.ps1
 scripts/benchmark.ps1 -Cycles 10000
 ```
 
+Optional hardware-adapter integration flags are available for future bench work:
+
+```powershell
+cmake -S . -B build-soem -DEMRTC_ENABLE_SOEM=ON
+cmake -S . -B build-etherlab -DEMRTC_ENABLE_ETHERLAB=ON
+cmake -S . -B build-socketcan -DEMRTC_ENABLE_SOCKETCAN=ON
+cmake -S . -B build-canopennode -DEMRTC_ENABLE_CANOPENNODE=ON
+```
+
+These flags currently enable documented integration points only. They do not claim real hardware library linkage or commissioned hardware behavior.
+
 If Windows blocks local PowerShell scripts, run the same commands through a process-local bypass:
 
 ```powershell
@@ -63,6 +74,7 @@ After building:
 build\emrtc_sim.exe --cycles 2500 --out reports/generated
 build\emrtc_benchmark.exe --cycles 10000 --out reports/generated
 build\emrtc_cli.exe show status
+build\emrtc_cli.exe show adapters
 build\emrtc_cli.exe run scenario
 build\emrtc_cli.exe inject fault heartbeat_timeout
 build\emrtc_cli.exe export report reports/generated
@@ -86,6 +98,7 @@ The committed files under `reports/` are deterministic sample artifacts. Native 
 - [Preliminary BOM](docs/bom.md)
 - [Commissioning Logbook Template](docs/commissioning_logbook.md)
 - [Hardware Checkout Checklist](docs/hardware_checkout.md)
+- [Hardware Adapter Integration Notes](docs/adapters/README.md)
 - [Architecture Overview](docs/architecture.md)
 - [Timing Budget](docs/timing_budget.md)
 - [Control Loop Architecture](docs/control_loop_architecture.md)

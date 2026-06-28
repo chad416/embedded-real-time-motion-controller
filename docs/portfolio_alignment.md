@@ -7,8 +7,8 @@ This project maps to the embedded real-time motion controller blueprint in the p
 | C/C++ controller core | C++17 library and apps with hosted CI build | Local Windows CMake/compiler still missing. |
 | FreeRTOS-style deterministic tasking | Deterministic cycle model and control-loop architecture note | Actual FreeRTOS target adapter not yet implemented. |
 | Linux/PREEMPT_RT supervisory layer | Host simulator, benchmark, CLI, GitHub Linux CI | Real PREEMPT_RT timing capture not yet implemented. |
-| EtherCAT abstraction | Process-image bus abstraction and simulated backend | SOEM/EtherLab adapter skeleton still needed. |
-| CANopen/CiA 402 abstraction | CiA 402-style drive state machine and object mapping notes | CANopenNode/SocketCAN adapter skeleton still needed. |
+| EtherCAT abstraction | Process-image bus abstraction, simulated backend, SOEM/EtherLab flags, and adapter docs | Real SOEM/EtherLab library linkage pending. |
+| CANopen/CiA 402 abstraction | CiA 402-style drive state machine, object mapping notes, SocketCAN/CANopenNode flags, and adapter docs | Real CANopen stack linkage pending. |
 | Timing instrumentation | Cycle samples, jitter, missed-cycle, deadline counters | Real hardware timestamp source pending. |
 | Fault injector | Required fault classes covered in code, tests, and JSON scenario suite | More cross-fault combinations can still be added. |
 | Quantitative report | Markdown, JSON, CSV, timing PDF, jitter SVG, and scenario SVG | Hardware reports pending. |

@@ -1,4 +1,5 @@
 #include "emrtc/controller.hpp"
+#include "emrtc/hardware_adapters.hpp"
 #include "emrtc/multi_axis.hpp"
 #include "emrtc/scenario.hpp"
 
@@ -28,11 +29,19 @@ void print_help() {
     std::cout
         << "Usage:\n"
         << "  emrtc_cli show status\n"
+        << "  emrtc_cli show adapters\n"
         << "  emrtc_cli run scenario [examples/scenarios/name.json]\n"
         << "  emrtc_cli run two-axis\n"
         << "  emrtc_cli inject fault <fault_name>\n"
         << "  emrtc_cli reset fault\n"
         << "  emrtc_cli export report [dir]\n";
+}
+
+void print_adapter_status(const emrtc::AdapterStatus& status) {
+    std::cout << "backend=" << status.backend << "\n";
+    std::cout << "configured=" << (status.configured ? "true" : "false") << "\n";
+    std::cout << "build_flag_enabled=" << (status.build_flag_enabled ? "true" : "false") << "\n";
+    std::cout << "detail=" << status.detail << "\n";
 }
 
 }  // namespace
@@ -44,6 +53,18 @@ int main(int argc, char** argv) {
 
     if (argc < 2) {
         print_help();
+        return 0;
+    }
+
+    if (verb == "show" && noun == "adapters") {
+        emrtc::SoemEtherCatBackend soem;
+        emrtc::EtherLabEtherCatBackend etherlab;
+        emrtc::SocketCanCanOpenBackend socket_can;
+        emrtc::CanOpenNodeBackend canopen_node;
+        print_adapter_status(soem.status());
+        print_adapter_status(etherlab.status());
+        print_adapter_status(socket_can.status());
+        print_adapter_status(canopen_node.status());
         return 0;
     }
 

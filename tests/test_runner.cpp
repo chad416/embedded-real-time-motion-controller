@@ -276,13 +276,20 @@ TestResult test_two_axis_coordinated_move() {
 
 TestResult test_hardware_adapter_skeletons_are_not_claiming_commissioning() {
     emrtc::SoemEtherCatBackend soem;
+    emrtc::EtherLabEtherCatBackend etherlab;
     emrtc::SocketCanCanOpenBackend socket_can;
+    emrtc::CanOpenNodeBackend canopen_node;
     const auto soem_status = soem.status();
+    const auto etherlab_status = etherlab.status();
     const auto can_status = socket_can.status();
+    const auto canopen_node_status = canopen_node.status();
     return {"hardware adapter skeleton status",
-            !soem_status.configured && !can_status.configured &&
+            !soem_status.configured && !etherlab_status.configured &&
+                !can_status.configured && !canopen_node_status.configured &&
                 soem.diagnostics().online == false &&
-                socket_can.diagnostics().online == false,
+                etherlab.diagnostics().online == false &&
+                socket_can.diagnostics().online == false &&
+                canopen_node.diagnostics().online == false,
             "future hardware adapters report uncommissioned status"};
 }
 

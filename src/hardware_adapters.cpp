@@ -4,8 +4,8 @@
 
 namespace emrtc {
 
-PlannedHardwareBackend::PlannedHardwareBackend(std::string backend_name)
-    : backend_name_(std::move(backend_name)) {
+PlannedHardwareBackend::PlannedHardwareBackend(std::string backend_name, bool build_flag_enabled)
+    : backend_name_(std::move(backend_name)), build_flag_enabled_(build_flag_enabled) {
     diagnostics_.online = false;
     diagnostics_.heartbeat_ok = false;
 }
@@ -23,19 +23,46 @@ const BusDiagnostics& PlannedHardwareBackend::diagnostics() const {
 }
 
 AdapterStatus PlannedHardwareBackend::status() const {
-    return {false, backend_name_, "adapter skeleton present; hardware stack not linked or commissioned"};
+    const std::string detail = build_flag_enabled_
+                                   ? "adapter build flag enabled; real hardware stack still not linked or commissioned"
+                                   : "adapter skeleton present; enable build flag and link hardware stack before commissioning";
+    return {false, build_flag_enabled_, backend_name_, detail};
 }
 
 SoemEtherCatBackend::SoemEtherCatBackend()
-    : PlannedHardwareBackend("SOEM EtherCAT") {}
+    : PlannedHardwareBackend("SOEM EtherCAT",
+#ifdef EMRTC_ENABLE_SOEM
+                             true
+#else
+                             false
+#endif
+      ) {}
 
 EtherLabEtherCatBackend::EtherLabEtherCatBackend()
-    : PlannedHardwareBackend("EtherLab EtherCAT") {}
+    : PlannedHardwareBackend("EtherLab EtherCAT",
+#ifdef EMRTC_ENABLE_ETHERLAB
+                             true
+#else
+                             false
+#endif
+      ) {}
 
 SocketCanCanOpenBackend::SocketCanCanOpenBackend()
-    : PlannedHardwareBackend("SocketCAN CANopen") {}
+    : PlannedHardwareBackend("SocketCAN CANopen",
+#ifdef EMRTC_ENABLE_SOCKETCAN
+                             true
+#else
+                             false
+#endif
+      ) {}
 
 CanOpenNodeBackend::CanOpenNodeBackend()
-    : PlannedHardwareBackend("CANopenNode") {}
+    : PlannedHardwareBackend("CANopenNode",
+#ifdef EMRTC_ENABLE_CANOPENNODE
+                             true
+#else
+                             false
+#endif
+      ) {}
 
 }  // namespace emrtc
