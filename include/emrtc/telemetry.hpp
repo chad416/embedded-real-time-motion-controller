@@ -17,6 +17,8 @@ struct TraceEvent {
     FaultCode fault{FaultCode::None};
     double position{0.0};
     double velocity{0.0};
+    double target_position{0.0};
+    double target_velocity{0.0};
     double following_error{0.0};
 };
 
@@ -25,6 +27,30 @@ struct FaultLogEntry {
     Nanoseconds timestamp_ns{0};
     FaultCode fault{FaultCode::None};
     std::string detail;
+};
+
+struct MotionPerformanceMetrics {
+    bool available{false};
+    bool settled{false};
+    double target_position{0.0};
+    double final_position{0.0};
+    double final_velocity{0.0};
+    double overshoot{0.0};
+    double settling_time_s{0.0};
+    double steady_state_error{0.0};
+    double max_abs_following_error{0.0};
+};
+
+struct TwoAxisPerformanceMetrics {
+    bool available{false};
+    bool target_reached{false};
+    bool path_within_limit{false};
+    std::uint64_t cycle_count{0};
+    double final_x{0.0};
+    double final_y{0.0};
+    double rms_path_error{0.0};
+    double max_path_error{0.0};
+    double settling_time_s{0.0};
 };
 
 struct RuntimeMetrics {
@@ -41,6 +67,8 @@ struct RuntimeMetrics {
     double mean_abs_jitter_ns{0.0};
     std::uint64_t missed_cycles{0};
     std::uint64_t deadline_overruns{0};
+    MotionPerformanceMetrics motion;
+    TwoAxisPerformanceMetrics two_axis;
 };
 
 class TelemetryRecorder {

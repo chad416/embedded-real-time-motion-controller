@@ -51,6 +51,22 @@ def scenario_rows(metrics: dict) -> list[list[object]]:
     return rows
 
 
+def motion_rows(metrics: dict) -> list[list[object]]:
+    motion = metrics.get("motion_performance", {})
+    two_axis = metrics.get("two_axis_performance", {})
+    return [
+        ["Metric", "Value"],
+        ["Target position", motion.get("target_position", 0.0)],
+        ["Final position", motion.get("final_position", 0.0)],
+        ["Overshoot", motion.get("overshoot", 0.0)],
+        ["Settling time s", motion.get("settling_time_s", 0.0)],
+        ["Steady-state error", motion.get("steady_state_error", 0.0)],
+        ["Max following error", motion.get("max_abs_following_error", 0.0)],
+        ["Two-axis RMS path error", two_axis.get("rms_path_error", 0.0)],
+        ["Two-axis max path error", two_axis.get("max_path_error", 0.0)],
+    ]
+
+
 def build_pdf(metrics: dict, output: Path) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     styles = getSampleStyleSheet()
@@ -88,6 +104,9 @@ def build_pdf(metrics: dict, output: Path) -> None:
                 ["Deadline overruns", metrics["deadline_overruns"]],
             ]
         ),
+        Spacer(1, 12),
+        Paragraph("Motion Performance", styles["Heading2"]),
+        table(motion_rows(metrics)),
         Spacer(1, 12),
         Paragraph("Bus Diagnostics", styles["Heading2"]),
         table(

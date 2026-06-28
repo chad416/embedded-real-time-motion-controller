@@ -286,6 +286,20 @@ TestResult test_hardware_adapter_skeletons_are_not_claiming_commissioning() {
             "future hardware adapters report uncommissioned status"};
 }
 
+TestResult test_benchmark_motion_performance_metrics() {
+    const auto metrics = emrtc::run_benchmark(2500);
+    return {"benchmark motion performance metrics",
+            metrics.motion.available &&
+                metrics.motion.settled &&
+                metrics.motion.overshoot <= 0.02 &&
+                std::abs(metrics.motion.steady_state_error) <= 0.01 &&
+                metrics.motion.settling_time_s > 0.0 &&
+                metrics.two_axis.available &&
+                metrics.two_axis.target_reached &&
+                metrics.two_axis.path_within_limit,
+            "benchmark reports overshoot, settling, steady-state, and two-axis path metrics"};
+}
+
 }  // namespace
 
 int main() {
@@ -315,6 +329,7 @@ int main() {
         test_json_scenario_suite(),
         test_two_axis_coordinated_move(),
         test_hardware_adapter_skeletons_are_not_claiming_commissioning(),
+        test_benchmark_motion_performance_metrics(),
     };
 
     int failures = 0;

@@ -29,4 +29,5 @@ The project is software-complete when:
 - `emrtc_tests` passes all scenarios.
 - `emrtc_benchmark` exports timing metrics and exits successfully.
 - Reports contain cycle histogram, jitter, missed cycles, bus counters, recovery evidence, and scenario pass/fail table.
+- Reports contain motion-performance evidence: overshoot, settling time, steady-state error, following error, and two-axis path error.
 - Hardware-only work remains limited to real adapter implementation and commissioning.

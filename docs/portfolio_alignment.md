@@ -15,7 +15,7 @@ This project maps to the embedded real-time motion controller blueprint in the p
 | Diagnostic shell | CLI with status, scenario, fault injection, reset, report export, two-axis demo | Interactive shell mode could be added later. |
 | Graph-first article | `docs/technical_article.md` | Add screenshots/plots after more generated artifacts. |
 | Live bench demo | Hardware integration plan and demo scripts | Real bench unavailable in this phase. |
-| Commissioning-grade package | README, architecture, timing, bus, watchdog, fault matrix, test plan, validation, benchmark, tradeoffs, status | BOM and adapter design need expansion before hardware purchase. |
+| Commissioning-grade package | README, architecture, timing, bus, watchdog, fault matrix, test plan, validation, benchmark, tradeoffs, status, BOM, commissioning logbook, hardware checkout | Adapter design needs expansion before hardware purchase. |
 
 ## Honest Completion Estimate
 

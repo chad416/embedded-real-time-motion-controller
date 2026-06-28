@@ -33,6 +33,28 @@
     "+1245us": 1,
     "+2000us": 1
   },
+  "motion_performance": {
+    "available": true,
+    "settled": true,
+    "target_position": 1.0,
+    "final_position": 1.0,
+    "final_velocity": 0.0,
+    "overshoot": 0.0,
+    "settling_time_s": 0.8,
+    "steady_state_error": 0.0,
+    "max_abs_following_error": 0.0
+  },
+  "two_axis_performance": {
+    "available": true,
+    "target_reached": true,
+    "path_within_limit": true,
+    "cycle_count": 1200,
+    "final_x": 1.0,
+    "final_y": 1.0,
+    "rms_path_error": 0.0,
+    "max_path_error": 0.0,
+    "settling_time_s": 0.936
+  },
   "bus": {
     "tx_packets": 2500,
     "rx_packets": 2494,

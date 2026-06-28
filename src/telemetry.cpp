@@ -34,6 +34,68 @@ void write_json_field(std::ostream& out, const std::string& name, T value, bool 
     out << "\n";
 }
 
+void write_json_bool_field(std::ostream& out, const std::string& name, bool value, bool comma = true) {
+    out << "  \"" << name << "\": " << (value ? "true" : "false");
+    if (comma) {
+        out << ",";
+    }
+    out << "\n";
+}
+
+MotionPerformanceMetrics compute_motion_performance(const std::vector<TraceEvent>& trace) {
+    MotionPerformanceMetrics result;
+    if (trace.empty()) {
+        return result;
+    }
+
+    result.available = true;
+    result.target_position = trace.back().target_position;
+    result.final_position = trace.back().position;
+    result.final_velocity = trace.back().velocity;
+    result.steady_state_error = result.target_position - result.final_position;
+
+    const auto initial_position = trace.front().position;
+    double max_position = trace.front().position;
+    double min_position = trace.front().position;
+    for (const auto& event : trace) {
+        max_position = std::max(max_position, event.position);
+        min_position = std::min(min_position, event.position);
+        result.max_abs_following_error =
+            std::max(result.max_abs_following_error, std::abs(event.following_error));
+    }
+
+    if (result.target_position >= initial_position) {
+        result.overshoot = std::max(0.0, max_position - result.target_position);
+    } else {
+        result.overshoot = std::max(0.0, result.target_position - min_position);
+    }
+
+    constexpr double kPositionTolerance = 0.010;
+    constexpr double kVelocityTolerance = 0.010;
+    std::vector<bool> suffix_ok(trace.size(), false);
+    bool all_ok = true;
+    for (std::size_t offset = 0; offset < trace.size(); ++offset) {
+        const auto index = trace.size() - 1 - offset;
+        const auto& event = trace[index];
+        const bool current_ok =
+            std::abs(event.position - result.target_position) <= kPositionTolerance &&
+            std::abs(event.velocity) <= kVelocityTolerance &&
+            event.fault == FaultCode::None;
+        all_ok = all_ok && current_ok;
+        suffix_ok[index] = all_ok;
+    }
+
+    for (std::size_t i = 0; i < suffix_ok.size(); ++i) {
+        if (suffix_ok[i]) {
+            result.settled = true;
+            result.settling_time_s = static_cast<double>(trace[i].timestamp_ns) * 1.0e-9;
+            break;
+        }
+    }
+
+    return result;
+}
+
 }  // namespace
 
 void TelemetryRecorder::record_cycle(CycleSample sample) {
@@ -92,6 +154,7 @@ RuntimeMetrics TelemetryRecorder::finalize() const {
 
     metrics.mean_cycle_ns = static_cast<double>(total_cycle / cycles_.size());
     metrics.mean_abs_jitter_ns = static_cast<double>(total_abs_jitter / cycles_.size());
+    metrics.motion = compute_motion_performance(trace_);
     return metrics;
 }
 
@@ -109,7 +172,7 @@ bool TelemetryRecorder::write_trace_csv(const RuntimeMetrics& metrics, const std
         return false;
     }
 
-    out << "cycle,timestamp_ns,event,state,mode,fault,position,velocity,following_error\n";
+    out << "cycle,timestamp_ns,event,state,mode,fault,position,velocity,target_position,target_velocity,following_error\n";
     out << std::fixed << std::setprecision(6);
     for (const auto& event : metrics.trace) {
         out << event.cycle << ','
@@ -120,6 +183,8 @@ bool TelemetryRecorder::write_trace_csv(const RuntimeMetrics& metrics, const std
             << '"' << to_string(event.fault) << '"' << ','
             << event.position << ','
             << event.velocity << ','
+            << event.target_position << ','
+            << event.target_velocity << ','
             << event.following_error << '\n';
     }
     return true;
@@ -141,6 +206,28 @@ bool TelemetryRecorder::write_metrics_json(const RuntimeMetrics& metrics, const 
     write_json_field(out, "mean_abs_jitter_ns", metrics.mean_abs_jitter_ns);
     write_json_field(out, "missed_cycles", metrics.missed_cycles);
     write_json_field(out, "deadline_overruns", metrics.deadline_overruns);
+    out << "  \"motion_performance\": {\n";
+    write_json_bool_field(out, "available", metrics.motion.available);
+    write_json_bool_field(out, "settled", metrics.motion.settled);
+    write_json_field(out, "target_position", metrics.motion.target_position);
+    write_json_field(out, "final_position", metrics.motion.final_position);
+    write_json_field(out, "final_velocity", metrics.motion.final_velocity);
+    write_json_field(out, "overshoot", metrics.motion.overshoot);
+    write_json_field(out, "settling_time_s", metrics.motion.settling_time_s);
+    write_json_field(out, "steady_state_error", metrics.motion.steady_state_error);
+    write_json_field(out, "max_abs_following_error", metrics.motion.max_abs_following_error, false);
+    out << "  },\n";
+    out << "  \"two_axis_performance\": {\n";
+    write_json_bool_field(out, "available", metrics.two_axis.available);
+    write_json_bool_field(out, "target_reached", metrics.two_axis.target_reached);
+    write_json_bool_field(out, "path_within_limit", metrics.two_axis.path_within_limit);
+    write_json_field(out, "cycle_count", metrics.two_axis.cycle_count);
+    write_json_field(out, "final_x", metrics.two_axis.final_x);
+    write_json_field(out, "final_y", metrics.two_axis.final_y);
+    write_json_field(out, "rms_path_error", metrics.two_axis.rms_path_error);
+    write_json_field(out, "max_path_error", metrics.two_axis.max_path_error);
+    write_json_field(out, "settling_time_s", metrics.two_axis.settling_time_s, false);
+    out << "  },\n";
     out << "  \"bus\": {\n";
     write_json_field(out, "tx_packets", metrics.bus.tx_packets);
     write_json_field(out, "rx_packets", metrics.bus.rx_packets);
@@ -209,6 +296,29 @@ bool TelemetryRecorder::write_validation_markdown(const RuntimeMetrics& metrics,
     out << "| Mean abs jitter (ns) | " << static_cast<long long>(metrics.mean_abs_jitter_ns) << " |\n";
     out << "| Missed cycles | " << metrics.missed_cycles << " |\n";
     out << "| Deadline overruns | " << metrics.deadline_overruns << " |\n\n";
+
+    out << "## Motion Performance\n\n";
+    out << "| Metric | Value |\n";
+    out << "| --- | ---: |\n";
+    out << "| Target position | " << metrics.motion.target_position << " |\n";
+    out << "| Final position | " << metrics.motion.final_position << " |\n";
+    out << "| Final velocity | " << metrics.motion.final_velocity << " |\n";
+    out << "| Overshoot | " << metrics.motion.overshoot << " |\n";
+    out << "| Settling time (s) | " << metrics.motion.settling_time_s << " |\n";
+    out << "| Steady-state error | " << metrics.motion.steady_state_error << " |\n";
+    out << "| Max abs following error | " << metrics.motion.max_abs_following_error << " |\n\n";
+
+    if (metrics.two_axis.available) {
+        out << "## Two-Axis Performance\n\n";
+        out << "| Metric | Value |\n";
+        out << "| --- | ---: |\n";
+        out << "| Cycle count | " << metrics.two_axis.cycle_count << " |\n";
+        out << "| Final X | " << metrics.two_axis.final_x << " |\n";
+        out << "| Final Y | " << metrics.two_axis.final_y << " |\n";
+        out << "| RMS path error | " << metrics.two_axis.rms_path_error << " |\n";
+        out << "| Max path error | " << metrics.two_axis.max_path_error << " |\n";
+        out << "| Settling time (s) | " << metrics.two_axis.settling_time_s << " |\n\n";
+    }
 
     out << "## Bus Diagnostics\n\n";
     out << "| Counter | Value |\n";

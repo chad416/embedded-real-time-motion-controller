@@ -34,6 +34,8 @@ REQUIRED_FILES = [
     "tests/test_runner.cpp",
     "docs/architecture.md",
     "docs/bom.md",
+    "docs/commissioning_logbook.md",
+    "docs/hardware_checkout.md",
     "docs/timing_budget.md",
     "docs/portfolio_alignment.md",
     "docs/technical_article.md",
@@ -115,6 +117,16 @@ def check_json_reports() -> None:
         fail("sample metrics must include missed-cycle evidence")
     if metrics["bus"]["packet_loss_count"] < 1:
         fail("sample metrics must include packet-loss evidence")
+    motion = metrics.get("motion_performance", {})
+    if not motion.get("available"):
+        fail("sample metrics must include motion performance evidence")
+    if not motion.get("settled"):
+        fail("sample metrics must show the profile-position move settled")
+    if motion.get("overshoot", 999.0) > 0.02:
+        fail("sample motion overshoot is outside expected bound")
+    two_axis = metrics.get("two_axis_performance", {})
+    if not two_axis.get("available") or not two_axis.get("path_within_limit"):
+        fail("sample metrics must include bounded two-axis path evidence")
     if not fault_log:
         fail("sample fault log must contain replayable entries")
 

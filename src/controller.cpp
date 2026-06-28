@@ -1,4 +1,5 @@
 #include "emrtc/controller.hpp"
+#include "emrtc/multi_axis.hpp"
 
 #include <cmath>
 #include <sstream>
@@ -248,6 +249,8 @@ void RealTimeController::record_status(const std::string& event) {
                              feedback.fault_code,
                              feedback.position,
                              feedback.velocity,
+                             feedback.target_position,
+                             feedback.target_velocity,
                              feedback.following_error});
 }
 
@@ -502,7 +505,18 @@ RuntimeMetrics run_benchmark(std::uint64_t cycles) {
     controller.fault_injector().schedule({1200, FaultKind::SensorNoise, 0.002, 1});
     controller.fault_injector().schedule({1600, FaultKind::MissedCycle, 0.0, 1});
     controller.run_cycles(cycles > 5 ? cycles - 5 : 0);
-    return controller.metrics();
+    auto metrics = controller.metrics();
+    const auto two_axis = simulate_two_axis_linear_move();
+    metrics.two_axis.available = true;
+    metrics.two_axis.target_reached = two_axis.target_reached;
+    metrics.two_axis.path_within_limit = two_axis.path_within_limit;
+    metrics.two_axis.cycle_count = two_axis.cycle_count;
+    metrics.two_axis.final_x = two_axis.final_x;
+    metrics.two_axis.final_y = two_axis.final_y;
+    metrics.two_axis.rms_path_error = two_axis.rms_path_error;
+    metrics.two_axis.max_path_error = two_axis.max_path_error;
+    metrics.two_axis.settling_time_s = two_axis.settling_time_s;
+    return metrics;
 }
 
 }  // namespace emrtc

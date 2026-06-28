@@ -84,6 +84,8 @@ The committed files under `reports/` are deterministic sample artifacts. Native 
 - [Portfolio Alignment](docs/portfolio_alignment.md)
 - [Graph-First Technical Article](docs/technical_article.md)
 - [Preliminary BOM](docs/bom.md)
+- [Commissioning Logbook Template](docs/commissioning_logbook.md)
+- [Hardware Checkout Checklist](docs/hardware_checkout.md)
 - [Architecture Overview](docs/architecture.md)
 - [Timing Budget](docs/timing_budget.md)
 - [Control Loop Architecture](docs/control_loop_architecture.md)

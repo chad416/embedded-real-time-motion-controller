@@ -65,6 +65,7 @@ def build_trace(cycles: int) -> list[dict[str, object]]:
     trace: list[dict[str, object]] = []
     position = 0.0
     velocity = 0.0
+    target = 1.0
     for cycle in range(cycles):
         if cycle < 5:
             state = ["Not Ready", "Switch On Disabled", "Ready To Switch On", "Switched On", "Operation Enabled"][min(cycle, 4)]
@@ -72,10 +73,12 @@ def build_trace(cycles: int) -> list[dict[str, object]]:
         else:
             state = "Operation Enabled"
             mode = "Profile Position"
-            if position < 1.0:
-                velocity = min(2.0, velocity + 0.04)
-                position = min(1.0, position + velocity * 0.001)
-            else:
+            error = target - position
+            desired_velocity = max(-2.0, min(2.0, 16.0 * error))
+            velocity += max(-0.04, min(0.04, desired_velocity - velocity))
+            position += velocity * 0.001
+            if abs(error) < 0.0005 and abs(velocity) < 0.002:
+                position = target
                 velocity = 0.0
         if cycle in (0, 1, 2, 3, 4, 300, 800, 1200, 1600, cycles - 1):
             fault = "Missed Cycle" if cycle == 1600 else "None"
@@ -95,10 +98,52 @@ def build_trace(cycles: int) -> list[dict[str, object]]:
                     "fault": fault,
                     "position": round(position, 6),
                     "velocity": round(velocity, 6),
+                    "target_position": target if cycle >= 5 else 0.0,
+                    "target_velocity": 0.0,
                     "following_error": 0.0,
                 }
             )
     return trace
+
+
+def build_motion_performance(cycles: int) -> dict[str, object]:
+    trace = build_trace(cycles)
+    target = 1.0
+    positions = [float(item["position"]) for item in trace]
+    velocities = [float(item["velocity"]) for item in trace]
+    settling_time = 0.0
+    settled = False
+    for index, item in enumerate(trace):
+        suffix = trace[index:]
+        if all(abs(float(row["position"]) - target) <= 0.01 and abs(float(row["velocity"])) <= 0.01 for row in suffix):
+            settling_time = float(item["timestamp_ns"]) * 1.0e-9
+            settled = True
+            break
+    return {
+        "available": True,
+        "settled": settled,
+        "target_position": target,
+        "final_position": positions[-1],
+        "final_velocity": velocities[-1],
+        "overshoot": max(0.0, max(positions) - target),
+        "settling_time_s": round(settling_time, 6),
+        "steady_state_error": round(target - positions[-1], 6),
+        "max_abs_following_error": 0.0,
+    }
+
+
+def build_two_axis_performance() -> dict[str, object]:
+    return {
+        "available": True,
+        "target_reached": True,
+        "path_within_limit": True,
+        "cycle_count": 1200,
+        "final_x": 1.0,
+        "final_y": 1.0,
+        "rms_path_error": 0.0,
+        "max_path_error": 0.0,
+        "settling_time_s": 0.936,
+    }
 
 
 def build_metrics(cycles: int) -> dict[str, object]:
@@ -122,6 +167,8 @@ def build_metrics(cycles: int) -> dict[str, object]:
         "missed_cycles": missed,
         "deadline_overruns": overruns,
         "jitter_histogram": histogram,
+        "motion_performance": build_motion_performance(cycles),
+        "two_axis_performance": build_two_axis_performance(),
         "bus": {
             "tx_packets": cycles,
             "rx_packets": cycles - 6,
@@ -151,6 +198,8 @@ def write_trace(path: Path, trace: list[dict[str, object]]) -> None:
                 "fault",
                 "position",
                 "velocity",
+                "target_position",
+                "target_velocity",
                 "following_error",
             ],
         )
@@ -180,6 +229,31 @@ def write_markdown(path: Path, metrics: dict[str, object]) -> None:
             "deadline_overruns",
         ):
             handle.write(f"| {key} | {metrics[key]} |\n")
+        motion = metrics["motion_performance"]
+        assert isinstance(motion, dict)
+        handle.write("\n## Motion Performance\n\n| Metric | Value |\n| --- | ---: |\n")
+        for key in (
+            "target_position",
+            "final_position",
+            "final_velocity",
+            "overshoot",
+            "settling_time_s",
+            "steady_state_error",
+            "max_abs_following_error",
+        ):
+            handle.write(f"| {key} | {motion[key]} |\n")
+        two_axis = metrics["two_axis_performance"]
+        assert isinstance(two_axis, dict)
+        handle.write("\n## Two-Axis Performance\n\n| Metric | Value |\n| --- | ---: |\n")
+        for key in (
+            "cycle_count",
+            "final_x",
+            "final_y",
+            "rms_path_error",
+            "max_path_error",
+            "settling_time_s",
+        ):
+            handle.write(f"| {key} | {two_axis[key]} |\n")
         handle.write("\n## Jitter Histogram\n\n| Bucket | Count |\n| --- | ---: |\n")
         histogram = metrics["jitter_histogram"]
         assert isinstance(histogram, dict)

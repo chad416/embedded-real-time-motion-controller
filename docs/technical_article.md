@@ -17,6 +17,8 @@ The deterministic benchmark currently generates:
 - Fault recovery evidence.
 - Scenario pass/fail table.
 - Replayable CSV trace and persistent JSON fault log.
+- Closed-loop motion performance: overshoot, settling time, steady-state error, and following error.
+- Coordinated two-axis path performance: RMS path error, max path error, and settling time.
 
 The committed sample report shows a 1 ms nominal cycle with bounded synthetic jitter plus injected stress cases. The high-jitter buckets are intentional: one CPU-load spike and one missed-cycle injection prove the timing instrumentation and watchdog path are not decorative.
 

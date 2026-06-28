@@ -17,6 +17,8 @@ The benchmark uses a deterministic profile:
 - Jitter histogram.
 - Missed-cycle count.
 - Deadline-overrun count.
+- Profile-position target, final position, overshoot, settling time, steady-state error, and max following error.
+- Two-axis final position, RMS path error, max path error, and settling time.
 - Bus TX/RX packets.
 - Packet-loss count.
 - Dropout, invalid-response, heartbeat-timeout counters.
