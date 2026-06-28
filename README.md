@@ -1,5 +1,7 @@
 # Embedded Real-Time Motion Controller
 
+[![Motion Controller CI](https://github.com/chad416/embedded-real-time-motion-controller/actions/workflows/ci.yml/badge.svg)](https://github.com/chad416/embedded-real-time-motion-controller/actions/workflows/ci.yml)
+
 Software-first embedded real-time motion controller for an industrial automation portfolio. The project demonstrates deterministic cyclic control, CiA 402-style drive handling, bus abstraction for future EtherCAT/CANopen adapters, watchdog supervision, fault injection, telemetry, diagnostics, and validation reporting.
 
 This repository does not claim certified SIL/PL safety and does not claim real EtherCAT/CANopen hardware validation. The current scope is a safety-oriented deterministic software simulation and host validation bench. Hardware commissioning is intentionally isolated as future work.
@@ -78,6 +80,7 @@ The committed files under `reports/` are deterministic sample artifacts. Native 
 
 ## Documentation Index
 
+- [Project Status](docs/project_status.md)
 - [Architecture Overview](docs/architecture.md)
 - [Timing Budget](docs/timing_budget.md)
 - [Control Loop Architecture](docs/control_loop_architecture.md)

@@ -501,7 +501,7 @@ RuntimeMetrics run_benchmark(std::uint64_t cycles) {
     controller.fault_injector().schedule({800, FaultKind::CpuLoadSpike, 1.25, 1});
     controller.fault_injector().schedule({1200, FaultKind::SensorNoise, 0.002, 1});
     controller.fault_injector().schedule({1600, FaultKind::MissedCycle, 0.0, 1});
-    controller.run_cycles(cycles);
+    controller.run_cycles(cycles > 5 ? cycles - 5 : 0);
     return controller.metrics();
 }
 

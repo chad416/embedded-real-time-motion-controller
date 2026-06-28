@@ -24,3 +24,7 @@
 - Validate timing on real MCU or PREEMPT_RT target.
 - Commission motor, encoder, E-stop/safe-stop wiring, and drive parameters.
 - Produce hardware validation reports without claiming certification unless a certified safety process is executed.
+
+## Current Status
+
+See [Project Status](project_status.md) for the live completion snapshot. The software/simulation/documentation package is approximately 85% complete pending CI/native compiler evidence.

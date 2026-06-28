@@ -1,0 +1,44 @@
+name: Motion Controller CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+
+jobs:
+  build-test-benchmark:
+    name: Build, test, benchmark
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release --parallel 2
+
+      - name: Run unit and integration tests
+        run: ctest --test-dir build --build-config Release --output-on-failure
+
+      - name: Run simulator and export validation reports
+        run: ./build/emrtc_sim --cycles 2500 --out reports/generated/ci-sim
+
+      - name: Run deterministic benchmark
+        run: ./build/emrtc_benchmark --cycles 10000 --out reports/generated/ci-benchmark
+
+      - name: Generate sample report artifacts
+        run: python3 scripts/generate_report.py --out reports/generated/ci-python
+
+      - name: Repository health checks
+        run: python3 scripts/validate_project.py
+
+      - name: Upload generated reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-validation-reports
+          path: reports/generated/
