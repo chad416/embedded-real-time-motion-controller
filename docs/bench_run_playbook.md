@@ -15,11 +15,12 @@ Use a bench-run issue for each capture-profile execution. Use an adapter-commiss
 
 1. Pick a hardware target profile from [`../config/hardware_targets`](../config/hardware_targets).
 2. Pick a capture profile from [`../config/capture_profiles`](../config/capture_profiles).
-3. Open a bench-run issue and copy the profile acceptance criteria into it.
-4. Confirm hosted CI is green for the commit being tested.
-5. For hardware runs, complete the hardware checkout checklist first.
-6. Run the profile and attach raw artifacts.
-7. Review pass/fail criteria before changing any project claim language.
+3. Select the matching runbook from [`runbooks`](runbooks).
+4. Open a bench-run issue and copy the profile acceptance criteria into it.
+5. Confirm hosted CI is green for the commit being tested.
+6. For hardware runs, complete the hardware checkout checklist first.
+7. Run the profile and attach raw artifacts.
+8. Review pass/fail criteria before changing any project claim language.
 
 ## Adapter Commissioning Sequence
 

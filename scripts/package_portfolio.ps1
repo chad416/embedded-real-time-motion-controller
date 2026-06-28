@@ -77,6 +77,7 @@ foreach ($doc in $docs) {
 }
 
 Copy-RequiredDirectory "docs/adapters" "docs/adapters"
+Copy-RequiredDirectory "docs/runbooks" "docs/runbooks"
 Copy-RequiredDirectory ".github/ISSUE_TEMPLATE" ".github/ISSUE_TEMPLATE"
 Copy-RequiredDirectory "config/capture_profiles" "config/capture_profiles"
 Copy-RequiredDirectory "config/hardware_targets" "config/hardware_targets"

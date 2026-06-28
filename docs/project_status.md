@@ -27,6 +27,7 @@ Last updated: 2026-06-29
 | Hardware target profiles | Added | Vendor-neutral target records define evidence requirements for simulated, EtherCAT CiA 402, and CANopen CiA 402 bench paths without making purchase recommendations. |
 | Local toolchain setup | Added | Windows-oriented CMake/C++ setup guide and `scripts/check_toolchain.ps1` are present; actual local compiler install remains a machine-level task. |
 | Bench-run tracking | Added | GitHub issue templates and a bench-run playbook define required evidence for future simulated and hardware runs. |
+| Hardware runbooks | Added | Simulated, EtherCAT CiA 402, and CANopen CiA 402 runbooks define future run order, evidence, and stop conditions. |
 | Motion performance metrics | Added | Runtime JSON/Markdown reports include overshoot, settling time, steady-state error, max following error, and two-axis path metrics. |
 | Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, two-axis path plot, and two-axis acceptance plot. |
 | Data capture profiles | Added | Versioned profiles define simulation and future bench evidence requirements for timing, motion, jitter stress, heartbeat, bus dropout, and feedback faults. |
@@ -40,13 +41,13 @@ Last updated: 2026-06-29
 
 ## Current Completion Estimate
 
-Software/simulation/documentation side against the portfolio PDF target: about 86%.
+Software/simulation/documentation side against the portfolio PDF target: about 87%.
 
-The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes target-specific hardware runbooks, hardware evidence archive conventions, and eventually live bench commissioning.
+The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes hardware evidence archive conventions, final milestone tagging criteria, and eventually live bench commissioning.
 
 ## Immediate Next Actions
 
-1. Add hardware-target-specific capture runbooks once a real drive family is selected.
-2. Add optional hardware evidence archive conventions for photos, drive parameter backups, and raw traces.
-3. Add a final software-complete tag checklist.
+1. Add optional hardware evidence archive conventions for photos, drive parameter backups, and raw traces.
+2. Add a final software-complete tag checklist.
+3. Add a release-note template for the software-complete simulation milestone.
 4. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.

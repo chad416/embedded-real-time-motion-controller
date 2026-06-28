@@ -12,6 +12,12 @@ The records in [`../config/hardware_targets`](../config/hardware_targets) are ve
 
 Each profile records required interfaces, expected CiA 402 objects, capture profiles, pre-purchase questions, commissioning risks, and evidence required.
 
+## Runbooks
+
+- [Simulated Validation Runbook](runbooks/simulated_validation_runbook.md)
+- [EtherCAT CiA 402 Bring-Up Runbook](runbooks/ethercat_cia402_bringup.md)
+- [CANopen CiA 402 Bring-Up Runbook](runbooks/canopen_cia402_bringup.md)
+
 ## Generated Manifest
 
 The generated manifest files are:
