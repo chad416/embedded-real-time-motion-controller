@@ -14,22 +14,26 @@ Last updated: 2026-06-28
 | Watchdog/safety-oriented layer | Implemented | Loop, bus, heartbeat, following-error, encoder feedback-loss, and E-stop/safe-stop handling. |
 | Fault injector | Implemented | Required fault classes are represented in code and validation scenarios. |
 | Telemetry and diagnostics | Implemented | CSV trace, JSON metrics, fault log, Markdown reports, and CLI commands. |
-| Automated scenarios | Implemented | 21 deterministic scenarios in C++ and sample report evidence. |
+| Automated scenarios | Expanded | Deterministic built-in scenarios plus C++ JSON scenario loader for `examples/scenarios/*.json`. |
+| Two-axis coordination | Added | Optional two-axis straight-line coordinated move simulation and test evidence. |
+| Adapter skeletons | Added | SOEM, EtherLab, SocketCAN, and CANopenNode skeletons exist and honestly report uncommissioned status. |
+| Timing PDF | Added | Deterministic timing report PDF generated from sample metrics. |
 | Documentation | Implemented | Architecture, timing, bus map, drive state machine, watchdogs, fault matrix, test plan, validation, benchmark, tradeoffs, hardware plan. |
 | Sample reports | Implemented | Deterministic sample artifacts committed under `reports/`. |
 | Native local build/test | Blocked | This machine currently lacks CMake and a C++17 compiler on PATH. |
 | GitHub CI | Passing | Latest hosted run builds, tests, benchmarks, generates reports, runs health checks, and uploads artifacts. |
+| Portfolio PDF alignment | In progress | Core software is strong, but graph-first article, timing PDF, scenario library, adapter skeletons, and hardware path are still being expanded. |
 | Hardware commissioning | Not started | Remaining hardware-only work: real EtherCAT/CANopen adapter, drive PDO/OD mapping, timing measurements, commissioning. |
 
 ## Current Completion Estimate
 
-Software/simulation/documentation side: about 90%.
+Software/simulation/documentation side against the portfolio PDF target: about 65%.
 
-The remaining 10% is mostly local workstation toolchain validation and deeper polish such as richer scenario configuration, optional multi-axis simulation, and hardware-adapter skeletons. Hardware commissioning is a separate future phase and should not be counted as unfinished software work.
+The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes richer scenario configuration, multi-axis evidence, adapter skeletons, graph-first reporting, deterministic timing PDF output, hardware BOM, and eventually live bench commissioning.
 
 ## Immediate Next Actions
 
-1. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.
-2. Add a richer scenario runner that loads `examples/scenarios/*.json`.
-3. Add an optional two-axis coordinated-motion simulation.
-4. Tag the software-complete simulation milestone after local toolchain validation is also green.
+1. Add more JSON scenario files beyond the initial fault matrix.
+2. Add generated plots or images for timing distributions, not only tables.
+3. Expand the SOEM/EtherLab and SocketCAN/CANopenNode skeletons into compile-time optional real adapters.
+4. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.

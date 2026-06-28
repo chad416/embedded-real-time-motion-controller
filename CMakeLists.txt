@@ -14,6 +14,9 @@ add_library(emrtc
     src/bus.cpp
     src/controller.cpp
     src/fault_injector.cpp
+    src/hardware_adapters.cpp
+    src/multi_axis.cpp
+    src/scenario.cpp
     src/telemetry.cpp
     src/types.cpp
     src/watchdog.cpp)
@@ -40,3 +43,4 @@ target_link_libraries(emrtc_tests PRIVATE emrtc)
 
 enable_testing()
 add_test(NAME emrtc_unit_integration COMMAND emrtc_tests)
+set_tests_properties(emrtc_unit_integration PROPERTIES WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})

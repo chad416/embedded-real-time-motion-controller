@@ -1,6 +1,10 @@
 #include "emrtc/controller.hpp"
+#include "emrtc/hardware_adapters.hpp"
+#include "emrtc/multi_axis.hpp"
+#include "emrtc/scenario.hpp"
 
 #include <cmath>
+#include <filesystem>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -231,6 +235,41 @@ TestResult test_fault_log_replay() {
             "fault log contains replayable event"};
 }
 
+TestResult test_json_scenario_loader() {
+    const std::string path = "examples/scenarios/fault_matrix.json";
+    if (!std::filesystem::exists(path)) {
+        return {"JSON scenario loader", false, "scenario file missing"};
+    }
+    const auto metrics = emrtc::run_scenario_file(path);
+    const bool pass = !metrics.scenarios.empty() &&
+                      metrics.scenarios.front().result == emrtc::ScenarioResult::Pass &&
+                      metrics.bus.packet_loss_count >= 1 &&
+                      metrics.deadline_overruns >= 1 &&
+                      metrics.missed_cycles >= 1;
+    return {"JSON scenario loader", pass, "fault matrix scenario loads and passes expectations"};
+}
+
+TestResult test_two_axis_coordinated_move() {
+    const auto metrics = emrtc::simulate_two_axis_linear_move();
+    return {"two-axis coordinated move",
+            metrics.target_reached && metrics.path_within_limit &&
+                near(metrics.final_x, 1.0, 0.01) &&
+                near(metrics.final_y, 1.0, 0.01),
+            "two simulated axes settle on a bounded straight-line path"};
+}
+
+TestResult test_hardware_adapter_skeletons_are_not_claiming_commissioning() {
+    emrtc::SoemEtherCatBackend soem;
+    emrtc::SocketCanCanOpenBackend socket_can;
+    const auto soem_status = soem.status();
+    const auto can_status = socket_can.status();
+    return {"hardware adapter skeleton status",
+            !soem_status.configured && !can_status.configured &&
+                soem.diagnostics().online == false &&
+                socket_can.diagnostics().online == false,
+            "future hardware adapters report uncommissioned status"};
+}
+
 }  // namespace
 
 int main() {
@@ -256,6 +295,9 @@ int main() {
         test_warm_restart(),
         test_cold_restart(),
         test_fault_log_replay(),
+        test_json_scenario_loader(),
+        test_two_axis_coordinated_move(),
+        test_hardware_adapter_skeletons_are_not_claiming_commissioning(),
     };
 
     int failures = 0;

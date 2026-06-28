@@ -1,0 +1,19 @@
+# Preliminary BOM And Hardware Boundary
+
+This BOM is a planning document, not a purchase order. No hardware validation is claimed yet.
+
+| Category | Candidate Item | Purpose | Status |
+| --- | --- | --- | --- |
+| MCU/control board | STM32 Nucleo, Teensy 4.1, or similar real-time capable board | Future MCU-side deterministic control tasking | Planned |
+| Supervisory computer | Linux PC or industrial PC with PREEMPT_RT option | Host supervisor, diagnostics, EtherCAT/CANopen master experiments | Planned |
+| EtherCAT master stack | SOEM or EtherLab | Future EtherCAT backend for `IBusBackend` | Planned |
+| CAN interface | USB-CAN or PCIe CAN with SocketCAN support | Future CANopen path | Planned |
+| Servo/intelligent actuator | Small industrial servo drive or intelligent actuator | Real CiA 402 motion target | Planned |
+| Encoder feedback | Drive encoder or external incremental encoder | Feedback-loss and following-error validation | Planned |
+| Safety input | E-stop button plus certified safety relay/drive STO path | Physical safe-stop chain | Planned |
+| I/O | 24 V sensors, limit switches, terminal blocks | Fault and permissive inputs | Planned |
+| Power | 24 V DC supply and drive supply as required | Bench power | Planned |
+
+## Hardware Boundary
+
+The current repository proves deterministic software behavior and report generation. Hardware-only work starts when the physical drive, bus, encoder, and safety chain are available. At that point, the simulated bus backend should remain in CI while hardware adapters run in bench-specific validation.

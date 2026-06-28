@@ -81,6 +81,9 @@ The committed files under `reports/` are deterministic sample artifacts. Native 
 ## Documentation Index
 
 - [Project Status](docs/project_status.md)
+- [Portfolio Alignment](docs/portfolio_alignment.md)
+- [Graph-First Technical Article](docs/technical_article.md)
+- [Preliminary BOM](docs/bom.md)
 - [Architecture Overview](docs/architecture.md)
 - [Timing Budget](docs/timing_budget.md)
 - [Control Loop Architecture](docs/control_loop_architecture.md)

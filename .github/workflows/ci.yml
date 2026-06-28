@@ -28,11 +28,23 @@ jobs:
       - name: Run simulator and export validation reports
         run: ./build/emrtc_sim --cycles 2500 --out reports/generated/ci-sim
 
+      - name: Run JSON scenario loader
+        run: ./build/emrtc_sim --scenario examples/scenarios/fault_matrix.json --out reports/generated/ci-scenario
+
+      - name: Run two-axis coordinated simulation
+        run: ./build/emrtc_cli run two-axis
+
       - name: Run deterministic benchmark
         run: ./build/emrtc_benchmark --cycles 10000 --out reports/generated/ci-benchmark
 
+      - name: Install report generation dependencies
+        run: python3 -m pip install reportlab
+
       - name: Generate sample report artifacts
         run: python3 scripts/generate_report.py --out reports/generated/ci-python
+
+      - name: Generate deterministic timing PDF
+        run: python3 scripts/generate_timing_pdf.py --metrics reports/sample_metrics.json --out reports/generated/ci-python/timing_report.pdf
 
       - name: Repository health checks
         run: python3 scripts/validate_project.py

@@ -1,4 +1,6 @@
 #include "emrtc/controller.hpp"
+#include "emrtc/multi_axis.hpp"
+#include "emrtc/scenario.hpp"
 
 #include <filesystem>
 #include <iostream>
@@ -26,7 +28,8 @@ void print_help() {
     std::cout
         << "Usage:\n"
         << "  emrtc_cli show status\n"
-        << "  emrtc_cli run scenario\n"
+        << "  emrtc_cli run scenario [examples/scenarios/name.json]\n"
+        << "  emrtc_cli run two-axis\n"
         << "  emrtc_cli inject fault <fault_name>\n"
         << "  emrtc_cli reset fault\n"
         << "  emrtc_cli export report [dir]\n";
@@ -58,12 +61,39 @@ int main(int argc, char** argv) {
     }
 
     if (verb == "run" && noun == "scenario") {
+        if (argc > 3) {
+            const auto metrics = emrtc::run_scenario_file(argv[3]);
+            for (const auto& summary : metrics.scenarios) {
+                std::cout << emrtc::to_string(summary.result) << " " << summary.name
+                          << " - " << summary.evidence << "\n";
+            }
+            std::cout << "cycles=" << metrics.cycles.size()
+                      << " missed=" << metrics.missed_cycles
+                      << " overruns=" << metrics.deadline_overruns
+                      << " packet_loss=" << metrics.bus.packet_loss_count << "\n";
+            return metrics.scenarios.empty() ||
+                           metrics.scenarios.front().result == emrtc::ScenarioResult::Pass
+                       ? 0
+                       : 1;
+        }
         const auto summaries = emrtc::run_validation_scenarios();
         for (const auto& summary : summaries) {
             std::cout << emrtc::to_string(summary.result) << " " << summary.name
                       << " - " << summary.evidence << "\n";
         }
         return 0;
+    }
+
+    if (verb == "run" && noun == "two-axis") {
+        const auto metrics = emrtc::simulate_two_axis_linear_move();
+        std::cout << "cycles=" << metrics.cycle_count << "\n";
+        std::cout << "final_x=" << metrics.final_x << "\n";
+        std::cout << "final_y=" << metrics.final_y << "\n";
+        std::cout << "rms_path_error=" << metrics.rms_path_error << "\n";
+        std::cout << "max_path_error=" << metrics.max_path_error << "\n";
+        std::cout << "settling_time_s=" << metrics.settling_time_s << "\n";
+        std::cout << "target_reached=" << (metrics.target_reached ? "true" : "false") << "\n";
+        return metrics.target_reached && metrics.path_within_limit ? 0 : 1;
     }
 
     if (verb == "inject" && noun == "fault" && argc > 3) {

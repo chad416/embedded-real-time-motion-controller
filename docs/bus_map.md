@@ -23,3 +23,14 @@ The project exposes a fieldbus-neutral process image that can be adapted to Ethe
 | EtherCAT/EtherLab | Planned | Same process-image contract, different master lifecycle. |
 | CANopen/SocketCAN | Planned | Map process image to SDO/PDO and heartbeat supervision. |
 | CANopenNode | Planned | Useful for embedded target-side CANopen integration. |
+
+## Adapter Skeletons
+
+The repository includes non-commissioned adapter skeletons for:
+
+- SOEM EtherCAT.
+- EtherLab EtherCAT.
+- SocketCAN CANopen.
+- CANopenNode.
+
+These classes intentionally report `configured=false` until real hardware libraries, interface names, PDO/object mapping, and bench validation are added.

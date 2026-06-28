@@ -12,3 +12,4 @@ reports/generated/
 !reports/sample_metrics.json
 !reports/sample_trace.csv
 !reports/sample_fault_log.json
+!reports/sample_timing_report.pdf

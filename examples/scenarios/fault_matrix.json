@@ -1,6 +1,12 @@
 {
+  "name": "fault matrix scenario",
   "cycle_time_ns": 1000000,
   "axis_count": 1,
+  "run_cycles": 2500,
+  "command_events": [
+    {"cycle": 0, "type": "enable", "value": 0},
+    {"cycle": 5, "type": "move_absolute", "value": 1.0}
+  ],
   "fault_injections": [
     {"cycle": 300, "kind": "packet_loss", "magnitude": 5, "duration_cycles": 30},
     {"cycle": 800, "kind": "cpu_load_spike", "magnitude": 1.25, "duration_cycles": 1},

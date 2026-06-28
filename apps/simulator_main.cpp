@@ -1,4 +1,5 @@
 #include "emrtc/controller.hpp"
+#include "emrtc/scenario.hpp"
 
 #include <filesystem>
 #include <iostream>
@@ -7,6 +8,7 @@
 int main(int argc, char** argv) {
     std::uint64_t cycles = 2500;
     std::string output_dir = "reports/generated";
+    std::string scenario_path;
 
     for (int i = 1; i < argc; ++i) {
         const std::string arg = argv[i];
@@ -14,18 +16,25 @@ int main(int argc, char** argv) {
             cycles = static_cast<std::uint64_t>(std::stoull(argv[++i]));
         } else if (arg == "--out" && i + 1 < argc) {
             output_dir = argv[++i];
+        } else if (arg == "--scenario" && i + 1 < argc) {
+            scenario_path = argv[++i];
         } else if (arg == "--help") {
-            std::cout << "Usage: emrtc_sim [--cycles N] [--out DIR]\n";
+            std::cout << "Usage: emrtc_sim [--cycles N] [--out DIR] [--scenario FILE]\n";
             return 0;
         }
     }
 
     std::filesystem::create_directories(output_dir);
     emrtc::RuntimeMetrics metrics;
-    const auto scenarios = emrtc::run_validation_scenarios(&metrics);
-    (void)scenarios;
 
-    if (cycles != metrics.cycles.size()) {
+    if (!scenario_path.empty()) {
+        metrics = emrtc::run_scenario_file(scenario_path);
+    } else {
+        const auto scenarios = emrtc::run_validation_scenarios(&metrics);
+        (void)scenarios;
+    }
+
+    if (scenario_path.empty() && cycles != metrics.cycles.size()) {
         metrics = emrtc::run_benchmark(cycles);
         metrics.scenarios = emrtc::run_validation_scenarios();
     }
