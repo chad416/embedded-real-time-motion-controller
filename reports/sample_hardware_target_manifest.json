@@ -1,0 +1,68 @@
+{
+  "target_count": 3,
+  "targets": [
+    {
+      "target_name": "generic_canopen_cia402_servo",
+      "target_type": "future_hardware_bench",
+      "fieldbus": "CANopen",
+      "hardware_required": true,
+      "purchase_recommendation": false,
+      "capture_profile_count": 4,
+      "evidence_required": [
+        "CAN interface configuration",
+        "node ID and bitrate record",
+        "object dictionary excerpt",
+        "PDO mapping record",
+        "heartbeat timeout trace",
+        "nominal move trace",
+        "commissioning logbook entry"
+      ],
+      "primary_risks": [
+        "CAN bitrate, termination, and node-ID conflicts can look like software faults.",
+        "Blocking SDO access must not enter the cyclic control path.",
+        "Heartbeat timeout evidence is not a certified safety function."
+      ]
+    },
+    {
+      "target_name": "generic_ethercat_cia402_servo",
+      "target_type": "future_hardware_bench",
+      "fieldbus": "EtherCAT",
+      "hardware_required": true,
+      "purchase_recommendation": false,
+      "capture_profile_count": 4,
+      "evidence_required": [
+        "slave scan log",
+        "vendor/product IDs",
+        "PDO mapping dump",
+        "idle timing capture",
+        "nominal move trace",
+        "fault log from heartbeat or bus dropout test",
+        "commissioning logbook entry"
+      ],
+      "primary_risks": [
+        "Wrong PDO mapping can make statusword or position feedback misleading.",
+        "EtherCAT interface selection and permissions can fail before the controller code is reached.",
+        "Physical cable-pull tests must be low energy and must not be used as certified safety evidence."
+      ]
+    },
+    {
+      "target_name": "simulated_loopback_target",
+      "target_type": "software_validation",
+      "fieldbus": "simulated",
+      "hardware_required": false,
+      "purchase_recommendation": false,
+      "capture_profile_count": 6,
+      "evidence_required": [
+        "CI run URL",
+        "metrics.json",
+        "trace.csv",
+        "fault_log.json",
+        "validation_report.md",
+        "sample graphs"
+      ],
+      "primary_risks": [
+        "Simulation can validate software behavior but cannot validate electrical wiring, real drive timing, encoder scaling, or physical stop paths."
+      ]
+    }
+  ]
+}

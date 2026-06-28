@@ -1,0 +1,52 @@
+{
+  "target_name": "generic_canopen_cia402_servo",
+  "target_type": "future_hardware_bench",
+  "purpose": "Define the evidence required before using a CANopen CiA 402 servo or drive as a future bench target.",
+  "fieldbus": "CANopen",
+  "hardware_required": true,
+  "purchase_recommendation": false,
+  "required_interfaces": [
+    "CAN interface with documented bitrate support",
+    "SocketCAN or CANopenNode integration path",
+    "drive supporting CiA 402 state machine and heartbeat supervision",
+    "safe torque inhibit or equivalent drive inhibit path handled outside this software"
+  ],
+  "required_process_image_objects": [
+    "0x6040 controlword",
+    "0x6041 statusword",
+    "0x607A target position",
+    "0x60FF target velocity or mode-specific velocity object",
+    "0x6064 actual position",
+    "0x606C actual velocity"
+  ],
+  "candidate_capture_profiles": [
+    "idle_bus_online",
+    "nominal_profile_position",
+    "heartbeat_timeout_recovery",
+    "encoder_loss_following_error"
+  ],
+  "pre_purchase_questions": [
+    "Does the device expose the required objects through PDOs or documented SDO access?",
+    "Is heartbeat producer/consumer behavior configurable and documented?",
+    "Is a known-good CAN bitrate and termination strategy available for the bench?",
+    "Can the drive be tested at low torque, low speed, and limited travel?"
+  ],
+  "commissioning_risks": [
+    "CAN bitrate, termination, and node-ID conflicts can look like software faults.",
+    "Blocking SDO access must not enter the cyclic control path.",
+    "Heartbeat timeout evidence is not a certified safety function."
+  ],
+  "evidence_required": [
+    "CAN interface configuration",
+    "node ID and bitrate record",
+    "object dictionary excerpt",
+    "PDO mapping record",
+    "heartbeat timeout trace",
+    "nominal move trace",
+    "commissioning logbook entry"
+  ],
+  "operator_notes": [
+    "Treat this as a target-selection record, not a vendor recommendation.",
+    "Separate CANopen transport evidence from drive motion evidence during first bring-up."
+  ]
+}

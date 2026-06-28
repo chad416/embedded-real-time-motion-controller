@@ -64,6 +64,7 @@ $docs = @(
     "docs/benchmark_appendix.md",
     "docs/hardware_integration_plan.md",
     "docs/hardware_checkout.md",
+    "docs/hardware_target_profiles.md",
     "docs/commissioning_logbook.md",
     "docs/data_capture_profiles.md",
     "docs/bom.md"
@@ -75,6 +76,7 @@ foreach ($doc in $docs) {
 
 Copy-RequiredDirectory "docs/adapters" "docs/adapters"
 Copy-RequiredDirectory "config/capture_profiles" "config/capture_profiles"
+Copy-RequiredDirectory "config/hardware_targets" "config/hardware_targets"
 
 $reports = @(
     "reports/sample_metrics.json",
@@ -88,7 +90,9 @@ $reports = @(
     "reports/sample_two_axis_path.svg",
     "reports/sample_two_axis_acceptance.svg",
     "reports/sample_capture_manifest.json",
-    "reports/sample_capture_manifest.md"
+    "reports/sample_capture_manifest.md",
+    "reports/sample_hardware_target_manifest.json",
+    "reports/sample_hardware_target_manifest.md"
 )
 
 foreach ($report in $reports) {

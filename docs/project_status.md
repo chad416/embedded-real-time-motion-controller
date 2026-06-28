@@ -24,6 +24,7 @@ Last updated: 2026-06-28
 | Portfolio demo script | Added | `scripts/demo_portfolio.ps1` runs CLI status, adapters, two-axis demo, JSON scenario, benchmark, sample evidence, and capture manifest generation. |
 | Recruiter one-pager | Added | Generated from sample metrics and capture manifest to summarize evidence, role fit, talking points, and honest boundaries. |
 | Portfolio evidence bundle | Added | `scripts/package_portfolio.ps1` exports docs, reports, graphs, capture profiles, and a manifest into a review-ready folder/zip. |
+| Hardware target profiles | Added | Vendor-neutral target records define evidence requirements for simulated, EtherCAT CiA 402, and CANopen CiA 402 bench paths without making purchase recommendations. |
 | Motion performance metrics | Added | Runtime JSON/Markdown reports include overshoot, settling time, steady-state error, max following error, and two-axis path metrics. |
 | Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, two-axis path plot, and two-axis acceptance plot. |
 | Data capture profiles | Added | Versioned profiles define simulation and future bench evidence requirements for timing, motion, jitter stress, heartbeat, bus dropout, and feedback faults. |
@@ -37,13 +38,13 @@ Last updated: 2026-06-28
 
 ## Current Completion Estimate
 
-Software/simulation/documentation side against the portfolio PDF target: about 82%.
+Software/simulation/documentation side against the portfolio PDF target: about 84%.
 
-The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes hardware-run planning, local toolchain setup, and eventually live bench commissioning.
+The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes local toolchain setup, bench-run issue templates, and eventually live bench commissioning.
 
 ## Immediate Next Actions
 
-1. Add hardware-run planning records for candidate EtherCAT/CANopen drive families.
-2. Add optional local toolchain install notes for Windows/MSVC and MinGW.
-3. Add bench-run issue templates/checklists for first live drive commissioning.
+1. Add optional local toolchain install notes for Windows/MSVC and MinGW.
+2. Add bench-run issue templates/checklists for first live drive commissioning.
+3. Add hardware-target-specific capture runbooks once a real drive family is selected.
 4. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.

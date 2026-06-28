@@ -1,0 +1,52 @@
+{
+  "target_name": "generic_ethercat_cia402_servo",
+  "target_type": "future_hardware_bench",
+  "purpose": "Define the evidence required before using an EtherCAT CiA 402 servo drive as the first real bench target.",
+  "fieldbus": "EtherCAT",
+  "hardware_required": true,
+  "purchase_recommendation": false,
+  "required_interfaces": [
+    "dedicated Ethernet interface suitable for EtherCAT master use",
+    "SOEM or EtherLab master path",
+    "drive supporting CiA 402 profile-position or cyclic synchronous modes",
+    "safe torque inhibit or equivalent drive inhibit path handled outside this software"
+  ],
+  "required_process_image_objects": [
+    "0x6040 controlword",
+    "0x6041 statusword",
+    "0x607A target position",
+    "0x60FF target velocity or mode-specific velocity object",
+    "0x6064 actual position",
+    "0x606C actual velocity"
+  ],
+  "candidate_capture_profiles": [
+    "idle_bus_online",
+    "nominal_profile_position",
+    "heartbeat_timeout_recovery",
+    "bus_dropout_recovery"
+  ],
+  "pre_purchase_questions": [
+    "Does the drive expose a documented CiA 402 PDO map for the required objects?",
+    "Can the selected host run the intended EtherCAT master with appropriate interface permissions?",
+    "Can motion be limited to a low-energy bench configuration for first commissioning?",
+    "Can the drive export parameter backups and fault history for evidence?"
+  ],
+  "commissioning_risks": [
+    "Wrong PDO mapping can make statusword or position feedback misleading.",
+    "EtherCAT interface selection and permissions can fail before the controller code is reached.",
+    "Physical cable-pull tests must be low energy and must not be used as certified safety evidence."
+  ],
+  "evidence_required": [
+    "slave scan log",
+    "vendor/product IDs",
+    "PDO mapping dump",
+    "idle timing capture",
+    "nominal move trace",
+    "fault log from heartbeat or bus dropout test",
+    "commissioning logbook entry"
+  ],
+  "operator_notes": [
+    "Treat this as a target-selection record, not a vendor recommendation.",
+    "Do not change project wording to hardware validation until the evidence_required list is complete."
+  ]
+}

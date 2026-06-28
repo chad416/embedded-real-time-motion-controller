@@ -23,6 +23,7 @@ This repository does not claim certified SIL/PL safety and does not claim real E
 ```text
 apps/                 Simulator, benchmark, and diagnostic CLI entry points
 config/capture_profiles/ Hardware-facing simulation and future bench capture profiles
+config/hardware_targets/ Vendor-neutral future hardware target planning profiles
 docs/                 Architecture, timing, safety-oriented design, tests, reports
 examples/scenarios/   Deterministic scenario definitions
 include/emrtc/        Public C++ interfaces
@@ -117,6 +118,7 @@ Key committed visuals include jitter, scenario matrix, control response, two-axi
 - [Commissioning Logbook Template](docs/commissioning_logbook.md)
 - [Hardware Checkout Checklist](docs/hardware_checkout.md)
 - [Data Capture Profiles](docs/data_capture_profiles.md)
+- [Hardware Target Profiles](docs/hardware_target_profiles.md)
 - [Hardware Adapter Integration Notes](docs/adapters/README.md)
 - [Architecture Overview](docs/architecture.md)
 - [Timing Budget](docs/timing_budget.md)

@@ -43,6 +43,7 @@ REQUIRED_FILES = [
     "docs/demo_walkthrough.md",
     "docs/hardware_checkout.md",
     "docs/data_capture_profiles.md",
+    "docs/hardware_target_profiles.md",
     "docs/recruiter_one_pager.md",
     "docs/timing_budget.md",
     "docs/portfolio_alignment.md",
@@ -78,6 +79,11 @@ REQUIRED_FILES = [
     "reports/sample_two_axis_acceptance.svg",
     "reports/sample_capture_manifest.json",
     "reports/sample_capture_manifest.md",
+    "reports/sample_hardware_target_manifest.json",
+    "reports/sample_hardware_target_manifest.md",
+    "config/hardware_targets/simulated_loopback_target.json",
+    "config/hardware_targets/generic_ethercat_cia402_servo.json",
+    "config/hardware_targets/generic_canopen_cia402_servo.json",
     "config/capture_profiles/idle_bus_online.json",
     "config/capture_profiles/nominal_profile_position.json",
     "config/capture_profiles/cpu_jitter_stress.json",
@@ -92,6 +98,7 @@ REQUIRED_FILES = [
     "examples/scenarios/timing_stress.json",
     "scripts/generate_graphs.py",
     "scripts/generate_capture_manifest.py",
+    "scripts/generate_hardware_target_manifest.py",
     "scripts/generate_one_pager.py",
     "scripts/demo_portfolio.ps1",
     "scripts/package_portfolio.ps1",
@@ -143,6 +150,28 @@ REQUIRED_CAPTURE_PROFILE_KEYS = {
     "data_channels",
     "required_artifacts",
     "acceptance_criteria",
+    "operator_notes",
+}
+
+EXPECTED_HARDWARE_TARGETS = {
+    "simulated_loopback_target",
+    "generic_ethercat_cia402_servo",
+    "generic_canopen_cia402_servo",
+}
+
+REQUIRED_HARDWARE_TARGET_KEYS = {
+    "target_name",
+    "target_type",
+    "purpose",
+    "fieldbus",
+    "hardware_required",
+    "purchase_recommendation",
+    "required_interfaces",
+    "required_process_image_objects",
+    "candidate_capture_profiles",
+    "pre_purchase_questions",
+    "commissioning_risks",
+    "evidence_required",
     "operator_notes",
 }
 
@@ -243,6 +272,47 @@ def check_capture_profiles() -> None:
         fail("sample capture manifest does not match capture profile suite")
 
 
+def check_hardware_targets() -> None:
+    target_dir = ROOT / "config/hardware_targets"
+    paths = sorted(target_dir.glob("*.json"))
+    observed: set[str] = set()
+    for path in paths:
+        target = json.loads(path.read_text(encoding="utf-8"))
+        missing = REQUIRED_HARDWARE_TARGET_KEYS - target.keys()
+        if missing:
+            fail(f"{path.relative_to(ROOT)} missing keys: " + ", ".join(sorted(missing)))
+        if target["target_name"] != path.stem:
+            fail(f"{path.relative_to(ROOT)} target_name must match filename")
+        if target.get("purchase_recommendation") is not False:
+            fail(f"{path.relative_to(ROOT)} must not be a purchase recommendation")
+        observed.add(target["target_name"])
+        for key in (
+            "required_interfaces",
+            "required_process_image_objects",
+            "candidate_capture_profiles",
+            "pre_purchase_questions",
+            "commissioning_risks",
+            "evidence_required",
+            "operator_notes",
+        ):
+            if not isinstance(target[key], list):
+                fail(f"{path.relative_to(ROOT)} {key} must be a list")
+        if not target["required_process_image_objects"] or not target["evidence_required"]:
+            fail(f"{path.relative_to(ROOT)} must include process-image objects and evidence requirements")
+
+    missing_targets = sorted(EXPECTED_HARDWARE_TARGETS - observed)
+    if missing_targets:
+        fail("missing expected hardware target profiles: " + ", ".join(missing_targets))
+
+    manifest_path = ROOT / "reports/sample_hardware_target_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("target_count") != len(paths):
+        fail("sample hardware target manifest target_count does not match target profiles")
+    manifest_names = {target["target_name"] for target in manifest.get("targets", [])}
+    if manifest_names != observed:
+        fail("sample hardware target manifest does not match target profile suite")
+
+
 def check_markdown_links() -> None:
     markdown_files = sorted((ROOT / "docs").glob("*.md")) + [ROOT / "README.md"]
     pattern = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
@@ -278,6 +348,7 @@ def main() -> int:
     check_required_files()
     check_json_reports()
     check_capture_profiles()
+    check_hardware_targets()
     check_markdown_links()
     check_safety_language()
     print("PASS: repository health checks")

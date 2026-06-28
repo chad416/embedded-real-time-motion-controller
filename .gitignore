@@ -21,3 +21,5 @@ reports/generated/
 !reports/sample_two_axis_acceptance.svg
 !reports/sample_capture_manifest.json
 !reports/sample_capture_manifest.md
+!reports/sample_hardware_target_manifest.json
+!reports/sample_hardware_target_manifest.md

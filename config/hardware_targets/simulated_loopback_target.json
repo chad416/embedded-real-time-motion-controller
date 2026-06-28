@@ -1,0 +1,43 @@
+{
+  "target_name": "simulated_loopback_target",
+  "target_type": "software_validation",
+  "purpose": "Provide the baseline non-hardware target used for CI, portfolio demos, report generation, and regression checks.",
+  "fieldbus": "simulated",
+  "hardware_required": false,
+  "purchase_recommendation": false,
+  "required_interfaces": [
+    "host process",
+    "deterministic simulated bus backend"
+  ],
+  "required_process_image_objects": [
+    "0x6040 controlword",
+    "0x6041 statusword",
+    "0x607A target position",
+    "0x60FF target velocity",
+    "0x6064 actual position",
+    "0x606C actual velocity"
+  ],
+  "candidate_capture_profiles": [
+    "idle_bus_online",
+    "nominal_profile_position",
+    "cpu_jitter_stress",
+    "heartbeat_timeout_recovery",
+    "bus_dropout_recovery",
+    "encoder_loss_following_error"
+  ],
+  "pre_purchase_questions": [],
+  "commissioning_risks": [
+    "Simulation can validate software behavior but cannot validate electrical wiring, real drive timing, encoder scaling, or physical stop paths."
+  ],
+  "evidence_required": [
+    "CI run URL",
+    "metrics.json",
+    "trace.csv",
+    "fault_log.json",
+    "validation_report.md",
+    "sample graphs"
+  ],
+  "operator_notes": [
+    "Use this target for regression and portfolio review before any hardware bench is available."
+  ]
+}
