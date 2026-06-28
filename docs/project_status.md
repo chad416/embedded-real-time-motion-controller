@@ -25,31 +25,33 @@ Last updated: 2026-06-29
 | Recruiter one-pager | Added | Generated from sample metrics and capture manifest to summarize evidence, role fit, talking points, and honest boundaries. |
 | Portfolio evidence bundle | Added | `scripts/package_portfolio.ps1` exports docs, reports, graphs, capture profiles, and a manifest into a review-ready folder/zip. |
 | Hardware target profiles | Added | Vendor-neutral target records define evidence requirements for simulated, EtherCAT CiA 402, and CANopen CiA 402 bench paths without making purchase recommendations. |
-| Local toolchain setup | Added | Windows-oriented CMake/C++ setup guide and `scripts/check_toolchain.ps1` are present; actual local compiler install remains a machine-level task. |
+| Local toolchain setup | Complete | Pinned portable CMake and MinGW-w64 assets have checksums, an installer, a runner, and a validated local workflow. |
 | Bench-run tracking | Added | GitHub issue templates and a bench-run playbook define required evidence for future simulated and hardware runs. |
 | Hardware runbooks | Added | Simulated, EtherCAT CiA 402, and CANopen CiA 402 runbooks define future run order, evidence, and stop conditions. |
 | Hardware evidence archive | Added | Immutable run folders, SHA-256 artifact records, structured run manifest, configuration backups, and review gates are defined. |
-| Simulation-complete milestone | Added | Version `0.2.0` has a machine-readable definition and CI-enforced release gate for software, simulation, evidence, and documentation. |
+| Simulation-complete milestone | Released | Tag `v0.2.0-simulation-complete` points to CI-verified commit `b86ba1a`; the release gate remains enforced on `master`. |
 | Motion performance metrics | Added | Runtime JSON/Markdown reports include overshoot, settling time, steady-state error, max following error, and two-axis path metrics. |
 | Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, two-axis path plot, and two-axis acceptance plot. |
 | Data capture profiles | Added | Versioned profiles define simulation and future bench evidence requirements for timing, motion, jitter stress, heartbeat, bus dropout, and feedback faults. |
 | Commissioning templates | Added | Hardware checkout checklist and commissioning logbook template are present for future bench validation. |
 | Documentation | Implemented | Architecture, timing, bus map, drive state machine, watchdogs, fault matrix, test plan, validation, benchmark, tradeoffs, hardware plan. |
 | Sample reports | Implemented | Deterministic sample artifacts committed under `reports/`. |
-| Native local build/test | Blocked | This machine currently lacks CMake and a C++17 compiler on PATH. |
+| Native local build/test | Complete | Windows CMake/GCC build, CTest, 10,000-cycle benchmark, and report generation pass through the portable runner. |
 | GitHub CI | Passing | Latest hosted run builds, tests, benchmarks, generates reports, runs health checks, and uploads artifacts. |
-| Portfolio PDF alignment | In progress | Core software is strong, but graph-first article, timing PDF, scenario library, adapter skeletons, and hardware path are still being expanded. |
+| Portfolio PDF alignment | In progress | Software evidence is mature; the remaining gap is concentrated in production adapter integration, real-time target capture, and hardware commissioning. |
 | Hardware commissioning | Not started | Remaining hardware-only work: real EtherCAT/CANopen adapter, drive PDO/OD mapping, timing measurements, commissioning. |
 
 ## Current Completion Estimate
 
-Software/simulation/documentation side against the portfolio PDF target: about 89%.
+Software/simulation/documentation side against the portfolio PDF target: about 90%.
 
-The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The software release boundary is now machine-enforced, but the flagship target still requires local native validation and live bench commissioning.
+Full flagship scope including real adapter integration, hardware commissioning, target timing capture, and a live bench demonstration: about 75%.
+
+The split estimate prevents the mature simulation package from hiding the substantial hardware work that remains.
 
 ## Immediate Next Actions
 
-1. Verify the exact `0.2.0` release commit in hosted CI, then create the annotated simulation-complete tag.
-2. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.
-3. Select a real EtherCAT or CANopen bench only after current drive documentation, interfaces, and safety constraints are reviewed.
+1. Add machine validation for future hardware evidence run manifests and archive completeness.
+2. Select a real EtherCAT or CANopen bench only after current drive documentation, interfaces, and safety constraints are reviewed.
+3. Implement one production-backed fieldbus adapter behind the tested exchange contract.
 4. Execute the relevant hardware runbook and archive the complete evidence set before changing any validation claim.

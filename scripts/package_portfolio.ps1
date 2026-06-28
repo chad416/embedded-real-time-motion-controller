@@ -72,6 +72,7 @@ $docs = @(
     "docs/hardware_target_profiles.md",
     "docs/hardware_evidence_archive.md",
     "docs/local_toolchain_setup.md",
+    "docs/local_windows_validation.md",
     "docs/software_complete_milestone.md",
     "docs/release_notes_template.md",
     "docs/bench_run_playbook.md",
@@ -90,9 +91,12 @@ Copy-RequiredDirectory ".github/ISSUE_TEMPLATE" ".github/ISSUE_TEMPLATE"
 Copy-RequiredDirectory "config/capture_profiles" "config/capture_profiles"
 Copy-RequiredDirectory "config/hardware_targets" "config/hardware_targets"
 Copy-RequiredDirectory "config/milestones" "config/milestones"
+Copy-RequiredDirectory "config/toolchains" "config/toolchains"
 Copy-RequiredFile "config/hardware_evidence_run_manifest.schema.json" "config/hardware_evidence_run_manifest.schema.json"
 Copy-RequiredDirectory "examples/hardware_evidence" "examples/hardware_evidence"
 Copy-RequiredFile "scripts/check_simulation_milestone.py" "scripts/check_simulation_milestone.py"
+Copy-RequiredFile "scripts/install_portable_toolchain.ps1" "scripts/install_portable_toolchain.ps1"
+Copy-RequiredFile "scripts/run_all_portable.ps1" "scripts/run_all_portable.ps1"
 
 $reports = @(
     "reports/sample_metrics.json",

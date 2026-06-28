@@ -2,6 +2,18 @@
 
 All notable project changes are recorded here.
 
+## [Unreleased]
+
+### Added
+
+- Pinned, checksum-verified portable Windows CMake and MinGW-w64 installer and runner.
+- Committed local Windows native build, CTest, benchmark, and report-generation validation record.
+
+### Changed
+
+- Toolchain checks now discover the bundled Codex Python runtime used by report generation.
+- The portfolio demo uses the same Python fallback and fails immediately on native command errors.
+
 ## [0.2.0] - 2026-06-29
 
 ### Added

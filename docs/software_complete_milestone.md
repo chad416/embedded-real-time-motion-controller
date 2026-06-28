@@ -9,6 +9,12 @@
 
 This milestone does not claim hardware validation. It states that the hosted software and simulation package has a reproducible, machine-enforced evidence baseline suitable for portfolio review and future bench integration.
 
+Release record:
+
+- Tagged commit: `b86ba1ac75ac2c51dd40bbc1921f6d363ca241b0`
+- Verified GitHub Actions run: `28338578406`
+- Annotated tag pushed: 2026-06-29
+
 ## Automated Release Gate
 
 The versioned definition is [`../config/milestones/simulation_complete_v0.2.0.json`](../config/milestones/simulation_complete_v0.2.0.json). Run:
@@ -42,8 +48,8 @@ The following is the release operator checklist. The automated items are enforce
 - [x] Simulation milestone gate passes.
 - [x] Hardware evidence archive and run-manifest rules are documented.
 - [x] Changelog and release-note template identify the hardware boundary.
-- [ ] Push the release commit and confirm its exact GitHub Actions run passes.
-- [ ] Create the annotated tag from that verified commit and push it.
+- [x] Push the release commit and confirm its exact GitHub Actions run passes.
+- [x] Create the annotated tag from that verified commit and push it.
 
 The final two items are release operations. They must be completed in order; never tag a commit whose hosted run has not passed.
 

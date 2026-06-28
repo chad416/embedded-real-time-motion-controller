@@ -68,6 +68,13 @@ One-command native validation:
 scripts/run_all.ps1
 ```
 
+Pinned portable Windows toolchain and validation:
+
+```powershell
+scripts/install_portable_toolchain.ps1
+scripts/run_all_portable.ps1
+```
+
 Portfolio demo walkthrough:
 
 ```powershell
@@ -135,6 +142,7 @@ Key committed visuals include jitter, scenario matrix, control response, two-axi
 - [Hardware Target Profiles](docs/hardware_target_profiles.md)
 - [Hardware Evidence Archive](docs/hardware_evidence_archive.md)
 - [Local Toolchain Setup](docs/local_toolchain_setup.md)
+- [Local Windows Validation](docs/local_windows_validation.md)
 - [Simulation-Complete Milestone](docs/software_complete_milestone.md)
 - [Release Notes Template](docs/release_notes_template.md)
 - [Changelog](CHANGELOG.md)

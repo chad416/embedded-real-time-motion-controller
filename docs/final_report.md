@@ -14,13 +14,13 @@
 - Diagnostic CLI commands.
 - Automated no-dependency C++ tests.
 - Benchmark executable and deterministic sample reports.
+- Passing native Windows build, CTest, benchmark, and report workflow with a pinned portable toolchain.
 - Machine-enforced simulation-complete release gate.
 - Hardware evidence archive and run-manifest convention.
 - Professional documentation set.
 
 ## Hardware Only Remaining
 
-- Install/verify native C++ build toolchain on the commissioning machine.
 - Add SOEM/EtherLab or SocketCAN/CANopenNode adapter.
 - Map actual drive PDOs/object dictionary entries.
 - Validate timing on real MCU or PREEMPT_RT target.
@@ -29,4 +29,4 @@
 
 ## Current Status
 
-See [Project Status](project_status.md) for the live completion snapshot. The software/simulation/documentation portfolio package is approximately 89% complete with hosted CI passing; local native compiler validation and real hardware commissioning remain outside the completed evidence boundary.
+See [Project Status](project_status.md) for the live completion snapshot. The software/simulation/documentation package is approximately 90% complete with hosted CI and local Windows validation passing. The full flagship artifact remains approximately 75% complete because real adapter integration and hardware commissioning are still outside the completed evidence boundary.

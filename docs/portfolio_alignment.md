@@ -19,7 +19,7 @@ This project maps to the embedded real-time motion controller blueprint in the p
 | Hardware evidence archive | Immutable run-folder convention, structured manifest schema, hashes, parameter backups, raw traces, media, and review rules | Populate it with real bench evidence after hardware exists. |
 | Software release gate | Versioned `0.2.0` milestone definition and CI-enforced quantitative checks | Preserve the gate as future hardware work is added. |
 | Hardware target planning | Vendor-neutral simulated/EtherCAT/CANopen target profiles and generated manifest | Select a real drive only after current availability and safety documentation are reviewed. |
-| Local native workflow | Toolchain checker and Windows setup guide | Actual local compiler install remains pending on this machine. |
+| Local native workflow | Pinned portable CMake/MinGW-w64 installer, runner, toolchain checker, and passing Windows validation record | Repeat on any future target-specific toolchain. |
 | Bench-run tracking | GitHub issue templates and bench-run playbook | Real hardware issues will be opened once hardware exists. |
 | Hardware runbooks | Simulated, EtherCAT CiA 402, and CANopen CiA 402 runbooks | Target-specific values need a selected real drive family. |
 | Live bench demo | Hardware integration plan and repeatable portfolio demo script | Real bench unavailable in this phase. |
@@ -27,6 +27,6 @@ This project maps to the embedded real-time motion controller blueprint in the p
 
 ## Honest Completion Estimate
 
-Against the portfolio PDF, this project is about 89% complete as a flagship portfolio artifact.
+The software/simulation/documentation package is about 90% complete. The full flagship artifact, including real adapter integration, hardware commissioning, target timing evidence, and a live bench demonstration, is about 75% complete.
 
-The implemented software core is strong enough to compile and pass hosted CI, and the repo now has graph-first software evidence, versioned capture profiles, adapter contracts, a repeatable demo walkthrough, a recruiter-facing evidence summary, and a machine-enforced release boundary. The PDF target still includes more than software: real hardware commissioning, deeper adapter integration, target timing capture, and a live bench demo.
+The implemented software core compiles and passes both hosted CI and native Windows validation. The repository now has graph-first software evidence, versioned capture profiles, adapter contracts, a repeatable demo walkthrough, a recruiter-facing evidence summary, and a machine-enforced release boundary. The lower full-project estimate reflects the real engineering still needed on fieldbus hardware, physical motion, timing capture, and stop-path evidence.

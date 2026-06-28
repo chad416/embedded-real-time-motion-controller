@@ -41,6 +41,12 @@ $cmakePath = Find-CommandName @("cmake")
 $ctestPath = Find-CommandName @("ctest")
 $compilerPath = Find-CommandName @("cl", "clang++", "g++", "c++")
 $pythonPath = Find-CommandName @("python3", "python")
+if ([string]::IsNullOrEmpty($pythonPath)) {
+    $bundledPython = Join-Path $env:USERPROFILE ".cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe"
+    if (Test-Path -LiteralPath $bundledPython) {
+        $pythonPath = $bundledPython
+    }
+}
 $gitPath = Find-CommandName @("git")
 $ghPath = Find-CommandName @("gh")
 

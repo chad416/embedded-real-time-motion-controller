@@ -13,6 +13,18 @@ function Write-Step {
     Write-Host "== $Name =="
 }
 
+function Invoke-Checked {
+    param(
+        [string]$Command,
+        [string[]]$Arguments
+    )
+
+    & $Command @Arguments
+    if ($LASTEXITCODE -ne 0) {
+        throw "Command failed with exit code ${LASTEXITCODE}: $Command $($Arguments -join ' ')"
+    }
+}
+
 function Get-ExecutablePath {
     param([string]$Name)
 
@@ -32,6 +44,10 @@ function Get-PythonCommand {
             return $command.Source
         }
     }
+    $bundledPython = Join-Path $env:USERPROFILE ".cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe"
+    if (Test-Path -LiteralPath $bundledPython) {
+        return $bundledPython
+    }
     return $null
 }
 
@@ -43,35 +59,35 @@ if (-not $SkipNative) {
     $benchmark = Get-ExecutablePath "emrtc_benchmark"
 
     Write-Step "Diagnostic status"
-    & $cli show status
+    Invoke-Checked -Command $cli -Arguments @("show", "status")
 
     Write-Step "Adapter status"
-    & $cli show adapters
+    Invoke-Checked -Command $cli -Arguments @("show", "adapters")
 
     Write-Step "Two-axis coordinated motion"
-    & $cli run two-axis
+    Invoke-Checked -Command $cli -Arguments @("run", "two-axis")
 
     Write-Step "Fault-matrix scenario"
     $scenarioOut = Join-Path $OutDir "fault_matrix"
-    & $sim --scenario examples/scenarios/fault_matrix.json --out $scenarioOut
+    Invoke-Checked -Command $sim -Arguments @("--scenario", "examples/scenarios/fault_matrix.json", "--out", $scenarioOut)
 
     Write-Step "Deterministic benchmark"
     $benchmarkOut = Join-Path $OutDir "benchmark"
-    & $benchmark --cycles 5000 --out $benchmarkOut
+    Invoke-Checked -Command $benchmark -Arguments @("--cycles", "5000", "--out", $benchmarkOut)
 }
 
 $python = Get-PythonCommand
 if ($null -ne $python) {
     Write-Step "Sample software evidence"
     $sampleOut = Join-Path $OutDir "sample_report"
-    & $python scripts/generate_report.py --out $sampleOut
+    Invoke-Checked -Command $python -Arguments @("scripts/generate_report.py", "--out", $sampleOut)
 
     Write-Step "Capture profile manifest"
     $manifestOut = Join-Path $OutDir "capture_manifest"
-    & $python scripts/generate_capture_manifest.py --profiles config/capture_profiles --out $manifestOut
+    Invoke-Checked -Command $python -Arguments @("scripts/generate_capture_manifest.py", "--profiles", "config/capture_profiles", "--out", $manifestOut)
 } else {
     Write-Step "Python evidence generation skipped"
-    Write-Host "No python3/python command found on PATH."
+    Write-Host "No configured Python interpreter was found."
 }
 
 Write-Step "Demo artifacts"
