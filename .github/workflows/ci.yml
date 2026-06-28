@@ -62,6 +62,9 @@ jobs:
       - name: Generate capture profile manifest
         run: python3 scripts/generate_capture_manifest.py --profiles config/capture_profiles --out reports/generated/ci-python
 
+      - name: Generate recruiter one-pager
+        run: python3 scripts/generate_one_pager.py --metrics reports/sample_metrics.json --manifest reports/sample_capture_manifest.json --out reports/generated/ci-python/recruiter_one_pager.md
+
       - name: Repository health checks
         run: python3 scripts/validate_project.py
 

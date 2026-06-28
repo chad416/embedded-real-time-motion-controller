@@ -22,6 +22,7 @@ Last updated: 2026-06-28
 | Adapter exchange contract | Added | Mapping validation, stale receive-data detection, heartbeat health, bus-offline, and invalid-response handling are covered by adapter-level tests. |
 | Adapter lifecycle checklist | Added | Discovery, configure, cyclic exchange, fault reaction, recovery, and shutdown gates are documented for each future backend. |
 | Portfolio demo script | Added | `scripts/demo_portfolio.ps1` runs CLI status, adapters, two-axis demo, JSON scenario, benchmark, sample evidence, and capture manifest generation. |
+| Recruiter one-pager | Added | Generated from sample metrics and capture manifest to summarize evidence, role fit, talking points, and honest boundaries. |
 | Motion performance metrics | Added | Runtime JSON/Markdown reports include overshoot, settling time, steady-state error, max following error, and two-axis path metrics. |
 | Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, two-axis path plot, and two-axis acceptance plot. |
 | Data capture profiles | Added | Versioned profiles define simulation and future bench evidence requirements for timing, motion, jitter stress, heartbeat, bus dropout, and feedback faults. |
@@ -35,13 +36,13 @@ Last updated: 2026-06-28
 
 ## Current Completion Estimate
 
-Software/simulation/documentation side against the portfolio PDF target: about 79%.
+Software/simulation/documentation side against the portfolio PDF target: about 80%.
 
-The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes recruiter-facing packaging, deeper adapter recovery tests, hardware-run planning, and eventually live bench commissioning.
+The earlier 90% estimate was too optimistic because it measured the codebase scaffold, not the full flagship portfolio artifact described in the PDF. The remaining work includes deeper adapter recovery tests, hardware-run planning, and eventually live bench commissioning.
 
 ## Immediate Next Actions
 
-1. Add a compact recruiter-facing project one-pager generated from the repo evidence.
-2. Add hardware adapter mocked recovery tests for bus-offline to restored-exchange behavior.
-3. Add hardware-run planning records for candidate EtherCAT/CANopen drive families.
+1. Add hardware adapter mocked recovery tests for bus-offline to restored-exchange behavior.
+2. Add hardware-run planning records for candidate EtherCAT/CANopen drive families.
+3. Add a one-command artifact bundle script for exporting portfolio evidence.
 4. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.

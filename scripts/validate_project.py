@@ -43,6 +43,7 @@ REQUIRED_FILES = [
     "docs/demo_walkthrough.md",
     "docs/hardware_checkout.md",
     "docs/data_capture_profiles.md",
+    "docs/recruiter_one_pager.md",
     "docs/timing_budget.md",
     "docs/portfolio_alignment.md",
     "docs/technical_article.md",
@@ -91,6 +92,7 @@ REQUIRED_FILES = [
     "examples/scenarios/timing_stress.json",
     "scripts/generate_graphs.py",
     "scripts/generate_capture_manifest.py",
+    "scripts/generate_one_pager.py",
     "scripts/demo_portfolio.ps1",
 ]
 
