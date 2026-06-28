@@ -3,12 +3,14 @@
 #include "emrtc/hardware_adapters.hpp"
 #include "emrtc/multi_axis.hpp"
 #include "emrtc/process_image_mapping.hpp"
+#include "emrtc/replay_adapter.hpp"
 #include "emrtc/scenario.hpp"
 
 #include <cmath>
 #include <filesystem>
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -426,6 +428,56 @@ TestResult test_adapter_exchange_monitor_accepts_restored_exchange() {
             "fresh receive data after bus restoration clears the adapter monitor observation"};
 }
 
+TestResult test_replay_adapter_nominal_exchange() {
+    const auto summary = emrtc::run_replay_file("examples/replay/nominal_exchange.csv");
+    return {"replay adapter nominal exchange",
+            summary.pass &&
+                summary.frames_processed == 5U &&
+                summary.expectation_mismatches == 0U &&
+                summary.contract_faults_observed == 0U &&
+                summary.diagnostics.tx_packets == 5U &&
+                summary.diagnostics.rx_packets == 5U &&
+                summary.final_image.statusword == 39U &&
+                near(summary.final_image.actual_position, 1.0, 0.001),
+            "recorded process image reaches the expected final feedback"};
+}
+
+TestResult test_replay_adapter_fault_recovery_contract() {
+    const auto summary = emrtc::run_replay_file(
+        "examples/replay/fault_recovery_exchange.csv");
+    return {"replay adapter fault and recovery contract",
+            summary.pass &&
+                summary.frames_processed == 11U &&
+                summary.expectation_mismatches == 0U &&
+                summary.contract_faults_observed == 4U &&
+                summary.diagnostics.dropout_count == 1U &&
+                summary.diagnostics.cable_disconnect_events == 1U &&
+                summary.diagnostics.heartbeat_timeout_count == 1U &&
+                summary.diagnostics.invalid_response_count == 1U &&
+                summary.diagnostics.rx_packets == 5U &&
+                near(summary.final_image.actual_position, 1.0, 0.001),
+            "stale, offline, heartbeat, invalid-response, and restored frames match expectations"};
+}
+
+TestResult test_replay_adapter_rejects_controller_output_mismatch() {
+    auto frames = emrtc::load_replay_frames_csv("examples/replay/nominal_exchange.csv");
+    emrtc::ReplayBusBackend backend(std::move(frames));
+    std::vector<emrtc::ProcessImage> images(1);
+    images.front().controlword = 0x0006;
+    images.front().target_position = 1.0;
+
+    const auto exchange = backend.exchange(0, images);
+    emrtc::AdapterExchangeMonitor monitor;
+    const auto contract = monitor.observe(0, exchange, backend.diagnostics());
+    return {"replay adapter rejects controller output mismatch",
+            !exchange.ok &&
+                exchange.invalid_response &&
+                backend.diagnostics().invalid_response_count == 1U &&
+                !contract.ok &&
+                contract.fault == emrtc::FaultCode::InvalidDriveTransition,
+            "wrong outgoing controlword is rejected before recorded feedback is applied"};
+}
+
 TestResult test_benchmark_motion_performance_metrics() {
     const auto metrics = emrtc::run_benchmark(2500);
     return {"benchmark motion performance metrics",
@@ -475,6 +527,9 @@ int main() {
         test_adapter_exchange_monitor_detects_stale_pdo_data(),
         test_adapter_exchange_monitor_detects_invalid_response(),
         test_adapter_exchange_monitor_accepts_restored_exchange(),
+        test_replay_adapter_nominal_exchange(),
+        test_replay_adapter_fault_recovery_contract(),
+        test_replay_adapter_rejects_controller_output_mismatch(),
         test_benchmark_motion_performance_metrics(),
     };
 

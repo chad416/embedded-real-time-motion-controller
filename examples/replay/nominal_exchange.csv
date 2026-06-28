@@ -1,0 +1,6 @@
+cycle,rx_update,online,heartbeat_ok,invalid_response,statusword,actual_position_counts,actual_velocity_counts,drive_fault,expected_controlword,expected_target_position_counts,expected_target_velocity_counts,expected_contract_fault
+0,true,true,true,false,39,0,0,none,15,1000,0,none
+1,true,true,true,false,39,250,250,none,15,1000,0,none
+2,true,true,true,false,39,500,250,none,15,1000,0,none
+3,true,true,true,false,39,750,250,none,15,1000,0,none
+4,true,true,true,false,39,1000,0,none,15,1000,0,none

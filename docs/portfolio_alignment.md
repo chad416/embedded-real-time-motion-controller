@@ -4,11 +4,11 @@ This project maps to the embedded real-time motion controller blueprint in the p
 
 | PDF Expectation | Current Evidence | Gap |
 | --- | --- | --- |
-| C/C++ controller core | C++17 library and apps with hosted CI build | Local Windows CMake/compiler still missing. |
+| C/C++ controller core | C++17 library and apps with hosted CI plus native Windows build/test evidence | Repeat on the future target-specific runtime. |
 | FreeRTOS-style deterministic tasking | Deterministic cycle model and control-loop architecture note | Actual FreeRTOS target adapter not yet implemented. |
 | Linux/PREEMPT_RT supervisory layer | Host simulator, benchmark, CLI, GitHub Linux CI | Real PREEMPT_RT timing capture not yet implemented. |
-| EtherCAT abstraction | Process-image bus abstraction, simulated backend, SOEM/EtherLab flags, non-fatal dependency discovery, adapter exchange contract, and adapter docs | Real SOEM/EtherLab exchange loop pending. |
-| CANopen/CiA 402 abstraction | CiA 402-style drive state machine, tested process-image object contract, stale-PDO/restored-exchange contract checks, SocketCAN/CANopenNode flags, and adapter docs | Real CANopen PDO/SDO exchange pending. |
+| EtherCAT abstraction | Process-image bus abstraction, simulated and replay backends, SOEM/EtherLab flags, dependency discovery, exchange contract, and replay fault/recovery evidence | Real SOEM/EtherLab exchange loop pending. |
+| CANopen/CiA 402 abstraction | CiA 402-style state machine, process-image object contract, replayed PDO-style exchange checks, SocketCAN/CANopenNode flags, and adapter docs | Real CANopen PDO/SDO exchange pending. |
 | Timing instrumentation | Cycle samples, jitter, missed-cycle, deadline counters | Real hardware timestamp source pending. |
 | Fault injector | Required fault classes covered in code, tests, and JSON scenario suite | More cross-fault combinations can still be added. |
 | Quantitative report | Markdown, JSON, CSV, timing PDF, jitter SVG, scenario SVG, two-axis path/acceptance SVGs, and capture-profile manifest | Hardware reports pending. |
@@ -23,7 +23,7 @@ This project maps to the embedded real-time motion controller blueprint in the p
 | Bench-run tracking | GitHub issue templates and bench-run playbook | Real hardware issues will be opened once hardware exists. |
 | Hardware runbooks | Simulated, EtherCAT CiA 402, and CANopen CiA 402 runbooks | Target-specific values need a selected real drive family. |
 | Live bench demo | Hardware integration plan and repeatable portfolio demo script | Real bench unavailable in this phase. |
-| Commissioning-grade package | README, architecture, timing, bus, watchdog, fault matrix, test plan, validation, benchmark, tradeoffs, status, BOM, commissioning logbook, hardware checkout, capture profiles, adapter lifecycle checklist | Adapter design needs expansion before hardware purchase. |
+| Commissioning-grade package | README, architecture, timing, bus, watchdog, fault matrix, test plan, validation, benchmark, tradeoffs, status, BOM, commissioning logbook, hardware checkout, capture profiles, archive validator, replay harness, adapter lifecycle checklist | Production adapter and real bench evidence remain. |
 
 ## Honest Completion Estimate
 

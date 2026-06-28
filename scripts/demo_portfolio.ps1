@@ -67,6 +67,9 @@ if (-not $SkipNative) {
     Write-Step "Two-axis coordinated motion"
     Invoke-Checked -Command $cli -Arguments @("run", "two-axis")
 
+    Write-Step "Recorded adapter exchange replay"
+    Invoke-Checked -Command $cli -Arguments @("run", "replay", "examples/replay/fault_recovery_exchange.csv")
+
     Write-Step "Fault-matrix scenario"
     $scenarioOut = Join-Path $OutDir "fault_matrix"
     Invoke-Checked -Command $sim -Arguments @("--scenario", "examples/scenarios/fault_matrix.json", "--out", $scenarioOut)

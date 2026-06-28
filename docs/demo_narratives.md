@@ -8,7 +8,7 @@ This project is a software-first embedded real-time motion controller. I built t
 
 Start with the architecture. The `RealTimeController` owns the cyclic execution order: fault injection, command dispatch, process-image exchange, axis update, watchdog evaluation, and telemetry. The axis implements CiA 402-style states from Not Ready through Operation Enabled and Fault. Motion commands are only accepted in valid states, and rejected commands become explicit fault evidence.
 
-The bus layer is deliberately abstract. Today it uses a deterministic simulated backend with packet loss, heartbeat timeout, cable disconnect, and invalid response injection. Later, SOEM, EtherLab, SocketCAN, or CANopenNode can implement the same backend interface. The adapter contract already validates object mapping and stale receive data, so future hardware work has explicit gates instead of informal assumptions.
+The bus layer is deliberately abstract. It uses a deterministic simulated backend for controller scenarios and a replay backend for recorded process-image exchanges. The replay path checks outgoing controlword and targets, stale receive data, heartbeat state, bus state, invalid responses, and restoration through the same contract intended for SOEM, EtherLab, SocketCAN, or CANopenNode.
 
 The safety-oriented layer includes loop, bus, heartbeat, following-error, encoder-feedback, and E-stop/safe-stop supervision. It does not claim certified safety. Instead, it shows disciplined fault handling and documents where certified hardware/process would be required.
 
@@ -16,4 +16,4 @@ The validation story is quantitative. The benchmark records cycle histograms, mi
 
 For a repeatable demonstration, run `scripts/demo_portfolio.ps1 -BuildDir build -OutDir reports/generated/demo`.
 
-The project is ready for hardware commissioning once CMake and a C++17 compiler are installed and the native validation suite is rerun on the target workstation.
+The native Windows suite now passes through a pinned portable CMake/MinGW-w64 workflow. The next major boundary is a selected real drive and production fieldbus adapter, followed by the documented low-energy commissioning sequence.

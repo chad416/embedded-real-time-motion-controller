@@ -1,6 +1,7 @@
 #include "emrtc/controller.hpp"
 #include "emrtc/hardware_adapters.hpp"
 #include "emrtc/multi_axis.hpp"
+#include "emrtc/replay_adapter.hpp"
 #include "emrtc/scenario.hpp"
 
 #include <filesystem>
@@ -32,6 +33,7 @@ void print_help() {
         << "  emrtc_cli show adapters\n"
         << "  emrtc_cli run scenario [examples/scenarios/name.json]\n"
         << "  emrtc_cli run two-axis\n"
+        << "  emrtc_cli run replay [examples/replay/name.csv]\n"
         << "  emrtc_cli inject fault <fault_name>\n"
         << "  emrtc_cli reset fault\n"
         << "  emrtc_cli export report [dir]\n";
@@ -120,6 +122,23 @@ int main(int argc, char** argv) {
         std::cout << "target_reached=" << (metrics.target_reached ? "true" : "false") << "\n";
         std::cout << "acceptance_pass=" << (metrics.acceptance_pass ? "true" : "false") << "\n";
         return metrics.acceptance_pass ? 0 : 1;
+    }
+
+    if (verb == "run" && noun == "replay") {
+        const std::string path =
+            argc > 3 ? argv[3] : "examples/replay/nominal_exchange.csv";
+        const auto summary = emrtc::run_replay_file(path);
+        std::cout << "replay=" << path << "\n";
+        std::cout << "frames=" << summary.frames_processed << "\n";
+        std::cout << "contract_faults_observed=" << summary.contract_faults_observed << "\n";
+        std::cout << "expectation_mismatches=" << summary.expectation_mismatches << "\n";
+        std::cout << "rx_packets=" << summary.diagnostics.rx_packets << "\n";
+        std::cout << "final_position=" << summary.final_image.actual_position << "\n";
+        std::cout << "pass=" << (summary.pass ? "true" : "false") << "\n";
+        if (!summary.first_mismatch.empty()) {
+            std::cout << "first_mismatch=" << summary.first_mismatch << "\n";
+        }
+        return summary.pass ? 0 : 1;
     }
 
     if (verb == "inject" && noun == "fault" && argc > 3) {

@@ -10,6 +10,8 @@ All notable project changes are recorded here.
 - Committed local Windows native build, CTest, benchmark, and report-generation validation record.
 - Evidence archive validator with digest, completeness, profile, review, and claim-boundary checks.
 - Positive, corruption, unlisted-file, and forbidden-claim archive tests.
+- Replay-backed `IBusBackend` with recorded nominal and fault/recovery process-image traces.
+- CLI, demo, and C++ tests for replay expectations and controller-output mismatch rejection.
 
 ### Changed
 

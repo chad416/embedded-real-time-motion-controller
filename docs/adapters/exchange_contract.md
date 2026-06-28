@@ -25,6 +25,8 @@ Invalid mapping returns `FaultCode::InvalidDriveTransition` because the controll
 
 The monitor is intentionally independent of SOEM, EtherLab, SocketCAN, or CANopenNode. Real adapters can call it after stack-specific exchange logic and before copying receive data into the controller process image.
 
+The [Adapter Replay Harness](replay_harness.md) implements `IBusBackend` and feeds recorded wire values through this monitor. Each frame also declares the expected outgoing controlword/targets and expected contract fault.
+
 ## Current Evidence
 
 The no-dependency C++ test runner covers:
@@ -34,5 +36,8 @@ The no-dependency C++ test runner covers:
 - Stale receive/PDO data detection.
 - Invalid response detection.
 - Bus-offline detection followed by restored fresh receive data.
+- Nominal recorded exchange replay.
+- Stale, offline, heartbeat, invalid-response, and recovery replay.
+- Rejection of an outgoing controller image that differs from the recording.
 
 These tests do not claim hardware validation. They prove the adapter contract is explicit before a real stack is commissioned.

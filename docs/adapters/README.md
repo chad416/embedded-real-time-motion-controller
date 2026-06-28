@@ -29,6 +29,8 @@ The adapter-neutral CiA 402 object contract is implemented in [`../../include/em
 
 Stale process-data and invalid object-map handling are captured in [Adapter Exchange Contract](exchange_contract.md).
 
+Recorded process-image exchanges can be exercised through the [Adapter Replay Harness](replay_harness.md).
+
 The required runtime bring-up sequence is captured in [Adapter Lifecycle Checklist](lifecycle_checklist.md).
 
 ## Commissioning Rule

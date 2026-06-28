@@ -19,9 +19,10 @@ Last updated: 2026-06-29
 | Adapter skeletons | Expanded | SOEM, EtherLab, SocketCAN, and CANopenNode skeletons have CMake build flags, status reporting, CI smoke build, and adapter-specific README files. |
 | Adapter dependency discovery | Added | CMake now performs non-fatal discovery for SOEM, EtherLab, SocketCAN headers, and CANopenNode when flags are enabled. |
 | Process-image mapping contract | Added | CiA 402 object indexes, bit widths, directions, and counts/unit encode-decode helpers are tested independently of hardware stacks. |
-| Adapter exchange contract | Expanded | Mapping validation, stale receive-data detection, heartbeat health, bus-offline, restored exchange, and invalid-response handling are covered by adapter-level tests. |
+| Adapter exchange contract | Expanded | Mapping, stale receive data, heartbeat, bus-offline, restoration, invalid response, and outgoing command expectations are covered by adapter-level tests. |
+| Adapter replay harness | Added | Recorded nominal and fault/recovery process-image traces run through `IBusBackend`, CiA 402 scaling, and the exchange monitor with zero expected-fault mismatches. |
 | Adapter lifecycle checklist | Added | Discovery, configure, cyclic exchange, fault reaction, recovery, and shutdown gates are documented for each future backend. |
-| Portfolio demo script | Added | `scripts/demo_portfolio.ps1` runs CLI status, adapters, two-axis demo, JSON scenario, benchmark, sample evidence, and capture manifest generation. |
+| Portfolio demo script | Added | `scripts/demo_portfolio.ps1` runs CLI status, adapters, replay, two-axis demo, JSON scenario, benchmark, sample evidence, and capture manifest generation. |
 | Recruiter one-pager | Added | Generated from sample metrics and capture manifest to summarize evidence, role fit, talking points, and honest boundaries. |
 | Portfolio evidence bundle | Added | `scripts/package_portfolio.ps1` exports docs, reports, graphs, capture profiles, and a manifest into a review-ready folder/zip. |
 | Hardware target profiles | Added | Vendor-neutral target records define evidence requirements for simulated, EtherCAT CiA 402, and CANopen CiA 402 bench paths without making purchase recommendations. |
@@ -52,7 +53,7 @@ The split estimate prevents the mature simulation package from hiding the substa
 
 ## Immediate Next Actions
 
-1. Add a replay-backed adapter harness that feeds recorded process-image exchanges through the production adapter contract.
+1. Convert the first future native bus capture into the replay CSV contract and preserve the raw capture beside it.
 2. Select a real EtherCAT or CANopen bench only after current drive documentation, interfaces, and safety constraints are reviewed.
 3. Implement one production-backed fieldbus adapter behind the tested exchange contract.
 4. Execute the relevant hardware runbook and archive the complete evidence set before changing any validation claim.

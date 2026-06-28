@@ -7,6 +7,7 @@
 - CiA 402-style drive state machine.
 - Profile position and velocity simulation.
 - EtherCAT/CANopen-ready process-image bus abstraction.
+- Replay-backed process-image adapter contract with nominal and fault/recovery traces.
 - Simulated packet loss, dropout, heartbeat timeout, and invalid response behavior.
 - Safety-oriented watchdogs and fault-recovery behavior.
 - Fault injector covering required scenarios.

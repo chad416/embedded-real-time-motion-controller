@@ -39,6 +39,7 @@ powershell -ExecutionPolicy Bypass -File scripts/run_all_portable.ps1
 - CTest passed `1/1` unit and integration test target.
 - The SOEM and SocketCAN adapter-flag skeleton build compiled successfully.
 - The native CLI status, adapter status, two-axis acceptance, JSON fault-matrix scenario, and portfolio demo completed.
+- The post-release replay harness compiled and passed nominal plus four-fault recovery traces with zero expectation mismatches.
 - The deterministic 10,000-cycle benchmark completed.
 - Sample report and capture-manifest generation completed through the bundled Python fallback.
 

@@ -26,6 +26,7 @@ add_library(emrtc
     src/hardware_adapters.cpp
     src/multi_axis.cpp
     src/process_image_mapping.cpp
+    src/replay_adapter.cpp
     src/scenario.cpp
     src/telemetry.cpp
     src/types.cpp

@@ -14,6 +14,7 @@ Current release line: `0.2.0`, the machine-gated simulation-complete software mi
 - CiA 402-style axis state machine.
 - Profile position, profile velocity, and cyclic synchronous mode abstractions.
 - EtherCAT/CANopen-ready bus abstraction with a deterministic simulated backend.
+- Replay-backed adapter harness for recorded nominal, stale-data, bus, heartbeat, invalid-response, and recovery exchanges.
 - Watchdogs for loop timing, heartbeat, bus health, following error, and encoder feedback loss.
 - Fault injector for missed cycle, CPU spike, heartbeat timeout, bus dropout, packet loss, invalid transition, encoder loss, sensor noise, following error, drive fault, watchdog timeout, and command abuse.
 - Timestamped telemetry, CSV trace, JSON metrics, persistent fault log, and Markdown validation report export.
@@ -27,7 +28,8 @@ apps/                 Simulator, benchmark, and diagnostic CLI entry points
 config/capture_profiles/ Hardware-facing simulation and future bench capture profiles
 config/hardware_targets/ Vendor-neutral future hardware target planning profiles
 docs/                 Architecture, timing, safety-oriented design, tests, reports
-examples/scenarios/   Deterministic scenario definitions
+examples/scenarios/   Deterministic controller scenario definitions
+examples/replay/      Recorded process-image exchange fixtures
 include/emrtc/        Public C++ interfaces
 reports/              Sample generated validation artifacts
 scripts/              Build, test, benchmark, and report generation helpers
@@ -117,6 +119,7 @@ build\emrtc_benchmark.exe --cycles 10000 --out reports/generated
 build\emrtc_cli.exe show status
 build\emrtc_cli.exe show adapters
 build\emrtc_cli.exe run scenario
+build\emrtc_cli.exe run replay examples/replay/fault_recovery_exchange.csv
 build\emrtc_cli.exe inject fault heartbeat_timeout
 build\emrtc_cli.exe export report reports/generated
 ```

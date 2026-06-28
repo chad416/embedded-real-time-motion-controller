@@ -1,0 +1,12 @@
+cycle,rx_update,online,heartbeat_ok,invalid_response,statusword,actual_position_counts,actual_velocity_counts,drive_fault,expected_controlword,expected_target_position_counts,expected_target_velocity_counts,expected_contract_fault
+0,true,true,true,false,39,0,0,none,15,1000,0,none
+1,false,true,true,false,39,0,0,none,15,1000,0,none
+2,false,true,true,false,39,0,0,none,15,1000,0,none
+3,false,true,true,false,39,0,0,none,15,1000,0,bus_dropout
+4,true,true,true,false,39,500,0,none,15,1000,0,none
+5,false,false,true,false,39,500,0,none,15,1000,0,bus_dropout
+6,true,true,true,false,39,600,0,none,15,1000,0,none
+7,false,true,false,false,39,600,0,none,15,1000,0,heartbeat_timeout
+8,true,true,true,false,39,800,0,none,15,1000,0,none
+9,false,true,true,true,39,800,0,none,15,1000,0,invalid_drive_transition
+10,true,true,true,false,39,1000,0,none,15,1000,0,none
