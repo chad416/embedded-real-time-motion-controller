@@ -10,6 +10,12 @@ After the native build exists:
 scripts/demo_portfolio.ps1 -BuildDir build -OutDir reports/generated/demo
 ```
 
+To package the review evidence after generating reports:
+
+```powershell
+scripts/package_portfolio.ps1 -OutDir reports/generated/portfolio_bundle
+```
+
 If the machine does not yet have CMake/C++ installed, the same script can still generate Python-based sample evidence:
 
 ```powershell

@@ -71,6 +71,12 @@ Portfolio demo walkthrough:
 scripts/demo_portfolio.ps1 -BuildDir build -OutDir reports/generated/demo
 ```
 
+Portfolio evidence bundle:
+
+```powershell
+scripts/package_portfolio.ps1 -OutDir reports/generated/portfolio_bundle
+```
+
 If CMake or a compiler is missing, install CMake and a C++17 toolchain such as MSVC Build Tools, LLVM/Clang, or GCC/MinGW, then rerun the scripts.
 
 ## Simulation And CLI

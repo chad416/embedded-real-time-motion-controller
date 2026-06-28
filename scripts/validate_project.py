@@ -94,6 +94,7 @@ REQUIRED_FILES = [
     "scripts/generate_capture_manifest.py",
     "scripts/generate_one_pager.py",
     "scripts/demo_portfolio.ps1",
+    "scripts/package_portfolio.ps1",
 ]
 
 EXPECTED_SCENARIOS = {

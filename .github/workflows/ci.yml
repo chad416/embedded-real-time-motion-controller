@@ -65,6 +65,10 @@ jobs:
       - name: Generate recruiter one-pager
         run: python3 scripts/generate_one_pager.py --metrics reports/sample_metrics.json --manifest reports/sample_capture_manifest.json --out reports/generated/ci-python/recruiter_one_pager.md
 
+      - name: Package portfolio evidence bundle
+        shell: pwsh
+        run: ./scripts/package_portfolio.ps1 -OutDir reports/generated/portfolio-bundle -ArchivePath reports/generated/portfolio-bundle.zip
+
       - name: Repository health checks
         run: python3 scripts/validate_project.py
 
