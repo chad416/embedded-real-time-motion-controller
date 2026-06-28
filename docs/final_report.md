@@ -27,4 +27,4 @@
 
 ## Current Status
 
-See [Project Status](project_status.md) for the live completion snapshot. The software/simulation/documentation package is approximately 85% complete pending CI/native compiler evidence.
+See [Project Status](project_status.md) for the live completion snapshot. The software/simulation/documentation package is approximately 90% complete with hosted CI passing; local native compiler validation is still blocked until CMake and a C++17 compiler are installed on this workstation.

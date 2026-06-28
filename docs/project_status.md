@@ -18,18 +18,18 @@ Last updated: 2026-06-28
 | Documentation | Implemented | Architecture, timing, bus map, drive state machine, watchdogs, fault matrix, test plan, validation, benchmark, tradeoffs, hardware plan. |
 | Sample reports | Implemented | Deterministic sample artifacts committed under `reports/`. |
 | Native local build/test | Blocked | This machine currently lacks CMake and a C++17 compiler on PATH. |
-| GitHub CI | Added | CI builds/tests/benchmarks on Ubuntu and uploads generated reports. |
+| GitHub CI | Passing | Latest hosted run builds, tests, benchmarks, generates reports, runs health checks, and uploads artifacts. |
 | Hardware commissioning | Not started | Remaining hardware-only work: real EtherCAT/CANopen adapter, drive PDO/OD mapping, timing measurements, commissioning. |
 
 ## Current Completion Estimate
 
-Software/simulation/documentation side: about 85%.
+Software/simulation/documentation side: about 90%.
 
-The remaining 15% is mostly verified-build evidence from CI/local toolchain and any fixes revealed by that compiler run. Hardware commissioning is a separate future phase and should not be counted as unfinished software work.
+The remaining 10% is mostly local workstation toolchain validation and deeper polish such as richer scenario configuration, optional multi-axis simulation, and hardware-adapter skeletons. Hardware commissioning is a separate future phase and should not be counted as unfinished software work.
 
 ## Immediate Next Actions
 
-1. Let GitHub Actions run the C++ build, tests, simulator, benchmark, and health checks.
-2. Fix any compiler or test failures from CI.
-3. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.
-4. After CI is green, tag the software-complete simulation milestone.
+1. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.
+2. Add a richer scenario runner that loads `examples/scenarios/*.json`.
+3. Add an optional two-axis coordinated-motion simulation.
+4. Tag the software-complete simulation milestone after local toolchain validation is also green.
