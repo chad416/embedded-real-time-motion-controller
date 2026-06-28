@@ -56,6 +56,8 @@ REQUIRED_FILES = [
     "reports/sample_timing_report.pdf",
     "reports/sample_jitter_histogram.svg",
     "reports/sample_scenario_matrix.svg",
+    "reports/sample_control_response.svg",
+    "reports/sample_two_axis_path.svg",
     "examples/scenarios/fault_matrix.json",
     "examples/scenarios/heartbeat_timeout.json",
     "examples/scenarios/bus_disconnect.json",

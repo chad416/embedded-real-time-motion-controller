@@ -17,7 +17,7 @@ Last updated: 2026-06-28
 | Automated scenarios | Expanded | Built-in scenarios plus JSON scenario suite covering fault matrix, heartbeat timeout, bus disconnect, command abuse, encoder loss, and timing stress. |
 | Two-axis coordination | Added | Optional two-axis straight-line coordinated move simulation and test evidence. |
 | Adapter skeletons | Added | SOEM, EtherLab, SocketCAN, and CANopenNode skeletons exist and honestly report uncommissioned status. |
-| Visual evidence | Added | Deterministic timing PDF plus SVG jitter histogram and scenario pass/fail matrix generated from sample metrics. |
+| Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, and two-axis path plot. |
 | Documentation | Implemented | Architecture, timing, bus map, drive state machine, watchdogs, fault matrix, test plan, validation, benchmark, tradeoffs, hardware plan. |
 | Sample reports | Implemented | Deterministic sample artifacts committed under `reports/`. |
 | Native local build/test | Blocked | This machine currently lacks CMake and a C++17 compiler on PATH. |
@@ -34,6 +34,6 @@ The earlier 90% estimate was too optimistic because it measured the codebase sca
 ## Immediate Next Actions
 
 1. Expand the SOEM/EtherLab and SocketCAN/CANopenNode skeletons into compile-time optional real adapters.
-2. Add generated plots for overshoot/settling and two-axis path error.
+2. Add explicit numerical overshoot/settling metrics to C++ `RuntimeMetrics`.
 3. Add a commissioning logbook template and hardware checkout checklist.
 4. Install local CMake plus a C++17 compiler when convenient, then rerun `scripts/run_all.ps1`.

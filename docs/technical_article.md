@@ -24,6 +24,8 @@ Visual evidence is generated under `reports/`:
 
 - `sample_jitter_histogram.svg`
 - `sample_scenario_matrix.svg`
+- `sample_control_response.svg`
+- `sample_two_axis_path.svg`
 - `sample_timing_report.pdf`
 
 ## Controller Structure

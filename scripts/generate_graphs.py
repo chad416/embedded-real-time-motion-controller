@@ -81,6 +81,96 @@ def write_scenario_matrix(metrics: dict, path: Path) -> None:
     path.write_text("\n".join(parts), encoding="utf-8")
 
 
+def simulate_profile_position(cycles: int = 1200) -> list[tuple[float, float, float]]:
+    position = 0.0
+    velocity = 0.0
+    target = 1.0
+    dt = 0.001
+    gain = 16.0
+    max_velocity = 2.0
+    max_accel = 40.0
+    samples: list[tuple[float, float, float]] = []
+    for cycle in range(cycles):
+        error = target - position
+        desired_velocity = max(-max_velocity, min(max_velocity, gain * error))
+        accel_step = max_accel * dt
+        velocity += max(-accel_step, min(accel_step, desired_velocity - velocity))
+        position += velocity * dt
+        if abs(error) < 0.0005 and abs(velocity) < 0.002:
+            position = target
+            velocity = 0.0
+        if cycle % 8 == 0:
+            samples.append((cycle * dt, position, velocity))
+    return samples
+
+
+def write_control_response(path: Path) -> None:
+    samples = simulate_profile_position()
+    width = 1000
+    height = 420
+    margin_left = 70
+    margin_bottom = 60
+    plot_width = width - margin_left - 40
+    plot_height = height - 100 - margin_bottom
+    max_time = samples[-1][0]
+
+    def px(time_s: float) -> float:
+        return margin_left + plot_width * time_s / max_time
+
+    def py(position: float) -> float:
+        return height - margin_bottom - plot_height * min(1.15, max(0.0, position)) / 1.15
+
+    points = " ".join(f"{px(t):.1f},{py(p):.1f}" for t, p, _ in samples)
+    target_y = py(1.0)
+    parts = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
+        '<rect width="100%" height="100%" fill="#ffffff"/>',
+        '<text x="30" y="36" font-family="Arial" font-size="24" font-weight="700" fill="#1f2937">Profile Position Step Response</text>',
+        '<text x="30" y="62" font-family="Arial" font-size="13" fill="#4b5563">Simulated 1.0 unit absolute move with bounded velocity and acceleration</text>',
+        f'<line x1="{margin_left}" y1="{height - margin_bottom}" x2="{width - 40}" y2="{height - margin_bottom}" stroke="#374151"/>',
+        f'<line x1="{margin_left}" y1="100" x2="{margin_left}" y2="{height - margin_bottom}" stroke="#374151"/>',
+        f'<line x1="{margin_left}" y1="{target_y:.1f}" x2="{width - 40}" y2="{target_y:.1f}" stroke="#16a34a" stroke-dasharray="6 4"/>',
+        f'<text x="{width - 150}" y="{target_y - 8:.1f}" font-family="Arial" font-size="12" fill="#16a34a">target = 1.0</text>',
+        f'<polyline fill="none" stroke="#2563eb" stroke-width="3" points="{points}"/>',
+        '<text x="450" y="392" font-family="Arial" font-size="12" fill="#4b5563">time (s)</text>',
+        '<text x="14" y="230" font-family="Arial" font-size="12" fill="#4b5563" transform="rotate(-90 14,230)">position</text>',
+        '</svg>',
+    ]
+    path.write_text("\n".join(parts), encoding="utf-8")
+
+
+def write_two_axis_path(path: Path) -> None:
+    one_axis = simulate_profile_position()
+    points_xy = [(p, p) for _, p, _ in one_axis]
+    width = 700
+    height = 700
+    margin = 70
+    plot = width - 2 * margin
+
+    def px(x: float) -> float:
+        return margin + plot * min(1.1, max(0.0, x)) / 1.1
+
+    def py(y: float) -> float:
+        return height - margin - plot * min(1.1, max(0.0, y)) / 1.1
+
+    points = " ".join(f"{px(x):.1f},{py(y):.1f}" for x, y in points_xy)
+    parts = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
+        '<rect width="100%" height="100%" fill="#ffffff"/>',
+        '<text x="30" y="36" font-family="Arial" font-size="24" font-weight="700" fill="#1f2937">Two-Axis Coordinated Path</text>',
+        '<text x="30" y="62" font-family="Arial" font-size="13" fill="#4b5563">Nominal straight-line XY move from (0,0) to (1,1)</text>',
+        f'<rect x="{margin}" y="{margin + 20}" width="{plot}" height="{plot}" fill="#f9fafb" stroke="#d1d5db"/>',
+        f'<line x1="{px(0):.1f}" y1="{py(0):.1f}" x2="{px(1):.1f}" y2="{py(1):.1f}" stroke="#16a34a" stroke-dasharray="6 4" stroke-width="2"/>',
+        f'<polyline fill="none" stroke="#dc2626" stroke-width="3" points="{points}"/>',
+        f'<circle cx="{px(1):.1f}" cy="{py(1):.1f}" r="6" fill="#111827"/>',
+        f'<text x="{px(1) - 40:.1f}" y="{py(1) - 12:.1f}" font-family="Arial" font-size="12" fill="#111827">target</text>',
+        '<text x="330" y="660" font-family="Arial" font-size="12" fill="#4b5563">X axis</text>',
+        '<text x="18" y="350" font-family="Arial" font-size="12" fill="#4b5563" transform="rotate(-90 18,350)">Y axis</text>',
+        '</svg>',
+    ]
+    path.write_text("\n".join(parts), encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--metrics", default="reports/sample_metrics.json")
@@ -91,6 +181,8 @@ def main() -> int:
     out.mkdir(parents=True, exist_ok=True)
     write_jitter_histogram(metrics, out / "sample_jitter_histogram.svg")
     write_scenario_matrix(metrics, out / "sample_scenario_matrix.svg")
+    write_control_response(out / "sample_control_response.svg")
+    write_two_axis_path(out / "sample_two_axis_path.svg")
     print(out)
     return 0
 
