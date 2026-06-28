@@ -16,6 +16,10 @@ All notable project changes are recorded here.
 - Hardware evidence archive convention with a structured run-manifest schema.
 - Machine-enforced simulation-complete milestone gate.
 
+### Changed
+
+- GitHub-maintained checkout and artifact-upload actions use the Node.js 24-based `v7` release lines.
+
 ### Validation
 
 - GitHub Actions is the current native C++ build and test authority.
