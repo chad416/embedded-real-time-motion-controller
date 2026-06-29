@@ -11,7 +11,7 @@ Diagnostic CLI / Simulator / Benchmark
   |                        |
 Axis state machine     Bus abstraction
   |                        |
-Motion model           Simulated backend
+Motion/feedback        Simulated / replay / SOEM
   |
 Watchdogs and fault injector
   |
@@ -24,8 +24,8 @@ Telemetry and reports
 | --- | --- |
 | Apps | User-facing simulator, benchmark, and diagnostic commands. |
 | Controller core | Owns cyclic execution order, timing sample generation, command dispatch, watchdog calls, telemetry, and recovery transitions. |
-| Axis | Implements CiA 402-style drive state handling, motion commands, statusword/controlword, and simulated feedback. |
-| Bus | Provides a process-image exchange boundary suitable for future SOEM/EtherLab and SocketCAN/CANopenNode adapters. |
+| Axis | Implements CiA 402-style drive state handling, motion commands, controlword generation, and simulated or externally reported feedback. |
+| Bus | Provides an injectable process-image exchange boundary with simulated, replay, and dependency-backed SOEM implementations. |
 | Watchdog | Evaluates loop timing, heartbeat, bus online state, following error, and encoder feedback loss. |
 | Telemetry | Produces CSV traces, JSON metrics, fault logs, and Markdown validation reports. |
 
@@ -35,4 +35,4 @@ The simulation does not use wall-clock sleep for validation. Each cycle advances
 
 ## Hardware Boundary
 
-The simulated bus backend is the only active backend in this software-complete phase. Real EtherCAT/CANopen adapters should implement the same process-image contract without changing the axis, watchdog, or scenario logic.
+`RealTimeController` accepts any `IBusBackend`. The simulated backend remains the default, while external backends feed statusword, position, velocity, and drive-fault data through the same axis and watchdog path. The SOEM implementation performs guarded single-slave configuration and cyclic process-data exchange, but it remains non-commissioned until a selected NIC and drive produce archived bench evidence.

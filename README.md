@@ -2,9 +2,9 @@
 
 [![Motion Controller CI](https://github.com/chad416/embedded-real-time-motion-controller/actions/workflows/ci.yml/badge.svg)](https://github.com/chad416/embedded-real-time-motion-controller/actions/workflows/ci.yml)
 
-Software-first embedded real-time motion controller for an industrial automation portfolio. The project demonstrates deterministic cyclic control, CiA 402-style drive handling, bus abstraction for future EtherCAT/CANopen adapters, watchdog supervision, fault injection, telemetry, diagnostics, and validation reporting.
+Software-first embedded real-time motion controller for an industrial automation portfolio. The project demonstrates deterministic cyclic control, CiA 402-style drive handling, injectable bus backends, watchdog supervision, fault injection, telemetry, diagnostics, and validation reporting.
 
-This repository does not claim certified SIL/PL safety and does not claim real EtherCAT/CANopen hardware validation. The current scope is a safety-oriented deterministic software simulation and host validation bench. Hardware commissioning is intentionally isolated as future work.
+This repository does not claim certified SIL/PL safety and does not claim real EtherCAT/CANopen hardware validation. The current scope includes a safety-oriented deterministic software bench plus a dependency-backed, non-commissioned SOEM v2 adapter path. Physical hardware commissioning remains future work.
 
 Current release line: `0.2.0`, the machine-gated simulation-complete software milestone.
 
@@ -15,6 +15,7 @@ Current release line: `0.2.0`, the machine-gated simulation-complete software mi
 - Profile position, profile velocity, and cyclic synchronous mode abstractions.
 - EtherCAT/CANopen-ready bus abstraction with a deterministic simulated backend.
 - Replay-backed adapter harness for recorded nominal, stale-data, bus, heartbeat, invalid-response, and recovery exchanges.
+- Pinned SOEM v2 compile path with guarded NIC/slave configuration, CiA 402 PDO byte exchange, working-counter supervision, and controller backend injection.
 - Watchdogs for loop timing, heartbeat, bus health, following error, and encoder feedback loss.
 - Fault injector for missed cycle, CPU spike, heartbeat timeout, bus dropout, packet loss, invalid transition, encoder loss, sensor noise, following error, drive fault, watchdog timeout, and command abuse.
 - Timestamped telemetry, CSV trace, JSON metrics, persistent fault log, and Markdown validation report export.
@@ -47,16 +48,16 @@ scripts/test.ps1
 scripts/benchmark.ps1 -Cycles 10000
 ```
 
-Optional hardware-adapter integration flags are available for future bench work:
+Optional hardware-adapter integration flags are available for bench work:
 
 ```powershell
-cmake -S . -B build-soem -DEMRTC_ENABLE_SOEM=ON
+cmake -S . -B build-soem -DEMRTC_ENABLE_SOEM=ON -DEMRTC_REQUIRE_SOEM=ON
 cmake -S . -B build-etherlab -DEMRTC_ENABLE_ETHERLAB=ON
 cmake -S . -B build-socketcan -DEMRTC_ENABLE_SOCKETCAN=ON
 cmake -S . -B build-canopennode -DEMRTC_ENABLE_CANOPENNODE=ON
 ```
 
-These flags currently enable documented integration points only. They do not claim real hardware library linkage or commissioned hardware behavior.
+The SOEM path becomes dependency-backed when SOEM v2 is discoverable. CI builds and tests that path against a pinned upstream commit. EtherLab, SocketCAN, and CANopenNode remain planned integration points. None of these flags claim commissioned hardware behavior.
 
 If Windows blocks local PowerShell scripts, run the same commands through a process-local bypass:
 
@@ -101,7 +102,7 @@ Evidence archive integrity check:
 python scripts/validate_evidence_archive.py reports/generated/hardware/<run-directory> --require-complete
 ```
 
-If CMake or a compiler is missing, install CMake and a C++17 toolchain such as MSVC Build Tools, LLVM/Clang, or GCC/MinGW, then rerun the scripts.
+If CMake or a compiler is missing, use the pinned portable installer above or install a C++17 toolchain such as MSVC Build Tools, LLVM/Clang, or GCC/MinGW.
 
 Use the local toolchain checker before a native build:
 
@@ -158,6 +159,7 @@ Key committed visuals include jitter, scenario matrix, control response, two-axi
 - [Bench Run Playbook](docs/bench_run_playbook.md)
 - [Hardware Runbooks](docs/runbooks/simulated_validation_runbook.md)
 - [Hardware Adapter Integration Notes](docs/adapters/README.md)
+- [SOEM EtherCAT Backend](docs/adapters/soem_ethercat.md)
 - [Architecture Overview](docs/architecture.md)
 - [Timing Budget](docs/timing_budget.md)
 - [Control Loop Architecture](docs/control_loop_architecture.md)

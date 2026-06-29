@@ -6,7 +6,7 @@ This BOM is a planning document, not a purchase order. No hardware validation is
 | --- | --- | --- | --- |
 | MCU/control board | STM32 Nucleo, Teensy 4.1, or similar real-time capable board | Future MCU-side deterministic control tasking | Planned |
 | Supervisory computer | Linux PC or industrial PC with PREEMPT_RT option | Host supervisor, diagnostics, EtherCAT/CANopen master experiments | Planned |
-| EtherCAT master stack | SOEM or EtherLab | Future EtherCAT backend for `IBusBackend` | Planned |
+| EtherCAT master stack | SOEM v2 or EtherLab | SOEM dependency-backed backend exists; physical master commissioning is pending | Software integrated |
 | CAN interface | USB-CAN or PCIe CAN with SocketCAN support | Future CANopen path | Planned |
 | Servo/intelligent actuator | Small industrial servo drive or intelligent actuator | Real CiA 402 motion target | Planned |
 | Encoder feedback | Drive encoder or external incremental encoder | Feedback-loss and following-error validation | Planned |

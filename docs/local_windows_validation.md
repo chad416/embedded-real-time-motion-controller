@@ -40,6 +40,8 @@ powershell -ExecutionPolicy Bypass -File scripts/run_all_portable.ps1
 - The SOEM and SocketCAN adapter-flag skeleton build compiled successfully.
 - The native CLI status, adapter status, two-axis acceptance, JSON fault-matrix scenario, and portfolio demo completed.
 - The post-release replay harness compiled and passed nominal plus four-fault recovery traces with zero expectation mismatches.
+- The post-release SOEM v2 backend compiled and linked against the pinned dependency, including real context/lifecycle and cyclic exchange calls.
+- The default suite now passes 38 controller, adapter, replay, scenario, and performance checks.
 - The deterministic 10,000-cycle benchmark completed.
 - Sample report and capture-manifest generation completed through the bundled Python fallback.
 
@@ -58,4 +60,4 @@ The missed cycles and deadline overruns are expected injected benchmark events, 
 
 ## Evidence Boundary
 
-This local result closes the Windows native build/test blocker. It confirms host compilation and deterministic simulation behavior with the pinned portable toolchain. It does not validate real fieldbus timing, physical drive behavior, electrical integration, or a certified safety function.
+The dependency-backed SOEM executable cannot run on this Windows host until the Npcap runtime is installed; the default no-driver suite remains fully runnable. This local result confirms host compilation, linkage, and deterministic software behavior. It does not validate raw-interface access, real fieldbus timing, physical drive behavior, electrical integration, or a certified safety function.

@@ -28,6 +28,18 @@ const char* compact_state(DriveState state) {
     return "unknown";
 }
 
+DriveState state_from_statusword(std::uint16_t statusword) {
+    if ((statusword & 0x004FU) == 0x0000U) return DriveState::NotReady;
+    if ((statusword & 0x004FU) == 0x0040U) return DriveState::SwitchOnDisabled;
+    if ((statusword & 0x006FU) == 0x0021U) return DriveState::ReadyToSwitchOn;
+    if ((statusword & 0x006FU) == 0x0023U) return DriveState::SwitchedOn;
+    if ((statusword & 0x006FU) == 0x0027U) return DriveState::OperationEnabled;
+    if ((statusword & 0x006FU) == 0x0007U) return DriveState::QuickStopActive;
+    if ((statusword & 0x004FU) == 0x000FU) return DriveState::FaultReactionActive;
+    if ((statusword & 0x004FU) == 0x0008U) return DriveState::Fault;
+    return DriveState::NotReady;
+}
+
 }  // namespace
 
 Axis::Axis(std::string name, AxisLimits limits)
@@ -52,11 +64,11 @@ FaultCode Axis::fault_code() const {
 AxisFeedback Axis::feedback() const {
     AxisFeedback feedback;
     feedback.position = encoder_position_ + sensor_noise_;
-    feedback.velocity = encoder_feedback_lost_ ? 0.0 : velocity_;
+    feedback.velocity = encoder_feedback_lost_ ? 0.0 : encoder_velocity_;
     feedback.target_position = target_position_;
     feedback.target_velocity = target_velocity_;
     feedback.following_error = (position_ - feedback.position) + injected_following_error_;
-    feedback.statusword = build_statusword();
+    feedback.statusword = external_feedback_mode_ ? external_statusword_ : build_statusword();
     feedback.controlword = build_controlword();
     feedback.fault_code = fault_code_;
     feedback.state = state_;
@@ -85,6 +97,14 @@ bool Axis::apply_command(const AxisCommand& command, CycleIndex cycle) {
             return true;
         case CommandType::FaultReset:
             if (state_ == DriveState::Fault) {
+                if (external_feedback_mode_) {
+                    fault_reset_requested_ = true;
+                    fault_code_ = FaultCode::None;
+                    encoder_feedback_lost_ = false;
+                    injected_following_error_ = 0.0;
+                    sensor_noise_ = 0.0;
+                    return true;
+                }
                 fault_code_ = FaultCode::None;
                 encoder_feedback_lost_ = false;
                 injected_following_error_ = 0.0;
@@ -117,7 +137,8 @@ bool Axis::apply_command(const AxisCommand& command, CycleIndex cycle) {
                 return false;
             }
             mode_ = ControlMode::ProfilePosition;
-            target_position_ = position_ + command.value;
+            target_position_ =
+                (external_feedback_mode_ ? encoder_position_ : position_) + command.value;
             target_reached_ = false;
             return true;
         case CommandType::Velocity:
@@ -133,7 +154,7 @@ bool Axis::apply_command(const AxisCommand& command, CycleIndex cycle) {
             return true;
         case CommandType::Stop:
             target_velocity_ = 0.0;
-            target_position_ = position_;
+            target_position_ = external_feedback_mode_ ? encoder_position_ : position_;
             target_reached_ = true;
             mode_ = ControlMode::ProfileVelocity;
             return true;
@@ -141,9 +162,53 @@ bool Axis::apply_command(const AxisCommand& command, CycleIndex cycle) {
     return false;
 }
 
+void Axis::apply_external_feedback(std::uint16_t statusword,
+                                   double actual_position,
+                                   double actual_velocity,
+                                   FaultCode drive_fault,
+                                   CycleIndex cycle) {
+    const bool first_external_feedback = !external_feedback_mode_;
+    external_feedback_mode_ = true;
+    external_statusword_ = statusword;
+    encoder_position_ = actual_position;
+    encoder_velocity_ = actual_velocity;
+    encoder_feedback_lost_ = false;
+    target_reached_ = (statusword & 0x0400U) != 0U;
+    if (first_external_feedback) {
+        position_ = actual_position;
+        velocity_ = actual_velocity;
+        target_position_ = actual_position;
+    }
+
+    const auto reported_state = state_from_statusword(statusword);
+    const bool drive_reports_fault =
+        drive_fault != FaultCode::None ||
+        reported_state == DriveState::Fault ||
+        reported_state == DriveState::FaultReactionActive;
+    if (drive_reports_fault) {
+        set_state(reported_state, cycle, "external CiA 402 fault statusword");
+        fault_code_ = drive_fault != FaultCode::None ? drive_fault : FaultCode::DriveFault;
+        enable_requested_ = false;
+        mode_ = ControlMode::Disabled;
+        target_velocity_ = 0.0;
+    } else if (fault_code_ == FaultCode::None) {
+        set_state(reported_state, cycle, "external CiA 402 statusword");
+    }
+    fault_reset_requested_ = false;
+}
+
 void Axis::update(double dt_s, CycleIndex cycle) {
     if (!bus_online_ && state_ != DriveState::Fault && state_ != DriveState::FaultReactionActive) {
         enter_fault(FaultCode::BusDropout, cycle, "bus offline");
+    }
+
+    if (external_feedback_mode_) {
+        if (state_ == DriveState::FaultReactionActive) {
+            set_state(DriveState::Fault, cycle, "local fault reaction completed");
+        }
+        update_motion(dt_s);
+        target_reached_ = (external_statusword_ & 0x0400U) != 0U;
+        return;
     }
 
     if (state_ == DriveState::NotReady) {
@@ -162,6 +227,7 @@ void Axis::update(double dt_s, CycleIndex cycle) {
 
     if (!encoder_feedback_lost_) {
         encoder_position_ = position_;
+        encoder_velocity_ = velocity_;
     }
 }
 
@@ -218,6 +284,7 @@ void Axis::cold_restart() {
     mode_ = ControlMode::Disabled;
     fault_code_ = FaultCode::None;
     enable_requested_ = false;
+    fault_reset_requested_ = false;
     bus_online_ = true;
     encoder_feedback_lost_ = false;
     sensor_noise_ = 0.0;
@@ -228,6 +295,9 @@ void Axis::cold_restart() {
     target_position_ = 0.0;
     target_velocity_ = 0.0;
     target_reached_ = true;
+    external_feedback_mode_ = false;
+    external_statusword_ = 0;
+    encoder_velocity_ = 0.0;
     transition_trace_.clear();
 }
 
@@ -236,11 +306,15 @@ void Axis::warm_restart() {
     mode_ = ControlMode::Disabled;
     fault_code_ = FaultCode::None;
     enable_requested_ = false;
+    fault_reset_requested_ = false;
     velocity_ = 0.0;
+    encoder_velocity_ = 0.0;
     target_velocity_ = 0.0;
     target_position_ = encoder_position_;
     position_ = encoder_position_;
     target_reached_ = true;
+    external_feedback_mode_ = false;
+    external_statusword_ = 0;
     clear_transient_faults();
 }
 
@@ -284,11 +358,19 @@ std::uint16_t Axis::build_statusword() const {
 }
 
 std::uint16_t Axis::build_controlword() const {
-    if (state_ == DriveState::OperationEnabled) {
-        return 0x000F;
+    if (fault_reset_requested_) {
+        return 0x0080;
     }
     if (enable_requested_) {
-        return 0x0006;
+        if (state_ == DriveState::SwitchOnDisabled || state_ == DriveState::NotReady) {
+            return 0x0006;
+        }
+        if (state_ == DriveState::ReadyToSwitchOn) {
+            return 0x0007;
+        }
+        if (state_ == DriveState::SwitchedOn || state_ == DriveState::OperationEnabled) {
+            return 0x000F;
+        }
     }
     if (state_ == DriveState::QuickStopActive) {
         return 0x0002;

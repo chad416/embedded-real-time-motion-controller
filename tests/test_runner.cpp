@@ -6,9 +6,11 @@
 #include "emrtc/replay_adapter.hpp"
 #include "emrtc/scenario.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <filesystem>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
@@ -19,6 +21,55 @@ struct TestResult {
     std::string name;
     bool pass{false};
     std::string detail;
+};
+
+class ExternalLoopbackBackend final : public emrtc::IBusBackend {
+public:
+    emrtc::BusExchangeResult exchange(
+        emrtc::CycleIndex cycle,
+        std::vector<emrtc::ProcessImage>& images) override {
+        diagnostics_.tx_packets++;
+        diagnostics_.rx_packets++;
+        diagnostics_.last_heartbeat_cycle = cycle;
+        diagnostics_.online = true;
+        diagnostics_.heartbeat_ok = true;
+
+        if (images.size() != 1U) {
+            diagnostics_.invalid_response_count++;
+            return {false, true, true};
+        }
+
+        observed_controlwords.push_back(images.front().controlword);
+        observed_target_positions.push_back(images.front().target_position);
+        if (images.front().controlword == 0x0006U) {
+            statusword_ = 0x0021U;
+        } else if (images.front().controlword == 0x0007U) {
+            statusword_ = 0x0023U;
+        } else if (images.front().controlword == 0x000FU) {
+            statusword_ = 0x0027U;
+        } else if (images.front().controlword == 0x0080U) {
+            statusword_ = 0x0040U;
+        }
+
+        images.front().statusword = statusword_;
+        images.front().actual_position = actual_position;
+        images.front().actual_velocity = actual_velocity;
+        images.front().drive_fault = emrtc::FaultCode::None;
+        return {};
+    }
+
+    const emrtc::BusDiagnostics& diagnostics() const override {
+        return diagnostics_;
+    }
+
+    double actual_position{1.25};
+    double actual_velocity{0.5};
+    std::vector<std::uint16_t> observed_controlwords;
+    std::vector<double> observed_target_positions;
+
+private:
+    emrtc::BusDiagnostics diagnostics_;
+    std::uint16_t statusword_{0x0040U};
 };
 
 bool near(double value, double target, double tolerance) {
@@ -239,6 +290,118 @@ TestResult test_fault_log_replay() {
             "fault log contains replayable event"};
 }
 
+TestResult test_external_cia402_feedback_and_controlword_sequence() {
+    emrtc::Axis axis("external_axis");
+    axis.apply_external_feedback(0x0040U, 0.0, 0.0, emrtc::FaultCode::None, 0);
+    const bool accepted = axis.apply_command({emrtc::CommandType::Enable, 0.0}, 0);
+    const bool shutdown = axis.feedback().controlword == 0x0006U;
+
+    axis.apply_external_feedback(0x0021U, 0.25, 0.10, emrtc::FaultCode::None, 1);
+    const bool switch_on = axis.feedback().controlword == 0x0007U;
+    axis.apply_external_feedback(0x0023U, 0.50, 0.20, emrtc::FaultCode::None, 2);
+    const bool enable_operation = axis.feedback().controlword == 0x000FU;
+    axis.apply_external_feedback(0x0427U, 0.75, 0.30, emrtc::FaultCode::None, 3);
+    const auto operational = axis.feedback();
+
+    axis.apply_external_feedback(0x0008U, 0.75, 0.0, emrtc::FaultCode::DriveFault, 4);
+    const bool reset_accepted =
+        axis.apply_command({emrtc::CommandType::FaultReset, 0.0}, 4);
+    const bool reset_pulse = axis.feedback().controlword == 0x0080U;
+    axis.apply_external_feedback(0x0008U, 0.75, 0.0, emrtc::FaultCode::DriveFault, 4);
+    axis.update(0.001, 4);
+    const bool one_cycle_pulse = axis.feedback().controlword == 0x0000U;
+
+    axis.apply_external_feedback(0x0027U, 0.75, 0.0, emrtc::FaultCode::None, 5);
+    axis.force_fault(emrtc::FaultCode::FollowingError, 5, "local watchdog fault");
+    axis.apply_external_feedback(0x0027U, 0.75, 0.0, emrtc::FaultCode::None, 5);
+    axis.update(0.001, 5);
+    const bool local_fault_latched =
+        axis.state() == emrtc::DriveState::Fault &&
+        axis.fault_code() == emrtc::FaultCode::FollowingError;
+    const bool local_reset_accepted =
+        axis.apply_command({emrtc::CommandType::FaultReset, 0.0}, 6);
+    const bool local_reset_pulse = axis.feedback().controlword == 0x0080U;
+    axis.apply_external_feedback(0x0040U, 0.75, 0.0, emrtc::FaultCode::None, 6);
+    axis.update(0.001, 6);
+    const bool local_fault_cleared =
+        axis.state() == emrtc::DriveState::SwitchOnDisabled &&
+        axis.fault_code() == emrtc::FaultCode::None;
+
+    return {"external CiA 402 feedback and controlword sequence",
+            accepted &&
+                shutdown &&
+                switch_on &&
+                enable_operation &&
+                operational.state == emrtc::DriveState::OperationEnabled &&
+                operational.target_reached &&
+                near(operational.position, 0.75, 0.0001) &&
+                near(operational.velocity, 0.30, 0.0001) &&
+                reset_accepted &&
+                reset_pulse &&
+                one_cycle_pulse &&
+                local_fault_latched &&
+                local_reset_accepted &&
+                local_reset_pulse &&
+                local_fault_cleared,
+            "external feedback drives state while local faults stay latched through explicit reset"};
+}
+
+TestResult test_controller_uses_injected_external_backend() {
+    ExternalLoopbackBackend backend;
+    emrtc::RealTimeController controller(backend);
+    controller.command({emrtc::CommandType::Enable, 0.0});
+    controller.run_cycles(3);
+    controller.command({emrtc::CommandType::MoveAbsolute, 2.0});
+    controller.run_cycles(1);
+    controller.command({emrtc::CommandType::MoveRelative, 0.25});
+    controller.run_cycles(1);
+    controller.fault_injector().schedule(
+        {5, emrtc::FaultKind::PacketLoss, 2.0, 3});
+    controller.run_cycles(1);
+
+    bool simulation_api_rejected = false;
+    try {
+        static_cast<void>(controller.bus());
+    } catch (const std::logic_error&) {
+        simulation_api_rejected = true;
+    }
+
+    const auto feedback = controller.axis().feedback();
+    const auto metrics = controller.metrics();
+    const bool unavailable_injection_logged =
+        std::any_of(metrics.trace.begin(), metrics.trace.end(), [](const auto& event) {
+            return event.event ==
+                   "simulation-only packet loss injection unavailable with external backend";
+        });
+    const bool target_forwarded =
+        std::any_of(backend.observed_target_positions.begin(),
+                    backend.observed_target_positions.end(),
+                    [](double value) { return near(value, 2.0, 0.0001); });
+    const bool relative_target_uses_measured_position =
+        std::any_of(backend.observed_target_positions.begin(),
+                    backend.observed_target_positions.end(),
+                    [](double value) { return near(value, 1.5, 0.0001); });
+
+    return {"controller injected external backend",
+            !controller.using_simulated_backend() &&
+                &controller.backend() == &backend &&
+                simulation_api_rejected &&
+                controller.axis().state() == emrtc::DriveState::OperationEnabled &&
+                near(feedback.position, backend.actual_position, 0.0001) &&
+                near(feedback.velocity, backend.actual_velocity, 0.0001) &&
+                backend.observed_controlwords.size() == 6U &&
+                backend.observed_controlwords[0] == 0x0006U &&
+                backend.observed_controlwords[1] == 0x0007U &&
+                backend.observed_controlwords[2] == 0x000FU &&
+                target_forwarded &&
+                relative_target_uses_measured_position &&
+                metrics.bus.tx_packets == 6U &&
+                metrics.bus.rx_packets == 6U &&
+                metrics.bus.packet_loss_count == 0U &&
+                unavailable_injection_logged,
+            "controller exchanges real process images without exposing simulated-bus controls"};
+}
+
 TestResult test_json_scenario_loader() {
     const std::string path = "examples/scenarios/fault_matrix.json";
     if (!std::filesystem::exists(path)) {
@@ -303,6 +466,91 @@ TestResult test_hardware_adapter_skeletons_are_not_claiming_commissioning() {
                 !socket_can.diagnostics().online &&
                 !canopen_node.diagnostics().online,
             "future hardware adapters report uncommissioned status"};
+}
+
+TestResult test_soem_configuration_guards_do_not_touch_hardware() {
+    emrtc::SoemEtherCatBackend soem;
+    emrtc::SoemAdapterConfig config;
+    config.observed_mapping = emrtc::expected_adapter_mapping();
+
+    const auto empty_interface = soem.configure(config);
+
+    config.interface_name = "not-opened-because-mapping-is-invalid";
+    config.observed_mapping[0].object_index = 0x0000;
+    const auto invalid_mapping = soem.configure(config);
+
+    config.observed_mapping = emrtc::expected_adapter_mapping();
+    config.io_map_bytes = 128;
+    const auto small_map = soem.configure(config);
+
+    config.io_map_bytes = 4096;
+    config.expected_slave_count = 2;
+    const auto multiple_slaves = soem.configure(config);
+
+    config.expected_slave_count = 1;
+    config.receive_timeout_us = 0;
+    const auto zero_timeout = soem.configure(config);
+
+    std::vector<emrtc::ProcessImage> images(1);
+    const auto exchange = soem.exchange(0, images);
+    return {"SOEM configuration guards do not touch hardware",
+            !empty_interface.ok &&
+                empty_interface.detail.find("interface") != std::string::npos &&
+                !invalid_mapping.ok &&
+                invalid_mapping.detail.find("mapping") != std::string::npos &&
+                !small_map.ok &&
+                small_map.detail.find("4096") != std::string::npos &&
+                !multiple_slaves.ok &&
+                multiple_slaves.detail.find("expected_slave_count=1") !=
+                    std::string::npos &&
+                !zero_timeout.ok &&
+                zero_timeout.detail.find("receive_timeout_us") !=
+                    std::string::npos &&
+                !exchange.ok &&
+                !soem.status().configured &&
+                !soem.diagnostics().online,
+            "invalid preconditions fail before NIC discovery or cyclic exchange"};
+}
+
+TestResult test_soem_pdo_codec_is_bounded_and_little_endian() {
+    emrtc::ProcessImage image;
+    image.controlword = 0x1234;
+    image.target_position = 1.25;
+    image.target_velocity = -0.5;
+    std::vector<std::uint8_t> outputs(10, 0);
+    const emrtc::SoemPdoLayout layout;
+    const auto encoded =
+        emrtc::encode_soem_process_outputs(image, 1000.0, layout, outputs.data(), outputs.size());
+
+    std::vector<std::uint8_t> inputs{
+        0x2FU, 0x00U,
+        0xD2U, 0x04U, 0x00U, 0x00U,
+        0x0CU, 0xFEU, 0xFFU, 0xFFU,
+    };
+    const auto decoded =
+        emrtc::decode_soem_process_inputs(inputs.data(),
+                                          inputs.size(),
+                                          1000.0,
+                                          layout,
+                                          image);
+    const auto bounded =
+        emrtc::encode_soem_process_outputs(image, 1000.0, layout, outputs.data(), 4);
+
+    return {"SOEM PDO codec is bounded and little-endian",
+            encoded.ok &&
+                outputs[0] == 0x34U &&
+                outputs[1] == 0x12U &&
+                outputs[2] == 0xE2U &&
+                outputs[3] == 0x04U &&
+                outputs[6] == 0x0CU &&
+                outputs[7] == 0xFEU &&
+                decoded.ok &&
+                image.statusword == 0x002FU &&
+                near(image.actual_position, 1.234, 0.001) &&
+                near(image.actual_velocity, -0.5, 0.001) &&
+                image.drive_fault == emrtc::FaultCode::DriveFault &&
+                !bounded.ok,
+            "PDO bytes round trip with explicit bounds and statusword fault decoding"};
 }
 
 TestResult test_cia402_process_image_mapping_contract() {
@@ -518,10 +766,14 @@ int main() {
         test_warm_restart(),
         test_cold_restart(),
         test_fault_log_replay(),
+        test_external_cia402_feedback_and_controlword_sequence(),
+        test_controller_uses_injected_external_backend(),
         test_json_scenario_loader(),
         test_json_scenario_suite(),
         test_two_axis_coordinated_move(),
         test_hardware_adapter_skeletons_are_not_claiming_commissioning(),
+        test_soem_configuration_guards_do_not_touch_hardware(),
+        test_soem_pdo_codec_is_bounded_and_little_endian(),
         test_cia402_process_image_mapping_contract(),
         test_adapter_mapping_validator_rejects_invalid_object_map(),
         test_adapter_exchange_monitor_detects_stale_pdo_data(),

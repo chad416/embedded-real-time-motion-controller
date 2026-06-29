@@ -22,3 +22,6 @@ if (-not $python) {
 }
 
 & $python "$PSScriptRoot/generate_report.py" --out reports/generated
+if ($LASTEXITCODE -ne 0) {
+    throw "Python report generation failed with exit code $LASTEXITCODE."
+}

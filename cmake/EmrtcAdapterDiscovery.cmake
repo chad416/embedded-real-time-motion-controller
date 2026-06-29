@@ -1,26 +1,46 @@
-# Optional discovery for future fieldbus stacks.
+# Discovery for optional fieldbus stacks.
 #
-# These checks are intentionally non-fatal. The project must continue to build in
-# skeleton mode when vendor/OS-specific stacks are not installed.
+# Most checks are non-fatal so the default simulation build remains portable.
+# SOEM can be made mandatory for dependency-backed validation.
 
 set(EMRTC_HAS_SOEM OFF)
 set(EMRTC_SOEM_INCLUDE_DIRS "")
 set(EMRTC_SOEM_LIBRARIES "")
 
 if(EMRTC_ENABLE_SOEM)
-    find_path(EMRTC_SOEM_INCLUDE_DIR
-        NAMES ethercat.h
-        PATH_SUFFIXES soem SOEM)
-    find_library(EMRTC_SOEM_LIBRARY
-        NAMES soem libsoem)
-
-    if(EMRTC_SOEM_INCLUDE_DIR AND EMRTC_SOEM_LIBRARY)
+    find_package(soem CONFIG QUIET PATH_SUFFIXES cmake)
+    if(TARGET soem)
         set(EMRTC_HAS_SOEM ON)
-        set(EMRTC_SOEM_INCLUDE_DIRS "${EMRTC_SOEM_INCLUDE_DIR}")
-        set(EMRTC_SOEM_LIBRARIES "${EMRTC_SOEM_LIBRARY}")
-        message(STATUS "SOEM dependency discovered: ${EMRTC_SOEM_LIBRARY}")
+        set(EMRTC_SOEM_LIBRARIES soem)
+        message(STATUS "SOEM v2 CMake target discovered")
     else()
-        message(STATUS "SOEM flag enabled, but headers/library were not found; using skeleton adapter mode")
+        find_path(EMRTC_SOEM_INCLUDE_DIR
+            NAMES soem/soem.h)
+        find_library(EMRTC_SOEM_LIBRARY
+            NAMES soem libsoem)
+
+        if(EMRTC_SOEM_INCLUDE_DIR AND EMRTC_SOEM_LIBRARY)
+            set(EMRTC_HAS_SOEM ON)
+            set(EMRTC_SOEM_INCLUDE_DIRS "${EMRTC_SOEM_INCLUDE_DIR}")
+            set(EMRTC_SOEM_LIBRARIES "${EMRTC_SOEM_LIBRARY}")
+            message(STATUS "SOEM v2 dependency discovered: ${EMRTC_SOEM_LIBRARY}")
+        else()
+            if(EMRTC_REQUIRE_SOEM)
+                message(FATAL_ERROR "SOEM v2 was required but soem/soem.h and the soem library were not found")
+            else()
+                message(STATUS "SOEM flag enabled, but SOEM v2 headers/library were not found; using skeleton adapter mode")
+            endif()
+        endif()
+    endif()
+
+    if(EMRTC_HAS_SOEM AND WIN32)
+        set(EMRTC_SOEM_PLATFORM_INCLUDE_DIR "" CACHE PATH
+            "Windows pcap include directory required by SOEM v2")
+        if(EMRTC_SOEM_PLATFORM_INCLUDE_DIR)
+            list(APPEND EMRTC_SOEM_INCLUDE_DIRS "${EMRTC_SOEM_PLATFORM_INCLUDE_DIR}")
+        elseif(EMRTC_REQUIRE_SOEM)
+            message(FATAL_ERROR "SOEM v2 on Windows requires EMRTC_SOEM_PLATFORM_INCLUDE_DIR containing pcap.h")
+        endif()
     endif()
 endif()
 

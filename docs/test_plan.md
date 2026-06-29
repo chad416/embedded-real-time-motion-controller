@@ -27,7 +27,11 @@ The C++ test runner is intentionally dependency-free and is registered with CTes
 | Warm restart | Re-enable succeeds while preserving position model. |
 | Cold restart | Position model resets and re-enable succeeds. |
 | Persistent fault log replay | Fault log contains cycle/time/fault record. |
-| Hardware adapter skeleton status | Adapters stay uncommissioned even when optional dependency discovery is enabled. |
+| Hardware adapter status | Adapters stay uncommissioned until explicit runtime configuration succeeds. |
+| SOEM configuration guards | Invalid interface, map size, slave count, timeout, and object mapping fail before NIC access. |
+| SOEM PDO byte codec | Output/input fields are bounded and encoded little-endian. |
+| External CiA 402 sequence | Statusword feedback drives state and emits shutdown, switch-on, enable-operation, and fault-reset controlwords. |
+| Injected external backend | Controller forwards output targets, accepts measured feedback, exposes diagnostics, and rejects simulated-bus-only APIs. |
 | CiA 402 process-image mapping contract | Object indexes and counts-per-unit scaling round trip. |
 | Adapter mapping validator rejects invalid object map | Bad PDO/object dictionary mapping is rejected. |
 | Adapter exchange monitor detects stale PDO data | Stale receive data becomes a bus watchdog fault. |
@@ -41,4 +45,4 @@ scripts/build.ps1
 scripts/test.ps1
 ```
 
-If the local machine lacks CMake or a C++17 compiler, install those tools and rerun. The Python report generator is only a sample-evidence fallback, not a replacement for native C++ tests.
+On Windows, `scripts/run_all_portable.ps1` uses the pinned portable CMake/MinGW-w64 toolchain. The Python report generator is only a sample-evidence fallback, not a replacement for native C++ tests.

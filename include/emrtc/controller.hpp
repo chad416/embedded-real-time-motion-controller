@@ -14,11 +14,15 @@ namespace emrtc {
 class RealTimeController {
 public:
     explicit RealTimeController(ControllerConfig config = {});
+    RealTimeController(IBusBackend& backend, ControllerConfig config = {});
 
     Axis& axis();
     const Axis& axis() const;
     SimulatedBusBackend& bus();
     const SimulatedBusBackend& bus() const;
+    IBusBackend& backend();
+    const IBusBackend& backend() const;
+    bool using_simulated_backend() const;
     FaultInjector& fault_injector();
 
     void command(AxisCommand command);
@@ -39,7 +43,8 @@ private:
 
     ControllerConfig config_;
     Axis axis_;
-    SimulatedBusBackend bus_;
+    SimulatedBusBackend simulated_bus_;
+    IBusBackend* backend_{nullptr};
     FaultInjector fault_injector_;
     WatchdogSupervisor watchdog_;
     TelemetryRecorder telemetry_;

@@ -2,6 +2,7 @@
 #include "emrtc/multi_axis.hpp"
 
 #include <cmath>
+#include <stdexcept>
 #include <sstream>
 
 namespace emrtc {
@@ -30,6 +31,17 @@ RealTimeController::RealTimeController(ControllerConfig config)
       axis_("axis_0", {config.max_velocity_units_per_s,
                        config.max_accel_units_per_s2,
                        config.following_error_limit}),
+      backend_(&simulated_bus_),
+      watchdog_(config) {
+    process_images_.resize(1);
+}
+
+RealTimeController::RealTimeController(IBusBackend& backend, ControllerConfig config)
+    : config_(config),
+      axis_("axis_0", {config.max_velocity_units_per_s,
+                       config.max_accel_units_per_s2,
+                       config.following_error_limit}),
+      backend_(&backend),
       watchdog_(config) {
     process_images_.resize(1);
 }
@@ -43,11 +55,29 @@ const Axis& RealTimeController::axis() const {
 }
 
 SimulatedBusBackend& RealTimeController::bus() {
-    return bus_;
+    if (!using_simulated_backend()) {
+        throw std::logic_error("simulation-only bus API requested with an external backend");
+    }
+    return simulated_bus_;
 }
 
 const SimulatedBusBackend& RealTimeController::bus() const {
-    return bus_;
+    if (!using_simulated_backend()) {
+        throw std::logic_error("simulation-only bus API requested with an external backend");
+    }
+    return simulated_bus_;
+}
+
+IBusBackend& RealTimeController::backend() {
+    return *backend_;
+}
+
+const IBusBackend& RealTimeController::backend() const {
+    return *backend_;
+}
+
+bool RealTimeController::using_simulated_backend() const {
+    return backend_ == &simulated_bus_;
 }
 
 FaultInjector& RealTimeController::fault_injector() {
@@ -63,7 +93,9 @@ void RealTimeController::request_estop() {
 }
 
 void RealTimeController::reset_faults() {
-    bus_.reset_faults();
+    if (using_simulated_backend()) {
+        simulated_bus_.reset_faults();
+    }
     watchdog_.reset();
     axis_.clear_transient_faults();
     axis_.apply_command({CommandType::FaultReset, 0.0}, cycle_);
@@ -75,7 +107,9 @@ void RealTimeController::reset_faults() {
 
 void RealTimeController::cold_restart() {
     axis_.cold_restart();
-    bus_.reset_faults();
+    if (using_simulated_backend()) {
+        simulated_bus_.reset_faults();
+    }
     watchdog_.reset();
     pending_command_ = {};
     estop_requested_ = false;
@@ -86,7 +120,9 @@ void RealTimeController::cold_restart() {
 
 void RealTimeController::warm_restart() {
     axis_.warm_restart();
-    bus_.reset_faults();
+    if (using_simulated_backend()) {
+        simulated_bus_.reset_faults();
+    }
     watchdog_.reset();
     pending_command_ = {};
     estop_requested_ = false;
@@ -103,7 +139,7 @@ void RealTimeController::run_cycles(std::uint64_t count) {
 
 RuntimeMetrics RealTimeController::metrics() const {
     auto result = telemetry_.finalize();
-    result.bus = bus_.diagnostics();
+    result.bus = backend_->diagnostics();
     return result;
 }
 
@@ -128,17 +164,32 @@ void RealTimeController::apply_fault_event(const FaultInjectionEvent& event) {
             record_status("cpu load spike injected");
             break;
         case FaultKind::HeartbeatTimeout:
-            bus_.inject_heartbeat_timeout(event.duration_cycles);
-            record_status("heartbeat timeout injected");
+            if (using_simulated_backend()) {
+                simulated_bus_.inject_heartbeat_timeout(event.duration_cycles);
+                record_status("heartbeat timeout injected");
+            } else {
+                record_status("simulation-only heartbeat timeout injection unavailable with external backend");
+            }
             break;
         case FaultKind::BusDropout:
-            bus_.inject_dropout(event.duration_cycles);
-            record_status("bus dropout injected");
+            if (using_simulated_backend()) {
+                simulated_bus_.inject_dropout(event.duration_cycles);
+                record_status("bus dropout injected");
+            } else {
+                record_status("simulation-only bus dropout injection unavailable with external backend");
+            }
             break;
         case FaultKind::PacketLoss:
-            bus_.inject_packet_loss(event.magnitude <= 0.0 ? 2u : static_cast<std::uint32_t>(event.magnitude),
-                                    event.duration_cycles);
-            record_status("packet loss injected");
+            if (using_simulated_backend()) {
+                simulated_bus_.inject_packet_loss(
+                    event.magnitude <= 0.0
+                        ? 2u
+                        : static_cast<std::uint32_t>(event.magnitude),
+                    event.duration_cycles);
+                record_status("packet loss injected");
+            } else {
+                record_status("simulation-only packet loss injection unavailable with external backend");
+            }
             break;
         case FaultKind::InvalidDriveTransition:
             axis_.inject_fault(event.kind, event.magnitude, cycle_);
@@ -204,20 +255,27 @@ void RealTimeController::execute_cycle() {
     process_images_[0].controlword = axis_.feedback().controlword;
     process_images_[0].target_position = axis_.feedback().target_position;
     process_images_[0].target_velocity = axis_.feedback().target_velocity;
-    const auto bus_result = bus_.exchange(cycle_, process_images_);
+    const auto bus_result = backend_->exchange(cycle_, process_images_);
 
     if (bus_result.invalid_response) {
         axis_.force_fault(FaultCode::InvalidDriveTransition, cycle_, "invalid PDO/object response");
         record_fault(FaultCode::InvalidDriveTransition, "bus returned invalid PDO/object dictionary response");
     }
+    if (!using_simulated_backend() && bus_result.ok && !bus_result.invalid_response) {
+        axis_.apply_external_feedback(process_images_[0].statusword,
+                                      process_images_[0].actual_position,
+                                      process_images_[0].actual_velocity,
+                                      process_images_[0].drive_fault,
+                                      cycle_);
+    }
 
-    axis_.set_bus_online(bus_.diagnostics().online);
+    axis_.set_bus_online(backend_->diagnostics().online);
     axis_.update(static_cast<double>(config_.cycle_time_ns) * kNsToSeconds, cycle_);
 
     auto feedback = axis_.feedback();
     watchdog_.note_encoder_feedback_loss(feedback.encoder_feedback_lost,
                                          static_cast<double>(config_.cycle_time_ns) * kNsToSeconds);
-    const auto watchdog_status = watchdog_.evaluate(sample, bus_.diagnostics(), feedback);
+    const auto watchdog_status = watchdog_.evaluate(sample, backend_->diagnostics(), feedback);
     if (watchdog_status.fault != FaultCode::None &&
         axis_.fault_code() != watchdog_status.fault &&
         axis_.state() != DriveState::FaultReactionActive) {
@@ -230,7 +288,7 @@ void RealTimeController::execute_cycle() {
     process_images_[0].actual_position = feedback.position;
     process_images_[0].actual_velocity = feedback.velocity;
     process_images_[0].drive_fault = feedback.fault_code;
-    telemetry_.set_bus_diagnostics(bus_.diagnostics());
+    telemetry_.set_bus_diagnostics(backend_->diagnostics());
     record_status("cycle");
 
     if (force_watchdog_timeout_) {

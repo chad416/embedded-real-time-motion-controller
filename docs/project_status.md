@@ -10,14 +10,16 @@ Last updated: 2026-06-29
 | CMake/C++ source layout | Complete | Library, simulator, benchmark, CLI, and test runner are present. |
 | Real-time controller core | Implemented | Deterministic 1 ms cycle model, jitter, missed cycle, deadline, watchdog, and trace instrumentation. |
 | Drive and motion abstraction | Implemented | Axis abstraction, CiA 402-style states, profile position/velocity, command guards, statusword/controlword. |
-| Bus abstraction | Implemented for simulation | Simulated process image with packet loss, dropout, heartbeat timeout, invalid response, counters. |
+| Bus abstraction | Implemented | Injectable `IBusBackend` with simulated, replay, and dependency-backed SOEM implementations. |
 | Watchdog/safety-oriented layer | Implemented | Loop, bus, heartbeat, following-error, encoder feedback-loss, and E-stop/safe-stop handling. |
 | Fault injector | Implemented | Required fault classes are represented in code and validation scenarios. |
 | Telemetry and diagnostics | Implemented | CSV trace, JSON metrics, fault log, Markdown reports, and CLI commands. |
 | Automated scenarios | Expanded | Built-in scenarios plus JSON scenario suite covering fault matrix, heartbeat timeout, bus disconnect, command abuse, encoder loss, and timing stress. |
 | Two-axis coordination | Expanded | Optional two-axis straight-line coordinated move simulation now reports path error, final position error, settling limits, and acceptance pass/fail. |
-| Adapter skeletons | Expanded | SOEM, EtherLab, SocketCAN, and CANopenNode skeletons have CMake build flags, status reporting, CI smoke build, and adapter-specific README files. |
-| Adapter dependency discovery | Added | CMake now performs non-fatal discovery for SOEM, EtherLab, SocketCAN headers, and CANopenNode when flags are enabled. |
+| Adapter implementations | Expanded | SOEM has guarded v2 lifecycle and cyclic PDO exchange; EtherLab, SocketCAN, and CANopenNode remain documented skeletons. |
+| Adapter dependency discovery | Expanded | CMake discovers SOEM v2 packages or headers/library, supports strict required mode, and retains optional discovery for the other stacks. |
+| External controller backend | Added | Controller constructor injection forwards controlword/targets and applies external statusword, position, velocity, and drive faults through the normal watchdog path. |
+| SOEM dependency validation | Added | Pinned upstream SOEM builds in CI; local Windows dependency-backed compile/link passes, with hardware-free guards and PDO codec tests. |
 | Process-image mapping contract | Added | CiA 402 object indexes, bit widths, directions, and counts/unit encode-decode helpers are tested independently of hardware stacks. |
 | Adapter exchange contract | Expanded | Mapping, stale receive data, heartbeat, bus-offline, restoration, invalid response, and outgoing command expectations are covered by adapter-level tests. |
 | Adapter replay harness | Added | Recorded nominal and fault/recovery process-image traces run through `IBusBackend`, CiA 402 scaling, and the exchange monitor with zero expected-fault mismatches. |
@@ -45,15 +47,15 @@ Last updated: 2026-06-29
 
 ## Current Completion Estimate
 
-Software/simulation/documentation side against the portfolio PDF target: about 90%.
+Software/simulation/documentation side against the portfolio PDF target: about 93%.
 
-Full flagship scope including real adapter integration, hardware commissioning, target timing capture, and a live bench demonstration: about 75%.
+Full flagship scope including hardware commissioning, target timing capture, physical fault recovery, and a live bench demonstration: about 80%.
 
 The split estimate prevents the mature simulation package from hiding the substantial hardware work that remains.
 
 ## Immediate Next Actions
 
-1. Convert the first future native bus capture into the replay CSV contract and preserve the raw capture beside it.
-2. Select a real EtherCAT or CANopen bench only after current drive documentation, interfaces, and safety constraints are reviewed.
-3. Implement one production-backed fieldbus adapter behind the tested exchange contract.
-4. Execute the relevant hardware runbook and archive the complete evidence set before changing any validation claim.
+1. Select a real EtherCAT NIC and CiA 402 drive only after current documentation, interfaces, and safety constraints are reviewed.
+2. Fill the SOEM runtime configuration from the verified drive PDO map and low-energy bench limits.
+3. Execute discovery, SAFE-OP/OP, low-speed motion, cable-loss, recovery, and timing captures.
+4. Convert the first native bus capture into the replay CSV contract and archive the complete evidence set before changing any validation claim.

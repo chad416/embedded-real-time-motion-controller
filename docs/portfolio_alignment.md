@@ -7,7 +7,7 @@ This project maps to the embedded real-time motion controller blueprint in the p
 | C/C++ controller core | C++17 library and apps with hosted CI plus native Windows build/test evidence | Repeat on the future target-specific runtime. |
 | FreeRTOS-style deterministic tasking | Deterministic cycle model and control-loop architecture note | Actual FreeRTOS target adapter not yet implemented. |
 | Linux/PREEMPT_RT supervisory layer | Host simulator, benchmark, CLI, GitHub Linux CI | Real PREEMPT_RT timing capture not yet implemented. |
-| EtherCAT abstraction | Process-image bus abstraction, simulated and replay backends, SOEM/EtherLab flags, dependency discovery, exchange contract, and replay fault/recovery evidence | Real SOEM/EtherLab exchange loop pending. |
+| EtherCAT abstraction | Injectable process-image bus, simulated/replay backends, dependency-backed SOEM v2 lifecycle and cyclic exchange, PDO codec, working-counter checks, and CI compile/test path | Selected NIC/drive mapping, recovery behavior, and physical exchange evidence pending. |
 | CANopen/CiA 402 abstraction | CiA 402-style state machine, process-image object contract, replayed PDO-style exchange checks, SocketCAN/CANopenNode flags, and adapter docs | Real CANopen PDO/SDO exchange pending. |
 | Timing instrumentation | Cycle samples, jitter, missed-cycle, deadline counters | Real hardware timestamp source pending. |
 | Fault injector | Required fault classes covered in code, tests, and JSON scenario suite | More cross-fault combinations can still be added. |
@@ -27,6 +27,6 @@ This project maps to the embedded real-time motion controller blueprint in the p
 
 ## Honest Completion Estimate
 
-The software/simulation/documentation package is about 90% complete. The full flagship artifact, including real adapter integration, hardware commissioning, target timing evidence, and a live bench demonstration, is about 75% complete.
+The software/simulation/documentation package is about 93% complete. The full flagship artifact, including hardware commissioning, target timing evidence, and a live bench demonstration, is about 80% complete.
 
-The implemented software core compiles and passes both hosted CI and native Windows validation. The repository now has graph-first software evidence, versioned capture profiles, adapter contracts, a repeatable demo walkthrough, a recruiter-facing evidence summary, and a machine-enforced release boundary. The lower full-project estimate reflects the real engineering still needed on fieldbus hardware, physical motion, timing capture, and stop-path evidence.
+The implemented software core compiles and passes native Windows validation, and the SOEM v2 path compiles and links locally against the pinned dependency. Hosted validation for that dependency-backed path is required on every change. The lower full-project estimate reflects the real engineering still needed on fieldbus hardware, physical motion, timing capture, recovery behavior, and stop-path evidence.

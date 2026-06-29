@@ -1,12 +1,12 @@
 # Hardware Adapter Integration Notes
 
-The repository is simulation-first. These notes define how future fieldbus adapters should be brought up without weakening the deterministic controller core or making unsupported hardware claims.
+The repository is simulation-first. These notes define how fieldbus adapters are brought up without weakening the deterministic controller core or making unsupported hardware claims.
 
 ## Build Flags
 
 | Adapter | CMake Flag | Default | Discovery |
 | --- | --- | --- | --- |
-| SOEM EtherCAT | `EMRTC_ENABLE_SOEM` | `OFF` | Non-fatal `ethercat.h` + `soem` library discovery |
+| SOEM EtherCAT | `EMRTC_ENABLE_SOEM` | `OFF` | SOEM v2 CMake package or `soem/soem.h` + library discovery |
 | EtherLab EtherCAT | `EMRTC_ENABLE_ETHERLAB` | `OFF` | Non-fatal `ecrt.h` + `ethercat` library discovery |
 | SocketCAN CANopen | `EMRTC_ENABLE_SOCKETCAN` | `OFF` | Non-fatal Linux CAN header discovery |
 | CANopenNode | `EMRTC_ENABLE_CANOPENNODE` | `OFF` | Non-fatal `CANopen.h` + CANopenNode library discovery |
@@ -14,10 +14,10 @@ The repository is simulation-first. These notes define how future fieldbus adapt
 Example:
 
 ```bash
-cmake -S . -B build -DEMRTC_ENABLE_SOEM=ON
+cmake -S . -B build -DEMRTC_ENABLE_SOEM=ON -DEMRTC_REQUIRE_SOEM=ON
 ```
 
-Enabling a flag asks CMake to discover the matching external dependency. If the dependency is missing, the build stays in skeleton mode and reports `dependency_available=false`. If the dependency is found, the project records `dependency_available=true`, but the adapter still reports `configured=false` until process-image mapping, bench configuration, and commissioning evidence are complete.
+Enabling a flag asks CMake to discover the matching external dependency. If SOEM is required and missing, configuration fails. Without the strict option, a missing dependency leaves the adapter in skeleton mode. A discovered SOEM dependency enables the real lifecycle and exchange implementation, while runtime status remains `configured=false` until explicit interface, mapping, and slave configuration succeeds.
 
 Runtime status can be inspected with:
 
@@ -25,7 +25,9 @@ Runtime status can be inspected with:
 emrtc_cli show adapters
 ```
 
-The adapter-neutral CiA 402 object contract is implemented in [`../../include/emrtc/process_image_mapping.hpp`](../../include/emrtc/process_image_mapping.hpp) and tested by the no-dependency C++ test runner. Hardware adapters should use that contract before adding stack-specific PDO/SDO exchange code.
+The adapter-neutral CiA 402 object contract is implemented in [`../../include/emrtc/process_image_mapping.hpp`](../../include/emrtc/process_image_mapping.hpp) and tested by the no-dependency C++ test runner. The SOEM backend uses this contract for bounded little-endian PDO encoding and decoding.
+
+`RealTimeController` supports constructor injection of an `IBusBackend`. External feedback therefore reaches the same CiA 402 state, following-error watchdog, telemetry, and fault path used by simulation.
 
 Stale process-data and invalid object-map handling are captured in [Adapter Exchange Contract](exchange_contract.md).
 

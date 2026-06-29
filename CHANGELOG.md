@@ -12,11 +12,18 @@ All notable project changes are recorded here.
 - Positive, corruption, unlisted-file, and forbidden-claim archive tests.
 - Replay-backed `IBusBackend` with recorded nominal and fault/recovery process-image traces.
 - CLI, demo, and C++ tests for replay expectations and controller-output mismatch rejection.
+- Dependency-backed SOEM v2 single-slave lifecycle and cyclic process-data exchange.
+- Bounded little-endian SOEM PDO codec, working-counter supervision, and configurable receive timeout.
+- External `IBusBackend` controller injection with measured CiA 402 feedback and one-cycle fault reset.
+- Hosted CI build/test path against a pinned upstream SOEM commit.
+- External-backend and SOEM configuration/codec tests, bringing the native suite to 38 checks.
 
 ### Changed
 
 - Toolchain checks now discover the bundled Codex Python runtime used by report generation.
 - The portfolio demo uses the same Python fallback and fails immediately on native command errors.
+- Native PowerShell build, test, benchmark, and report scripts now fail immediately on child-process errors.
+- Simulation-only bus fault injection is reported as unavailable when an external backend is active.
 
 ## [0.2.0] - 2026-06-29
 
@@ -43,6 +50,6 @@ All notable project changes are recorded here.
 
 ### Known Limitations
 
-- The local Windows workstation still needs CMake and a C++17 compiler.
-- Real SOEM, EtherLab, SocketCAN, or CANopenNode cyclic exchange is not commissioned.
+- The pinned portable Windows CMake/C++17 workflow is installed and validated.
+- SOEM cyclic exchange is implemented but not physically commissioned; EtherLab, SocketCAN, and CANopenNode remain planned.
 - No physical drive, wiring, stop-path, or real-time target evidence is claimed.

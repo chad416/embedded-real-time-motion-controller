@@ -23,7 +23,7 @@ Not Ready
   -> Operation Enabled
 ```
 
-The simulated enable command advances one deterministic state per control cycle, providing a traceable startup sequence.
+The simulated enable command advances one deterministic state per control cycle. With an external backend, statusword masks determine the reported state and the controller emits `0x0006`, `0x0007`, then `0x000F` as the drive acknowledges each transition.
 
 ## Motion Commands
 
@@ -31,7 +31,7 @@ The simulated enable command advances one deterministic state per control cycle,
 | --- | --- | --- |
 | `enable` | Non-faulted states | Advances CiA 402 enable path. |
 | `disable` | Any state | Returns to Switch On Disabled and clears active mode. |
-| `fault reset` | Fault | Returns to Switch On Disabled. |
+| `fault reset` | Fault | Simulation returns to Switch On Disabled; external mode emits a one-cycle `0x0080` reset controlword and waits for drive feedback. |
 | `quick stop` | Any state | Commands zero velocity and enters Quick Stop Active. |
 | `move absolute` | Operation Enabled | Profile-position target. |
 | `move relative` | Operation Enabled | Profile-position target relative to current model position. |

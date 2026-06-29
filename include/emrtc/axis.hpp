@@ -24,6 +24,11 @@ public:
     AxisFeedback feedback() const;
 
     bool apply_command(const AxisCommand& command, CycleIndex cycle);
+    void apply_external_feedback(std::uint16_t statusword,
+                                 double actual_position,
+                                 double actual_velocity,
+                                 FaultCode drive_fault,
+                                 CycleIndex cycle);
     void update(double dt_s, CycleIndex cycle);
     void set_bus_online(bool online);
     void request_safe_stop(CycleIndex cycle);
@@ -48,6 +53,7 @@ private:
     ControlMode mode_{ControlMode::Disabled};
     FaultCode fault_code_{FaultCode::None};
     bool enable_requested_{false};
+    bool fault_reset_requested_{false};
     bool bus_online_{true};
     bool encoder_feedback_lost_{false};
     double sensor_noise_{0.0};
@@ -58,6 +64,9 @@ private:
     double target_position_{0.0};
     double target_velocity_{0.0};
     bool target_reached_{true};
+    bool external_feedback_mode_{false};
+    std::uint16_t external_statusword_{0};
+    double encoder_velocity_{0.0};
     std::vector<std::string> transition_trace_;
 };
 

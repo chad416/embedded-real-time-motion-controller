@@ -8,7 +8,7 @@ This project is a software-first embedded real-time motion controller. I built t
 
 Start with the architecture. The `RealTimeController` owns the cyclic execution order: fault injection, command dispatch, process-image exchange, axis update, watchdog evaluation, and telemetry. The axis implements CiA 402-style states from Not Ready through Operation Enabled and Fault. Motion commands are only accepted in valid states, and rejected commands become explicit fault evidence.
 
-The bus layer is deliberately abstract. It uses a deterministic simulated backend for controller scenarios and a replay backend for recorded process-image exchanges. The replay path checks outgoing controlword and targets, stale receive data, heartbeat state, bus state, invalid responses, and restoration through the same contract intended for SOEM, EtherLab, SocketCAN, or CANopenNode.
+The bus layer is deliberately abstract. It uses a deterministic simulated backend for controller scenarios, a replay backend for recorded exchanges, and a dependency-backed SOEM v2 implementation for future physical EtherCAT work. Controller injection tests prove outgoing controlwords and targets plus incoming statusword, position, and velocity traverse the same cyclic boundary.
 
 The safety-oriented layer includes loop, bus, heartbeat, following-error, encoder-feedback, and E-stop/safe-stop supervision. It does not claim certified safety. Instead, it shows disciplined fault handling and documents where certified hardware/process would be required.
 
@@ -16,4 +16,4 @@ The validation story is quantitative. The benchmark records cycle histograms, mi
 
 For a repeatable demonstration, run `scripts/demo_portfolio.ps1 -BuildDir build -OutDir reports/generated/demo`.
 
-The native Windows suite now passes through a pinned portable CMake/MinGW-w64 workflow. The next major boundary is a selected real drive and production fieldbus adapter, followed by the documented low-energy commissioning sequence.
+The native Windows suite passes through a pinned portable CMake/MinGW-w64 workflow, and the SOEM path compiles/links against the pinned dependency. The next major boundary is a selected NIC and drive, followed by the documented low-energy commissioning sequence.

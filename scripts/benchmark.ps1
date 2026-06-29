@@ -23,3 +23,6 @@ if (-not (Test-Path $exe)) {
 }
 
 & $exe --cycles $Cycles --out $Out
+if ($LASTEXITCODE -ne 0) {
+    throw "Benchmark failed with exit code $LASTEXITCODE."
+}

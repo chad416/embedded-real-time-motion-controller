@@ -1,6 +1,6 @@
 # Bus Map
 
-The project exposes a fieldbus-neutral process image that can be adapted to EtherCAT PDOs or CANopen objects later.
+The project exposes a fieldbus-neutral process image used by simulation, replay, and the SOEM EtherCAT backend.
 
 ## Process Image
 
@@ -34,20 +34,20 @@ The helper functions encode engineering units to signed 32-bit counts using a co
 | Backend | Status | Notes |
 | --- | --- | --- |
 | Simulated bus | Implemented | Deterministic packet loss, dropout, heartbeat timeout, invalid response. |
-| EtherCAT/SOEM | Planned | Implement `IBusBackend` using SOEM process-data exchange. |
+| EtherCAT/SOEM | Implemented, not commissioned | Pinned SOEM v2 lifecycle, single-slave PDO exchange, working-counter checks, and controller injection compile in CI and locally. |
 | EtherCAT/EtherLab | Planned | Same process-image contract, different master lifecycle. |
 | CANopen/SocketCAN | Planned | Map process image to SDO/PDO and heartbeat supervision. |
 | CANopenNode | Planned | Useful for embedded target-side CANopen integration. |
 
-## Adapter Skeletons
+## Adapter Status
 
-The repository includes non-commissioned adapter skeletons for:
+The repository includes:
 
-- SOEM EtherCAT.
+- A dependency-backed, non-commissioned SOEM EtherCAT backend.
 - EtherLab EtherCAT.
 - SocketCAN CANopen.
 - CANopenNode.
 
-These classes intentionally report `configured=false` until real hardware libraries, interface names, live PDO/object mapping, and bench validation are added.
+EtherLab, SocketCAN, and CANopenNode remain skeletons. SOEM reports `configured=false` until explicit runtime configuration reaches OPERATIONAL; even then, hardware validation claims require archived bench evidence.
 
 See [Hardware Adapter Integration Notes](adapters/README.md) for build flags and adapter-specific bring-up plans.

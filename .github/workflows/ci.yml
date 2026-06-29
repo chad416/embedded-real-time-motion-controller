@@ -16,6 +16,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
 
+      - name: Check out pinned SOEM v2
+        uses: actions/checkout@v7
+        with:
+          repository: OpenEtherCATsociety/SOEM
+          ref: 304d1c05eab77dc0d426f1a5cf09c8cc7dc03713
+          path: deps/SOEM
+
       - name: Check local toolchain helper
         shell: pwsh
         run: ./scripts/check_toolchain.ps1 -RequireCMake -RequireCompiler
@@ -26,14 +33,37 @@ jobs:
       - name: Configure adapter-flag smoke build
         run: cmake -S . -B build-adapter-flags -DCMAKE_BUILD_TYPE=Release -DEMRTC_ENABLE_SOEM=ON -DEMRTC_ENABLE_SOCKETCAN=ON
 
+      - name: Build and install pinned SOEM v2
+        run: >
+          cmake -S deps/SOEM -B deps/SOEM-build
+          -DCMAKE_BUILD_TYPE=Release
+          -DSOEM_BUILD_SAMPLES=OFF
+          -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/deps/SOEM-install
+          && cmake --build deps/SOEM-build --parallel 2
+          && cmake --install deps/SOEM-build
+
+      - name: Configure dependency-backed SOEM build
+        run: >
+          cmake -S . -B build-soem
+          -DCMAKE_BUILD_TYPE=Release
+          -DEMRTC_ENABLE_SOEM=ON
+          -DEMRTC_REQUIRE_SOEM=ON
+          -DCMAKE_PREFIX_PATH=${{ github.workspace }}/deps/SOEM-install
+
       - name: Build
         run: cmake --build build --config Release --parallel 2
 
       - name: Build adapter-flag smoke target
         run: cmake --build build-adapter-flags --config Release --target emrtc_tests --parallel 2
 
+      - name: Build dependency-backed SOEM target
+        run: cmake --build build-soem --config Release --target emrtc_tests --parallel 2
+
       - name: Run unit and integration tests
         run: ctest --test-dir build --build-config Release --output-on-failure
+
+      - name: Run dependency-backed SOEM guard tests
+        run: ctest --test-dir build-soem --build-config Release --output-on-failure
 
       - name: Run simulator and export validation reports
         run: ./build/emrtc_sim --cycles 2500 --out reports/generated/ci-sim

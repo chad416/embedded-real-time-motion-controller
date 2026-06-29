@@ -64,12 +64,11 @@ The milestone includes:
 - timing, control-response, scenario, and two-axis visual reports;
 - versioned capture profiles, target profiles, runbooks, and commissioning templates;
 - PowerShell demo, toolchain check, and portfolio packaging workflows;
-- Linux hosted CI as the current native build authority.
+- Linux hosted CI and the pinned portable Windows workflow as native build authorities for their respective paths.
 
 ## Remaining Work
 
-- Install CMake and a C++17 compiler on the local Windows machine.
-- Implement and commission a real EtherCAT or CANopen backend.
+- Commission the dependency-backed SOEM path on a selected EtherCAT NIC and CiA 402 drive, or implement the selected alternative backend.
 - Record physical drive mapping, timing, motion, fault, wiring, and stop-path evidence.
 - Validate a selected real-time target such as PREEMPT_RT or an embedded RTOS platform.
 - Review any public hardware or safety claim against the archived bench evidence.

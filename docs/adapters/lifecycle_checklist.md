@@ -10,7 +10,7 @@ This checklist defines the minimum lifecycle behavior a real EtherCAT or CANopen
 | Configure | Bind the process-image contract to actual PDO/object entries. | Mapping dump tied to drive manual. |
 | Pre-operational exchange | Verify cyclic reads before torque-producing commands. | Idle trace and heartbeat counters. |
 | Enable | Drive CiA 402 state transitions through the controller command path. | Statusword/controlword trace. |
-| Cyclic exchange | Copy process image once per control cycle without blocking calls. | Timing histogram and missed-cycle count. |
+| Cyclic exchange | Copy process image once per control cycle with every stack call bounded inside the cycle budget. | Timing histogram and missed-cycle count. |
 | Fault reaction | Convert stale data, invalid response, timeout, or bus down into watchdog-visible diagnostics. | Fault log and recovery trace. |
 | Recovery | Require explicit reset and re-enable after a bus or drive fault. | Recovery-cycle count and final state. |
 | Shutdown | Disable motion command path and leave drive in a known non-motion state. | Final statusword and operator log entry. |

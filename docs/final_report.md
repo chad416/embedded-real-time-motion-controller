@@ -19,16 +19,19 @@
 - Machine-enforced simulation-complete release gate.
 - Hardware evidence archive and run-manifest convention.
 - Evidence archive integrity and hardware-claim validator with CI tests.
+- Dependency-backed SOEM v2 single-slave lifecycle and cyclic PDO exchange path.
+- Controller injection of external bus backends and measured drive feedback.
 - Professional documentation set.
 
 ## Hardware Only Remaining
 
-- Add SOEM/EtherLab or SocketCAN/CANopenNode adapter.
-- Map actual drive PDOs/object dictionary entries.
+- Select and commission a physical SOEM EtherCAT target, or implement the required alternative backend.
+- Verify actual drive PDO/object dictionary entries and byte offsets.
+- Add target-specific slave recovery/reconfiguration after real failure-mode capture.
 - Validate timing on real MCU or PREEMPT_RT target.
 - Commission motor, encoder, E-stop/safe-stop wiring, and drive parameters.
 - Produce hardware validation reports without claiming certification unless a certified safety process is executed.
 
 ## Current Status
 
-See [Project Status](project_status.md) for the live completion snapshot. The software/simulation/documentation package is approximately 90% complete with hosted CI and local Windows validation passing. The full flagship artifact remains approximately 75% complete because real adapter integration and hardware commissioning are still outside the completed evidence boundary.
+See [Project Status](project_status.md) for the live completion snapshot. The software/simulation/documentation package is approximately 93% complete. The full flagship artifact remains approximately 80% complete because physical fieldbus, motion, timing, recovery, and stop-path commissioning are still outside the completed evidence boundary.

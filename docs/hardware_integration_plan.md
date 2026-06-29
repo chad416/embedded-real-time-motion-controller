@@ -11,8 +11,8 @@ Hardware commissioning starts after software validation is passing.
 
 ## Phase 2: Adapter Bring-Up
 
-- Implement an EtherCAT SOEM/EtherLab or CANopen SocketCAN backend behind `IBusBackend`.
-- Replace the current adapter skeleton status with real library initialization, interface binding, and process-image exchange.
+- Commission the dependency-backed single-slave SOEM backend, or implement an alternative EtherLab/SocketCAN path if the selected target requires it.
+- Supply the selected interface, timeout, slave count, engineering-unit scale, and verified PDO offsets.
 - Map the existing process image to actual PDO/object dictionary entries.
 - Validate statusword/controlword transitions against the real drive manual.
 - Keep simulated backend available for regression tests.
