@@ -6,7 +6,7 @@ Software-first embedded real-time motion controller for an industrial automation
 
 This repository does not claim certified SIL/PL safety and does not claim real EtherCAT/CANopen hardware validation. The current scope includes a safety-oriented deterministic software bench, dependency-backed SOEM v2, Linux SocketCAN/CANopen, a pinned FreeRTOS cyclic-task port, and a wall-clock host timing probe. Both fieldbus backends remain physically uncommissioned.
 
-Current development line: `0.3.0`, the machine-gated software-ready milestone. The historical `v0.2.0-simulation-complete` baseline remains enforced.
+Current release: `v0.3.0-software-ready`, the machine-gated completion of all defined non-hardware work. The historical `v0.2.0-simulation-complete` baseline remains enforced.
 
 ## What Is Included
 

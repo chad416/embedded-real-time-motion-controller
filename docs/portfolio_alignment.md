@@ -27,6 +27,6 @@ This project maps to the embedded real-time motion controller blueprint in the p
 
 ## Honest Completion Estimate
 
-The defined software/simulation/documentation/admin package is 100% complete once the `0.3.0` exact-commit gate and tag pass. The full flagship artifact, including hardware commissioning, target timing evidence, and a live bench demonstration, is about 85% complete.
+The defined software/simulation/documentation/admin package is 100% complete at the exact-commit-verified `v0.3.0-software-ready` tag. The full flagship artifact, including hardware commissioning, target timing evidence, and a live bench demonstration, is about 85% complete.
 
 The lower full-project estimate reflects physical engineering that cannot be manufactured by simulation: fieldbus electrical state, device mapping, actual motion, target timing, recovery under cable/device faults, and stop-path evidence. Software backends and commissioning records are ready for that phase.

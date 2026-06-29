@@ -2,9 +2,11 @@
 
 Validation date: 2026-06-29
 
-Validated release baseline: `v0.2.0-simulation-complete`
+Validated release: `v0.3.0-software-ready`
 
-Validated commit: `b86ba1ac75ac2c51dd40bbc1921f6d363ca241b0`
+Validated commit: `6862f016a1a176b252ce98c9b90ee5ca86a1be83`
+
+Exact-commit GitHub Actions run: `28344205573` (passed)
 
 ## Toolchain
 
@@ -62,4 +64,4 @@ The missed cycles and deadline overruns are expected injected benchmark events, 
 
 ## Evidence Boundary
 
-The dependency-backed SOEM executable cannot access a raw Windows interface until a compatible packet-capture runtime is installed; SocketCAN runtime access is Linux-specific. The default and injected-transport suites remain fully runnable. This result confirms compilation, linkage, execution-port integration, and deterministic software behavior. It does not validate raw-interface access, real fieldbus timing, physical drive behavior, electrical integration, or a certified safety function.
+The dependency-backed SOEM target builds and links warning-clean on this Windows host, but its test executable cannot load the raw-interface path until a compatible packet-capture runtime is installed; exact-commit Linux CI executes the dependency-backed SOEM tests. SocketCAN runtime access is Linux-specific and is compiled/tested there with injected transport. The default and injected-transport Windows suites remain fully runnable. This does not validate raw-interface access, real fieldbus timing, physical drive behavior, electrical integration, or a certified safety function.

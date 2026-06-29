@@ -2,7 +2,7 @@
 
 Last updated: 2026-06-29
 
-Release-candidate note: the last saved checkpoint is commit `8c4dcbc`, and exact-commit hosted run `28343487249` passed. The `0.3.0` software-ready release gate and final claim audit define the next tagged milestone.
+Release note: annotated tag `v0.3.0-software-ready` points to commit `6862f016a1a176b252ce98c9b90ee5ca86a1be83`; exact-commit hosted run `28344205573` passed the complete workflow.
 
 ## Completion Snapshot
 
@@ -40,6 +40,7 @@ Release-candidate note: the last saved checkpoint is commit `8c4dcbc`, and exact
 | Hardware evidence archive | Added | Immutable run folders, SHA-256 artifact records, structured run manifest, configuration backups, and review gates are defined. |
 | Evidence archive validator | Added | CI tests manifest fields, safe paths, exact files, byte counts, SHA-256 digests, profile requirements, and hardware-claim prerequisites. |
 | Simulation-complete milestone | Released | Tag `v0.2.0-simulation-complete` points to CI-verified commit `b86ba1a`; the release gate remains enforced on `master`. |
+| Software-ready milestone | Released | Tag `v0.3.0-software-ready` points to CI-verified commit `6862f01`; all defined non-hardware work is closed. |
 | Motion performance metrics | Added | Runtime JSON/Markdown reports include overshoot, settling time, steady-state error, max following error, and two-axis path metrics. |
 | Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, two-axis path/acceptance, and recovery-comparison plots. |
 | Data capture profiles | Added | Versioned profiles define simulation and future bench evidence requirements for timing, motion, jitter stress, heartbeat, bus dropout, and feedback faults. |
@@ -54,7 +55,7 @@ Release-candidate note: the last saved checkpoint is commit `8c4dcbc`, and exact
 
 ## Current Completion Estimate
 
-Defined software/simulation/documentation/admin scope: 100% after the `0.3.0` gate and release process pass.
+Defined software/simulation/documentation/admin scope: 100% complete and released at `v0.3.0-software-ready`.
 
 Full PDF flagship scope including hardware commissioning and live evidence: about 85%.
 
@@ -62,4 +63,4 @@ The remaining approximately 15% is not a loose software backlog. It is the physi
 
 ## Immediate Next Actions
 
-Pass the exact release commit in hosted CI, apply the annotated software-ready tag, and then follow [Hardware Commissioning Remaining](work_remaining.md). No additional software deliverable is being held open as a substitute for missing hardware evidence.
+Follow [Hardware Commissioning Remaining](work_remaining.md) when physical equipment is available. No additional software deliverable is being held open as a substitute for missing hardware evidence.

@@ -23,4 +23,6 @@ This is the handoff from the software-ready phase to the physical bench phase. T
 
 ## Release Boundary
 
+The released software baseline is annotated tag `v0.3.0-software-ready` at commit `6862f016a1a176b252ce98c9b90ee5ca86a1be83`; exact-commit GitHub Actions run `28344205573` passed.
+
 Only physical hardware commissioning remains. Host timing evidence is not target real-time evidence, software adapter tests are not physical bus evidence, and simulated/replayed fault recovery is not a certified stop-path result. Hardware claims stay blocked until a complete evidence archive passes the repository validator.

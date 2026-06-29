@@ -40,4 +40,4 @@
 
 ## Current Status
 
-See [Project Status](project_status.md) for the live completion snapshot. The defined software/simulation/documentation/admin package is 100% complete after the `0.3.0` release gate and tag pass. The full PDF flagship artifact is approximately 85% complete because physical fieldbus, motion, target timing, recovery, and stop-path commissioning remain outside the completed evidence boundary.
+See [Project Status](project_status.md) for the live completion snapshot. The defined software/simulation/documentation/admin package is 100% complete at `v0.3.0-software-ready`. The full PDF flagship artifact is approximately 85% complete because physical fieldbus, motion, target timing, recovery, and stop-path commissioning remain outside the completed evidence boundary.

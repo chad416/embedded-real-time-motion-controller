@@ -4,6 +4,12 @@ Release version: `0.3.0`
 
 Release tag: `v0.3.0-software-ready`
 
+Release record:
+
+- Tagged commit: `6862f016a1a176b252ce98c9b90ee5ca86a1be83`
+- Verified GitHub Actions run: `28344205573`
+- Annotated tag pushed: 2026-06-29
+
 ## Scope
 
 This milestone closes all executable software, simulation, validation, reporting, documentation, and repository-administration work defined for the hardware-free phase. Only physical hardware commissioning remains.
@@ -30,6 +36,8 @@ python scripts/check_software_ready_milestone.py
 The gate requires version and tag consistency, at least 45 registered C++ checks, 21 passing scenarios, bounded recovery metrics, strict adapter examples, current evidence manifests, all required CI paths, and an audited hardware-claim boundary.
 
 The historical `v0.2.0-simulation-complete` gate remains enforced as a compatibility baseline.
+
+The tagged commit passed default and adapter-enabled builds, dependency-backed SOEM tests, Linux SocketCAN compilation/tests, FreeRTOS POSIX smoke execution, simulator/JSON/two-axis runs, deterministic benchmark, host timing probe, report and manifest generation, evidence packaging, archive tests, and both milestone gates.
 
 ## Evidence Boundary
 
