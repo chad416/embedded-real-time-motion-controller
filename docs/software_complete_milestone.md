@@ -58,7 +58,7 @@ The final two items are release operations. They must be completed in order; nev
 The milestone includes:
 
 - deterministic C++ controller, axis, bus, watchdog, and fault-injection logic;
-- adapter discovery and exchange contracts for future SOEM, EtherLab, SocketCAN, and CANopenNode work;
+- adapter discovery and exchange contracts that formed the baseline for the later SOEM and SocketCAN implementations;
 - single-axis and coordinated two-axis motion evidence;
 - 21-scenario validation evidence with fault and recovery coverage;
 - timing, control-response, scenario, and two-axis visual reports;
@@ -68,7 +68,7 @@ The milestone includes:
 
 ## Remaining Work
 
-- Commission the dependency-backed SOEM path on a selected EtherCAT NIC and CiA 402 drive, or implement the selected alternative backend.
+- Commission an implemented SOEM or SocketCAN/CANopen path on selected physical equipment.
 - Record physical drive mapping, timing, motion, fault, wiring, and stop-path evidence.
 - Validate a selected real-time target such as PREEMPT_RT or an embedded RTOS platform.
 - Review any public hardware or safety claim against the archived bench evidence.

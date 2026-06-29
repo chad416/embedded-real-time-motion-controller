@@ -31,6 +31,7 @@ Visual evidence is generated under `reports/`:
 - `sample_control_response.svg`
 - `sample_two_axis_path.svg`
 - `sample_two_axis_acceptance.svg`
+- `sample_recovery_comparison.svg`
 - `sample_timing_report.pdf`
 - `sample_capture_manifest.md`
 
@@ -41,7 +42,9 @@ The adapter layer now has two explicit contracts before real hardware is commiss
 - The CiA 402 process-image mapping contract defines object indexes, bit widths, direction, and engineering-unit scaling.
 - The exchange contract rejects invalid object maps, stale receive data, heartbeat loss, bus-offline state, and invalid PDO/object responses.
 
-That matters because hardware integration should not start by trusting whatever a fieldbus stack hands back. The software now has a small adapter-level gate that can be exercised in CI before SOEM, EtherLab, SocketCAN, or CANopenNode are connected to a real drive.
+That matters because hardware integration should not start by trusting whatever a fieldbus stack hands back. The software now exercises dependency-backed SOEM and injected SocketCAN/CANopen paths in CI before either is connected to a real drive; EtherLab and CANopenNode remain optional alternatives.
+
+The host timing probe adds a second evidence class. It schedules against absolute monotonic deadlines, applies configurable CPU stress, reports Linux FIFO/memory-lock capability results, and exports measured timing. Those measurements prove the host instrumentation path, not a future MCU or PREEMPT_RT target.
 
 ## Capture Profiles
 
@@ -77,11 +80,11 @@ The project gives a reviewer something concrete to challenge:
 - How does heartbeat loss become a fault?
 - What happens after a rejected motion command?
 - Which layer owns bus dropout detection?
-- What changes when the simulated bus becomes SOEM, EtherLab, SocketCAN, or CANopenNode?
+- What changes when the simulated bus becomes the implemented SOEM or SocketCAN backend?
 - Which artifacts prove a bench run passed the same criteria as the simulation?
 
 Those are the right conversations for Siemens, Honeywell, Schneider, Swisslog, Ericsson-style embedded/software roles, and industrial robotics teams because they move beyond API familiarity into system behavior.
 
 ## Current Boundary
 
-This is still software/simulation evidence. It does not claim real EtherCAT/CANopen hardware validation, real encoder measurements, or certified safety. The hardware commissioning boundary is explicit: live adapters, real timing capture, drive parameters, and physical E-stop/safe-stop wiring remain future work.
+This is still software/simulation and host-execution evidence. It does not claim real EtherCAT/CANopen hardware validation, real encoder measurements, target real-time performance, or certified safety. The adapter software is implemented; selected interfaces/drives, device parameters, target timing capture, and physical E-stop/safe-stop wiring remain hardware commissioning work.

@@ -137,6 +137,9 @@ jobs:
       - name: Simulation-complete milestone gate
         run: python3 scripts/check_simulation_milestone.py
 
+      - name: Software-ready milestone gate
+        run: python3 scripts/check_software_ready_milestone.py
+
       - name: Evidence archive validator tests
         run: python3 tests/test_evidence_archive_validator.py -v
 

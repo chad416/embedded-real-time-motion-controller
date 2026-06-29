@@ -22,7 +22,8 @@ The benchmark uses a deterministic profile:
 - Bus TX/RX packets.
 - Packet-loss count.
 - Dropout, invalid-response, heartbeat-timeout counters.
+- Fault detection latency, operation re-enable cycles, baseline/post-recovery settling, settling ratio, and post-recovery final error.
 
 ## Why Synthetic Timing Is Used
 
-The current phase validates controller behavior and evidence generation without real hardware. Real PREEMPT_RT or MCU timer measurements should replace the synthetic period source during hardware commissioning.
+The deterministic benchmark validates controller behavior and repeatable evidence without host scheduler noise. The separate wall-clock probe measures absolute-deadline wakeups and host capabilities. PREEMPT_RT or MCU timer acceptance measurements must still come from the selected physical target.

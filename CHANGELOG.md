@@ -4,13 +4,14 @@ All notable project changes are recorded here.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-29
+
 ### Added
 
 - Strict structured JSON parsing and schema-checked SOEM/CANopen runtime configuration.
 - SocketCAN CANopen NMT, RPDO/TPDO, heartbeat, and transport-loss implementation.
 - Wall-clock host timing probe and pinned FreeRTOS cyclic-task smoke path.
 - Quantitative baseline-versus-recovery metrics and comparison graph.
-
 - Pinned, checksum-verified portable Windows CMake and MinGW-w64 installer and runner.
 - Committed local Windows native build, CTest, benchmark, and report-generation validation record.
 - Evidence archive validator with digest, completeness, profile, review, and claim-boundary checks.
@@ -21,17 +22,27 @@ All notable project changes are recorded here.
 - Bounded little-endian SOEM PDO codec, working-counter supervision, and configurable receive timeout.
 - External `IBusBackend` controller injection with measured CiA 402 feedback and one-cycle fault reset.
 - Hosted CI build/test path against a pinned upstream SOEM commit.
-- External-backend and SOEM configuration/codec tests, bringing the native suite to 38 checks.
+- External-backend, SOEM, SocketCAN/CANopen, strict JSON/configuration, host timing, replay, and recovery tests, bringing the native suite to 45 checks.
+- Machine-enforced software-ready release definition and CI gate covering all executable non-hardware work.
 
 ### Changed
 
 - Scenario loading no longer relies on regex extraction.
 - Newly observed axis faults are persisted even when latched before watchdog evaluation.
-
 - Toolchain checks now discover the bundled Codex Python runtime used by report generation.
 - The portfolio demo uses the same Python fallback and fails immediately on native command errors.
 - Native PowerShell build, test, benchmark, and report scripts now fail immediately on child-process errors.
 - Simulation-only bus fault injection is reported as unavailable when an external backend is active.
+
+### Validation
+
+- Native Windows default, adapter-flag, dependency-backed SOEM, and FreeRTOS simulator paths pass.
+- Hosted Linux CI compiles SocketCAN, executes the pinned FreeRTOS POSIX smoke target, runs the host timing probe, and enforces both release gates.
+
+### Known Limitations
+
+- SOEM and SocketCAN/CANopen software backends are implemented but not physically commissioned.
+- No physical drive, wiring, stop-path, target real-time, or certified safety evidence is claimed.
 
 ## [0.2.0] - 2026-06-29
 
@@ -59,5 +70,5 @@ All notable project changes are recorded here.
 ### Known Limitations
 
 - The pinned portable Windows CMake/C++17 workflow is installed and validated.
-- SOEM cyclic exchange is implemented but not physically commissioned; EtherLab, SocketCAN, and CANopenNode remain planned.
+- At this historical milestone, SOEM cyclic exchange was implemented but not physically commissioned; the additional adapter and execution-port work was delivered on the `0.3.0` line.
 - No physical drive, wiring, stop-path, or real-time target evidence is claimed.

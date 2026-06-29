@@ -2,7 +2,7 @@
 
 Last updated: 2026-06-29
 
-Checkpoint note: post-`2f5f388` software-readiness work is committed and pushed, and hosted run `28343390142` passed. It remains a checkpoint rather than a final software-ready release because the release gate and documentation audit listed in [Work Remaining](work_remaining.md) are still open.
+Release-candidate note: the last saved checkpoint is commit `8c4dcbc`, and exact-commit hosted run `28343487249` passed. The `0.3.0` software-ready release gate and final claim audit define the next tagged milestone.
 
 ## Completion Snapshot
 
@@ -12,7 +12,7 @@ Checkpoint note: post-`2f5f388` software-readiness work is committed and pushed,
 | CMake/C++ source layout | Complete | Library, simulator, benchmark, CLI, and test runner are present. |
 | Real-time controller core | Implemented | Deterministic 1 ms cycle model, jitter, missed cycle, deadline, watchdog, and trace instrumentation. |
 | Drive and motion abstraction | Implemented | Axis abstraction, CiA 402-style states, profile position/velocity, command guards, statusword/controlword. |
-| Bus abstraction | Implemented | Injectable `IBusBackend` with simulated, replay, and dependency-backed SOEM implementations. |
+| Bus abstraction | Implemented | Injectable `IBusBackend` with simulated, replay, dependency-backed SOEM, and Linux SocketCAN/CANopen implementations. |
 | Watchdog/safety-oriented layer | Implemented | Loop, bus, heartbeat, following-error, encoder feedback-loss, and E-stop/safe-stop handling. |
 | Fault injector | Implemented | Required fault classes are represented in code and validation scenarios. |
 | Telemetry and diagnostics | Implemented | CSV trace, JSON metrics, fault log, Markdown reports, and CLI commands. |
@@ -29,7 +29,7 @@ Checkpoint note: post-`2f5f388` software-readiness work is committed and pushed,
 | Process-image mapping contract | Added | CiA 402 object indexes, bit widths, directions, and counts/unit encode-decode helpers are tested independently of hardware stacks. |
 | Adapter exchange contract | Expanded | Mapping, stale receive data, heartbeat, bus-offline, restoration, invalid response, and outgoing command expectations are covered by adapter-level tests. |
 | Adapter replay harness | Added | Recorded nominal and fault/recovery process-image traces run through `IBusBackend`, CiA 402 scaling, and the exchange monitor with zero expected-fault mismatches. |
-| Adapter lifecycle checklist | Added | Discovery, configure, cyclic exchange, fault reaction, recovery, and shutdown gates are documented for each future backend. |
+| Adapter lifecycle checklist | Added | Discovery, configure, cyclic exchange, fault reaction, recovery, and shutdown gates are documented for each backend and optional alternative. |
 | Portfolio demo script | Added | `scripts/demo_portfolio.ps1` runs CLI status, adapters, replay, two-axis demo, JSON scenario, benchmark, sample evidence, and capture manifest generation. |
 | Recruiter one-pager | Added | Generated from sample metrics and capture manifest to summarize evidence, role fit, talking points, and honest boundaries. |
 | Portfolio evidence bundle | Added | `scripts/package_portfolio.ps1` exports docs, reports, graphs, capture profiles, and a manifest into a review-ready folder/zip. |
@@ -41,24 +41,25 @@ Checkpoint note: post-`2f5f388` software-readiness work is committed and pushed,
 | Evidence archive validator | Added | CI tests manifest fields, safe paths, exact files, byte counts, SHA-256 digests, profile requirements, and hardware-claim prerequisites. |
 | Simulation-complete milestone | Released | Tag `v0.2.0-simulation-complete` points to CI-verified commit `b86ba1a`; the release gate remains enforced on `master`. |
 | Motion performance metrics | Added | Runtime JSON/Markdown reports include overshoot, settling time, steady-state error, max following error, and two-axis path metrics. |
-| Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, two-axis path plot, and two-axis acceptance plot. |
+| Visual evidence | Added | Timing PDF plus SVG jitter histogram, scenario pass/fail matrix, control response, two-axis path/acceptance, and recovery-comparison plots. |
 | Data capture profiles | Added | Versioned profiles define simulation and future bench evidence requirements for timing, motion, jitter stress, heartbeat, bus dropout, and feedback faults. |
 | Commissioning templates | Added | Hardware checkout checklist and commissioning logbook template are present for future bench validation. |
 | Documentation | Implemented | Architecture, timing, bus map, drive state machine, watchdogs, fault matrix, test plan, validation, benchmark, tradeoffs, hardware plan. |
 | Sample reports | Implemented | Deterministic sample artifacts committed under `reports/`. |
 | Native local build/test | Complete | Windows CMake/GCC build, CTest, 10,000-cycle benchmark, and report generation pass through the portable runner. |
 | GitHub CI | Passing | Latest hosted run builds, tests, benchmarks, generates reports, runs health checks, and uploads artifacts. |
-| Portfolio PDF alignment | In progress | Software evidence is mature; the remaining gap is concentrated in production adapter integration, real-time target capture, and hardware commissioning. |
-| Hardware commissioning | Not started | Remaining hardware-only work: real EtherCAT/CANopen adapter, drive PDO/OD mapping, timing measurements, commissioning. |
+| Software-ready release gate | Implemented | `0.3.0` definition enforces tests, scenarios, recovery, adapters, execution ports, CI paths, evidence, and claim boundaries. |
+| Portfolio PDF alignment | Software scope complete | Every hardware-free deliverable is implemented; target timing, physical fieldbus/motion, and stop-path evidence require the bench. |
+| Hardware commissioning | Not started | Software adapters exist; remaining work is physical device selection/connection, vendor-verified mapping, target measurements, motion/fault/stop tests, and evidence capture. |
 
 ## Current Completion Estimate
 
-Software/simulation/documentation side at this checkpoint: about 96%.
+Defined software/simulation/documentation/admin scope: 100% after the `0.3.0` gate and release process pass.
 
-Full flagship scope including hardware commissioning and live evidence: about 83%.
+Full PDF flagship scope including hardware commissioning and live evidence: about 85%.
 
-The split estimate prevents the mature simulation package from hiding the substantial hardware work that remains.
+The remaining approximately 15% is not a loose software backlog. It is the physical commissioning phase: selected equipment, real bus state, target timing, actual motion and recovery, electrical stop behavior, and archived bench evidence.
 
 ## Immediate Next Actions
 
-Complete the non-hardware checkpoint list in [Work Remaining](work_remaining.md), verify the exact hosted commit, and only then proceed to physical commissioning.
+Pass the exact release commit in hosted CI, apply the annotated software-ready tag, and then follow [Hardware Commissioning Remaining](work_remaining.md). No additional software deliverable is being held open as a substitute for missing hardware evidence.

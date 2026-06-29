@@ -17,7 +17,7 @@ Example:
 cmake -S . -B build -DEMRTC_ENABLE_SOEM=ON -DEMRTC_REQUIRE_SOEM=ON
 ```
 
-Enabling a flag asks CMake to discover the matching external dependency. If SOEM is required and missing, configuration fails. Without the strict option, a missing dependency leaves the adapter in skeleton mode. A discovered SOEM dependency enables the real lifecycle and exchange implementation, while runtime status remains `configured=false` until explicit interface, mapping, and slave configuration succeeds.
+Enabling a flag asks CMake to discover the matching external dependency. If SOEM is required and missing, configuration fails. A discovered SOEM dependency enables its lifecycle and exchange implementation. On Linux, discovered CAN headers enable the raw SocketCAN transport, CANopen NMT/PDO exchange, and heartbeat supervision. EtherLab and CANopenNode remain optional placeholders. Runtime status remains unconfigured until explicit interface and mapping configuration succeeds.
 
 Runtime status can be inspected with:
 
@@ -25,7 +25,7 @@ Runtime status can be inspected with:
 emrtc_cli show adapters
 ```
 
-The adapter-neutral CiA 402 object contract is implemented in [`../../include/emrtc/process_image_mapping.hpp`](../../include/emrtc/process_image_mapping.hpp) and tested by the no-dependency C++ test runner. The SOEM backend uses this contract for bounded little-endian PDO encoding and decoding.
+The adapter-neutral CiA 402 object contract is implemented in [`../../include/emrtc/process_image_mapping.hpp`](../../include/emrtc/process_image_mapping.hpp) and tested by the no-dependency C++ test runner. SOEM and SocketCAN/CANopen use this contract for bounded little-endian PDO encoding and decoding.
 
 `RealTimeController` supports constructor injection of an `IBusBackend`. External feedback therefore reaches the same CiA 402 state, following-error watchdog, telemetry, and fault path used by simulation.
 

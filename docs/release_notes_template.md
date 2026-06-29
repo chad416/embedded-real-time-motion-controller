@@ -1,6 +1,8 @@
 # Release Notes Template
 
-## `v0.2.0-simulation-complete`
+Historical naming example: `v0.2.0-simulation-complete`
+
+## `v<version>-<milestone>`
 
 Release date: `YYYY-MM-DD`
 
@@ -10,7 +12,7 @@ GitHub Actions run: `<run-url>`
 
 ## Summary
 
-State what the release proves in software and simulation. Hardware validation is not included in this milestone.
+State what the release proves in software, simulation, host execution, and reporting. Hardware validation is not included unless a complete physical evidence archive supports it.
 
 ## Added
 
@@ -26,7 +28,7 @@ State what the release proves in software and simulation. Hardware validation is
 
 ## Validation
 
-- Milestone gate: `python3 scripts/check_simulation_milestone.py`
+- Milestone gate: `<exact gate command>`
 - Scenario result: `<passed>/<total>`
 - Unit and integration tests: `<result>`
 - Adapter smoke build: `<result>`
@@ -46,13 +48,13 @@ State what the release proves in software and simulation. Hardware validation is
 ## Known Limitations
 
 - Local Windows native build status: `<result or reason blocked>`
-- Real EtherCAT adapter: `<status>`
-- Real CANopen adapter: `<status>`
+- EtherCAT hardware commissioning: `<status>`
+- CANopen hardware commissioning: `<status>`
 - Physical motion and stop-path evidence: `<status>`
 
 ## Hardware Boundary
 
-This release is software/simulation complete. It does not claim commissioned hardware behavior, electrical correctness, real-time target performance, or certified safety integrity.
+This release may be software-ready while hardware validation is not included. It does not claim commissioned hardware behavior, electrical correctness, real-time target performance, or certified safety integrity without the corresponding accepted physical evidence.
 
 ## Artifacts
 

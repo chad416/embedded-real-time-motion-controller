@@ -22,6 +22,7 @@ def write_one_pager(metrics: dict, manifest: dict, out: Path) -> None:
     passed, total = pass_count(metrics)
     motion = metrics.get("motion_performance", {})
     two_axis = metrics.get("two_axis_performance", {})
+    recovery = metrics.get("recovery_performance", {})
     bus = metrics.get("bus", {})
     profile_count = manifest.get("profile_count", 0)
 
@@ -34,7 +35,7 @@ def write_one_pager(metrics: dict, manifest: dict, out: Path) -> None:
         "",
         "## Project In One Sentence",
         "",
-        "A C++17 software-first motion-controller validation bench with deterministic cyclic execution, CiA 402-style drive behavior, simulated EtherCAT/CANopen process image, watchdogs, fault injection, telemetry, visual reports, and explicit hardware commissioning boundaries.",
+        "A C++17 software-ready motion-controller bench with deterministic simulation, CiA 402 behavior, implemented SOEM and SocketCAN/CANopen paths, FreeRTOS/host execution probes, fault recovery, visual evidence, and explicit hardware commissioning boundaries.",
         "",
         "## Evidence Snapshot",
         "",
@@ -52,12 +53,16 @@ def write_one_pager(metrics: dict, manifest: dict, out: Path) -> None:
         f"| Two-axis max path error | {two_axis.get('max_path_error', 0.0)} |",
         f"| Two-axis path limit | {two_axis.get('path_error_limit', 0.0)} |",
         f"| Capture profiles | {profile_count} |",
+        f"| Fault detection latency (cycles) | {recovery.get('detection_latency_cycles', 'n/a')} |",
+        f"| Recovery cycles | {recovery.get('recovery_cycles', 'n/a')} |",
         "",
         "## Engineering Highlights",
         "",
         "- Deterministic 1 ms cyclic controller model with jitter, missed-cycle, and deadline instrumentation.",
         "- CiA 402-style axis state machine with command guards, statusword/controlword evidence, and fault reset behavior.",
         "- Simulated fieldbus backend covering packet loss, cable dropout, heartbeat timeout, and invalid responses.",
+        "- Dependency-backed SOEM plus Linux SocketCAN/CANopen NMT, split PDO, heartbeat, and transport diagnostics.",
+        "- Pinned FreeRTOS cyclic-task smoke path and absolute-deadline host timing probe.",
         "- Adapter contracts for CiA 402 object mapping, stale receive data, heartbeat health, bus-offline/restored-exchange behavior, and invalid responses.",
         "- Quantitative evidence: JSON metrics, CSV traces, fault logs, Markdown report, timing PDF, and SVG plots.",
         "- Repeatable portfolio demo script: `scripts/demo_portfolio.ps1`.",
@@ -66,9 +71,9 @@ def write_one_pager(metrics: dict, manifest: dict, out: Path) -> None:
         "",
         "- How a timing anomaly becomes telemetry first, then watchdog evidence.",
         "- Why simulated bus faults are separated from future hardware claims.",
-        "- How adapter contracts reduce risk before SOEM/EtherLab/SocketCAN/CANopenNode commissioning.",
+        "- How adapter contracts and injected transport tests reduce risk before SOEM or SocketCAN commissioning.",
         "- How capture profiles define pass/fail evidence for future bench runs.",
-        "- How the same validation suite runs in hosted CI even before local Windows CMake/compiler setup is finished.",
+        "- How the same validation suite runs through the pinned Windows toolchain and hosted Linux CI.",
         "",
         "## Honest Boundary",
         "",
@@ -76,7 +81,7 @@ def write_one_pager(metrics: dict, manifest: dict, out: Path) -> None:
         "",
         "## Next Hardware Step",
         "",
-        "Install local CMake plus a C++17 compiler, pick one EtherCAT or CANopen drive family, bind the process-image contract to real PDO/object dictionary entries, then capture the predefined profile evidence from `config/capture_profiles/`.",
+        "Select one EtherCAT or CANopen drive family and physical interface, replace example mappings with vendor-verified values, perform low-energy commissioning, and archive the predefined profile evidence from `config/capture_profiles/`.",
         "",
     ]
 

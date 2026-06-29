@@ -1,12 +1,12 @@
 # Control Loop Architecture Note
 
-`RealTimeController::execute_cycle()` is designed like a FreeRTOS-style high-priority cyclic task while remaining portable on a host PC.
+`RealTimeController::execute_cycle()` remains portable on a host PC and is also wrapped by the implemented FreeRTOS high-priority periodic-task port.
 
 ## MCU Mapping
 
 | Simulation Element | MCU/FreeRTOS Mapping |
 | --- | --- |
-| `run_cycles()` | Periodic task loop or timer-triggered task activation |
+| `run_cycles()` | `emrtc_freertos_task` periodic activation using `vTaskDelayUntil` semantics |
 | `CycleSample` | Hardware timer capture and period monitor |
 | `AxisCommand` | Queue item or lock-free command mailbox |
 | `ProcessImage` | DMA-safe or fieldbus process-image buffer |
@@ -14,7 +14,7 @@
 
 ## Linux/PREEMPT_RT Mapping
 
-On Linux RT, the controller loop can run as a `SCHED_FIFO` cyclic thread with `clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, ...)`. The current deterministic timing model can be replaced with real timestamp captures without changing the axis or bus contracts.
+The host timing probe uses absolute monotonic deadlines and can request `SCHED_FIFO` plus memory locking on Linux. It reports whether those capabilities were actually granted and exports CSV/JSON/Markdown timing evidence. PREEMPT_RT acceptance still requires capture on the selected kernel and hardware; host timing evidence is not target real-time evidence.
 
 ## Real-Time Coding Rules Used Here
 

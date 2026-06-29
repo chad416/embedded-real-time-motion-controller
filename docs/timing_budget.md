@@ -25,3 +25,5 @@ Default cycle time is 1 ms. The model records measured period, jitter, missed cy
 ## Jitter Evidence
 
 The deterministic benchmark adds bounded synthetic jitter plus scheduled stress events. Reports include min/max/mean cycle time, min/max/mean absolute jitter, missed cycles, and deadline overrun count.
+
+The wall-clock host probe separately uses absolute monotonic deadlines, optional CPU stress, and Linux FIFO/memory-lock requests. It exports measured wake lateness and capability status. Host timing evidence is not target real-time evidence; target acceptance requires the selected MCU or PREEMPT_RT machine.

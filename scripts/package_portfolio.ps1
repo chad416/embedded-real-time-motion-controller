@@ -75,6 +75,7 @@ $docs = @(
     "docs/local_toolchain_setup.md",
     "docs/local_windows_validation.md",
     "docs/software_complete_milestone.md",
+    "docs/software_ready_milestone.md",
     "docs/release_notes_template.md",
     "docs/bench_run_playbook.md",
     "docs/commissioning_logbook.md",
@@ -100,6 +101,7 @@ Copy-RequiredDirectory "examples/hardware_evidence" "examples/hardware_evidence"
 Copy-RequiredDirectory "examples/scenarios" "examples/scenarios"
 Copy-RequiredDirectory "examples/replay" "examples/replay"
 Copy-RequiredFile "scripts/check_simulation_milestone.py" "scripts/check_simulation_milestone.py"
+Copy-RequiredFile "scripts/check_software_ready_milestone.py" "scripts/check_software_ready_milestone.py"
 Copy-RequiredFile "scripts/validate_evidence_archive.py" "scripts/validate_evidence_archive.py"
 Copy-RequiredFile "scripts/install_portable_toolchain.ps1" "scripts/install_portable_toolchain.ps1"
 Copy-RequiredFile "scripts/run_all_portable.ps1" "scripts/run_all_portable.ps1"

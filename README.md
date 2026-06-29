@@ -4,9 +4,9 @@
 
 Software-first embedded real-time motion controller for an industrial automation portfolio. The project demonstrates deterministic cyclic control, CiA 402-style drive handling, injectable bus backends, watchdog supervision, fault injection, telemetry, diagnostics, and validation reporting.
 
-This repository does not claim certified SIL/PL safety and does not claim real EtherCAT/CANopen hardware validation. The current scope includes a safety-oriented deterministic software bench plus a dependency-backed, non-commissioned SOEM v2 adapter path. Physical hardware commissioning remains future work.
+This repository does not claim certified SIL/PL safety and does not claim real EtherCAT/CANopen hardware validation. The current scope includes a safety-oriented deterministic software bench, dependency-backed SOEM v2, Linux SocketCAN/CANopen, a pinned FreeRTOS cyclic-task port, and a wall-clock host timing probe. Both fieldbus backends remain physically uncommissioned.
 
-Current release line: `0.2.0`, the machine-gated simulation-complete software milestone.
+Current development line: `0.3.0`, the machine-gated software-ready milestone. The historical `v0.2.0-simulation-complete` baseline remains enforced.
 
 ## What Is Included
 
@@ -16,6 +16,10 @@ Current release line: `0.2.0`, the machine-gated simulation-complete software mi
 - EtherCAT/CANopen-ready bus abstraction with a deterministic simulated backend.
 - Replay-backed adapter harness for recorded nominal, stale-data, bus, heartbeat, invalid-response, and recovery exchanges.
 - Pinned SOEM v2 compile path with guarded NIC/slave configuration, CiA 402 PDO byte exchange, working-counter supervision, and controller backend injection.
+- Linux SocketCAN/CANopen backend with NMT, split RPDO/TPDO exchange, heartbeat supervision, transport diagnostics, and injectable transport tests.
+- Strict JSON scenario and runtime adapter configuration loading with hardware-free CLI validation.
+- Pinned FreeRTOS V11.3.0 periodic-task port with Windows simulator and Linux POSIX smoke execution.
+- Absolute-deadline host timing probe with CPU stress and Linux FIFO/memory-lock capability reporting.
 - Watchdogs for loop timing, heartbeat, bus health, following error, and encoder feedback loss.
 - Fault injector for missed cycle, CPU spike, heartbeat timeout, bus dropout, packet loss, invalid transition, encoder loss, sensor noise, following error, drive fault, watchdog timeout, and command abuse.
 - Timestamped telemetry, CSV trace, JSON metrics, persistent fault log, and Markdown validation report export.
@@ -25,7 +29,8 @@ Current release line: `0.2.0`, the machine-gated simulation-complete software mi
 ## Repository Layout
 
 ```text
-apps/                 Simulator, benchmark, and diagnostic CLI entry points
+apps/                 Simulator, benchmark, timing probe, and diagnostic CLI entry points
+config/adapters/       Versioned SOEM and SocketCAN/CANopen runtime examples
 config/capture_profiles/ Hardware-facing simulation and future bench capture profiles
 config/hardware_targets/ Vendor-neutral future hardware target planning profiles
 docs/                 Architecture, timing, safety-oriented design, tests, reports
@@ -33,6 +38,7 @@ examples/scenarios/   Deterministic controller scenario definitions
 examples/replay/      Recorded process-image exchange fixtures
 include/emrtc/        Public C++ interfaces
 reports/              Sample generated validation artifacts
+ports/freertos/       FreeRTOS cyclic-task integration and configuration
 scripts/              Build, test, benchmark, and report generation helpers
 src/                  C++ implementation
 tests/                No-dependency unit/integration test runner
@@ -57,7 +63,7 @@ cmake -S . -B build-socketcan -DEMRTC_ENABLE_SOCKETCAN=ON
 cmake -S . -B build-canopennode -DEMRTC_ENABLE_CANOPENNODE=ON
 ```
 
-The SOEM path becomes dependency-backed when SOEM v2 is discoverable. CI builds and tests that path against a pinned upstream commit. EtherLab, SocketCAN, and CANopenNode remain planned integration points. None of these flags claim commissioned hardware behavior.
+The SOEM path becomes dependency-backed when SOEM v2 is discoverable. The SocketCAN path uses Linux raw CAN sockets when Linux CAN headers are present. CI compiles both, tests SOEM against a pinned upstream commit, and exercises SocketCAN through an injectable transport. EtherLab and CANopenNode remain optional alternative integration points outside the required software-ready scope. None of these flags claim commissioned hardware behavior.
 
 If Windows blocks local PowerShell scripts, run the same commands through a process-local bypass:
 
@@ -90,10 +96,11 @@ Portfolio evidence bundle:
 scripts/package_portfolio.ps1 -OutDir reports/generated/portfolio_bundle
 ```
 
-Simulation-complete release gate:
+Release gates:
 
 ```powershell
 python scripts/check_simulation_milestone.py
+python scripts/check_software_ready_milestone.py
 ```
 
 Evidence archive integrity check:
@@ -119,6 +126,8 @@ build\emrtc_sim.exe --cycles 2500 --out reports/generated
 build\emrtc_benchmark.exe --cycles 10000 --out reports/generated
 build\emrtc_cli.exe show status
 build\emrtc_cli.exe show adapters
+build\emrtc_cli.exe validate adapter-config config/adapters/soem_single_axis.example.json
+build\emrtc_cli.exe validate adapter-config config/adapters/socketcan_canopen_single_axis.example.json
 build\emrtc_cli.exe run scenario
 build\emrtc_cli.exe run replay examples/replay/fault_recovery_exchange.csv
 build\emrtc_cli.exe inject fault heartbeat_timeout
@@ -136,12 +145,13 @@ python scripts/generate_capture_manifest.py --profiles config/capture_profiles -
 
 The committed files under `reports/` are deterministic sample artifacts. Native C++ validation should be rerun after installing the toolchain.
 
-Key committed visuals include jitter, scenario matrix, control response, two-axis path, and two-axis acceptance plots under `reports/`.
+Key committed visuals include jitter, scenario matrix, control response, two-axis path/acceptance, and recovery-comparison plots under `reports/`.
 
 ## Documentation Index
 
 - [Project Status](docs/project_status.md)
-- [Checkpoint And Work Remaining](docs/work_remaining.md)
+- [Hardware Commissioning Remaining](docs/work_remaining.md)
+- [Software-Ready Milestone](docs/software_ready_milestone.md)
 - [Portfolio Alignment](docs/portfolio_alignment.md)
 - [Recruiter One-Pager](docs/recruiter_one_pager.md)
 - [Portfolio Demo Walkthrough](docs/demo_walkthrough.md)

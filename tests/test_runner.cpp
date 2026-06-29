@@ -650,7 +650,7 @@ TestResult test_two_axis_coordinated_move() {
             "two simulated axes settle on a bounded straight-line path within acceptance limits"};
 }
 
-TestResult test_hardware_adapter_skeletons_are_not_claiming_commissioning() {
+TestResult test_adapter_status_does_not_claim_commissioning() {
     emrtc::SoemEtherCatBackend soem;
     emrtc::EtherLabEtherCatBackend etherlab;
     emrtc::SocketCanCanOpenBackend socket_can;
@@ -666,7 +666,7 @@ TestResult test_hardware_adapter_skeletons_are_not_claiming_commissioning() {
         (!etherlab_status.dependency_available || etherlab_status.build_flag_enabled) &&
         (!can_status.dependency_available || can_status.build_flag_enabled) &&
         (!canopen_node_status.dependency_available || canopen_node_status.build_flag_enabled);
-    return {"hardware adapter skeleton status",
+    return {"adapter status does not claim commissioning",
             uncommissioned && dependency_flags_are_coherent &&
                 !soem.diagnostics().online &&
                 !etherlab.diagnostics().online &&
@@ -1093,7 +1093,7 @@ int main() {
         test_host_realtime_probe_uses_absolute_schedule(),
         test_json_scenario_suite(),
         test_two_axis_coordinated_move(),
-        test_hardware_adapter_skeletons_are_not_claiming_commissioning(),
+        test_adapter_status_does_not_claim_commissioning(),
         test_soem_configuration_guards_do_not_touch_hardware(),
         test_soem_pdo_codec_is_bounded_and_little_endian(),
         test_canopen_pdo_codec_is_bounded_and_little_endian(),

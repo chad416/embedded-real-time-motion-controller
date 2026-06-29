@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(embedded_realtime_motion_controller
-    VERSION 0.2.0
+    VERSION 0.3.0
     DESCRIPTION "Software-first embedded real-time motion controller simulation and validation bench"
     LANGUAGES C CXX)
 
@@ -14,7 +14,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(EMRTC_ENABLE_SOEM "Enable the SOEM EtherCAT backend" OFF)
 option(EMRTC_REQUIRE_SOEM "Fail configuration when SOEM v2 is requested but unavailable" OFF)
 option(EMRTC_ENABLE_ETHERLAB "Enable EtherLab EtherCAT adapter integration point" OFF)
-option(EMRTC_ENABLE_SOCKETCAN "Enable SocketCAN CANopen adapter integration point" OFF)
+option(EMRTC_ENABLE_SOCKETCAN "Enable the SocketCAN CANopen backend" OFF)
 option(EMRTC_ENABLE_CANOPENNODE "Enable CANopenNode adapter integration point" OFF)
 option(EMRTC_ENABLE_FREERTOS_PORT "Build the FreeRTOS cyclic-task port" OFF)
 option(EMRTC_REQUIRE_FREERTOS "Fail when the requested FreeRTOS kernel is unavailable" OFF)

@@ -1,4 +1,4 @@
-# Final Software-Complete Report
+# Final Software-Ready Report
 
 ## Software Complete
 
@@ -20,18 +20,24 @@
 - Hardware evidence archive and run-manifest convention.
 - Evidence archive integrity and hardware-claim validator with CI tests.
 - Dependency-backed SOEM v2 single-slave lifecycle and cyclic PDO exchange path.
+- Linux SocketCAN CANopen NMT, split RPDO/TPDO, heartbeat, stale-data, and transport-loss path.
+- Strict runtime adapter configuration and hardware-free CLI validation.
+- Pinned FreeRTOS V11.3.0 cyclic-task port and simulator/POSIX smoke execution.
+- Absolute-deadline host timing probe with stress and Linux scheduling-capability evidence.
+- Quantitative fault detection, re-enable, post-recovery settling, ratio, and final-error evidence.
 - Controller injection of external bus backends and measured drive feedback.
+- Machine-enforced `0.3.0` software-ready release gate.
 - Professional documentation set.
 
 ## Hardware Only Remaining
 
-- Select and commission a physical SOEM EtherCAT target, or implement the required alternative backend.
-- Verify actual drive PDO/object dictionary entries and byte offsets.
-- Add target-specific slave recovery/reconfiguration after real failure-mode capture.
+- Select and connect the physical EtherCAT or CANopen target, interface, drive, motor, encoder, power, grounding, and stop chain.
+- Verify actual drive PDO/object dictionary entries, offsets, COB-IDs, node identity, scaling, limits, and timeouts.
+- Commission target-specific bus-state, slave/node recovery, and reconfiguration behavior using the implemented backend.
 - Validate timing on real MCU or PREEMPT_RT target.
 - Commission motor, encoder, E-stop/safe-stop wiring, and drive parameters.
 - Produce hardware validation reports without claiming certification unless a certified safety process is executed.
 
 ## Current Status
 
-See [Project Status](project_status.md) for the live completion snapshot. The software/simulation/documentation package is approximately 93% complete. The full flagship artifact remains approximately 80% complete because physical fieldbus, motion, timing, recovery, and stop-path commissioning are still outside the completed evidence boundary.
+See [Project Status](project_status.md) for the live completion snapshot. The defined software/simulation/documentation/admin package is 100% complete after the `0.3.0` release gate and tag pass. The full PDF flagship artifact is approximately 85% complete because physical fieldbus, motion, target timing, recovery, and stop-path commissioning remain outside the completed evidence boundary.

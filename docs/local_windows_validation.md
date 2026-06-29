@@ -37,11 +37,13 @@ powershell -ExecutionPolicy Bypass -File scripts/run_all_portable.ps1
 - CMake configured the project with GNU C++ 16.1.0 and C++17 enabled.
 - All library and executable targets compiled and linked on Windows.
 - CTest passed `1/1` unit and integration test target.
-- The SOEM and SocketCAN adapter-flag skeleton build compiled successfully.
+- The SOEM and SocketCAN adapter-enabled build compiled successfully; Linux CI additionally compiles the raw SocketCAN transport.
 - The native CLI status, adapter status, two-axis acceptance, JSON fault-matrix scenario, and portfolio demo completed.
 - The post-release replay harness compiled and passed nominal plus four-fault recovery traces with zero expectation mismatches.
 - The post-release SOEM v2 backend compiled and linked against the pinned dependency, including real context/lifecycle and cyclic exchange calls.
-- The default suite now passes 38 controller, adapter, replay, scenario, and performance checks.
+- The default suite now passes 45 controller, adapter, strict JSON/configuration, SocketCAN transport, host timing, replay, scenario, recovery, and performance checks.
+- The pinned FreeRTOS V11.3.0 simulator port builds and its cyclic-task smoke test passes.
+- The wall-clock host timing probe runs with absolute deadlines and exports CSV/JSON/Markdown evidence.
 - The deterministic 10,000-cycle benchmark completed.
 - Sample report and capture-manifest generation completed through the bundled Python fallback.
 
@@ -60,4 +62,4 @@ The missed cycles and deadline overruns are expected injected benchmark events, 
 
 ## Evidence Boundary
 
-The dependency-backed SOEM executable cannot run on this Windows host until the Npcap runtime is installed; the default no-driver suite remains fully runnable. This local result confirms host compilation, linkage, and deterministic software behavior. It does not validate raw-interface access, real fieldbus timing, physical drive behavior, electrical integration, or a certified safety function.
+The dependency-backed SOEM executable cannot access a raw Windows interface until a compatible packet-capture runtime is installed; SocketCAN runtime access is Linux-specific. The default and injected-transport suites remain fully runnable. This result confirms compilation, linkage, execution-port integration, and deterministic software behavior. It does not validate raw-interface access, real fieldbus timing, physical drive behavior, electrical integration, or a certified safety function.

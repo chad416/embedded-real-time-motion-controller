@@ -11,7 +11,7 @@ Hardware commissioning starts after software validation is passing.
 
 ## Phase 2: Adapter Bring-Up
 
-- Commission the dependency-backed single-slave SOEM backend, or implement an alternative EtherLab/SocketCAN path if the selected target requires it.
+- Commission the implemented dependency-backed SOEM or SocketCAN/CANopen backend selected for the physical target; EtherLab/CANopenNode remain optional alternatives only if future hardware specifically requires them.
 - Supply the selected interface, timeout, slave count, engineering-unit scale, and verified PDO offsets.
 - Map the existing process image to actual PDO/object dictionary entries.
 - Validate statusword/controlword transitions against the real drive manual.

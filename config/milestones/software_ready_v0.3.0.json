@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "milestone": "software-ready",
+  "version": "0.3.0",
+  "tag": "v0.3.0-software-ready",
+  "scope": "all_executable_non_hardware_work",
+  "minimum_cpp_checks": 45,
+  "minimum_scenarios": 21,
+  "minimum_capture_profiles": 6,
+  "minimum_hardware_targets": 3,
+  "recovery_limits": {
+    "detection_latency_cycles_max": 1,
+    "recovery_cycles_max": 10,
+    "settling_time_ratio_max": 1.5,
+    "post_recovery_final_error_max": 0.01
+  },
+  "required_files": [
+    "include/emrtc/json.hpp",
+    "src/json.cpp",
+    "include/emrtc/adapter_config.hpp",
+    "src/adapter_config.cpp",
+    "include/emrtc/canopen.hpp",
+    "src/canopen.cpp",
+    "include/emrtc/realtime.hpp",
+    "src/realtime.cpp",
+    "ports/freertos/FreeRTOSConfig.h",
+    "ports/freertos/emrtc_freertos_task.hpp",
+    "ports/freertos/emrtc_freertos_task.cpp",
+    "config/adapters/soem_single_axis.example.json",
+    "config/adapters/socketcan_canopen_single_axis.example.json",
+    "reports/sample_metrics.json",
+    "reports/sample_recovery_comparison.svg",
+    "docs/software_ready_milestone.md",
+    "docs/work_remaining.md",
+    "scripts/check_software_ready_milestone.py"
+  ],
+  "required_ci_fragments": [
+    "-DEMRTC_REQUIRE_SOEM=ON",
+    "-DEMRTC_ENABLE_SOCKETCAN=ON",
+    "-DEMRTC_REQUIRE_FREERTOS=ON",
+    "emrtc_freertos_cyclic_smoke",
+    "emrtc_realtime_probe",
+    "scripts/demo_portfolio.ps1",
+    "scripts/package_portfolio.ps1",
+    "scripts/check_software_ready_milestone.py"
+  ],
+  "claim_documents": [
+    "README.md",
+    "docs/project_status.md",
+    "docs/portfolio_alignment.md",
+    "docs/final_report.md",
+    "docs/work_remaining.md"
+  ],
+  "forbidden_current_claims": [
+    "SocketCAN and CANopenNode remain planned",
+    "SocketCAN adapter-flag skeleton",
+    "Actual FreeRTOS target adapter not yet implemented",
+    "production adapter and real bench evidence remain",
+    "install local CMake plus a C++17 compiler"
+  ]
+}

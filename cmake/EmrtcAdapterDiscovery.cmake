@@ -10,6 +10,14 @@ set(EMRTC_SOEM_LIBRARIES "")
 if(EMRTC_ENABLE_SOEM)
     find_package(soem CONFIG QUIET PATH_SUFFIXES cmake)
     if(TARGET soem)
+        # SOEM v2 exports its private C11 selection as an interface option using
+        # C_COMPILER_ID, which also matches while compiling C++ consumers.
+        get_target_property(_EMRTC_SOEM_INTERFACE_OPTIONS soem INTERFACE_COMPILE_OPTIONS)
+        if(_EMRTC_SOEM_INTERFACE_OPTIONS)
+            list(FILTER _EMRTC_SOEM_INTERFACE_OPTIONS EXCLUDE REGEX "std=(gnu)?c11")
+            set_property(TARGET soem PROPERTY
+                INTERFACE_COMPILE_OPTIONS "${_EMRTC_SOEM_INTERFACE_OPTIONS}")
+        endif()
         set(EMRTC_HAS_SOEM ON)
         set(EMRTC_SOEM_LIBRARIES soem)
         message(STATUS "SOEM v2 CMake target discovered")

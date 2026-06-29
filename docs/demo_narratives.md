@@ -2,13 +2,13 @@
 
 ## 90-Second Demo
 
-This project is a software-first embedded real-time motion controller. I built the controller core in C++ with a 1 ms deterministic cycle model, a CiA 402-style axis state machine, simulated EtherCAT/CANopen process image, watchdogs, and telemetry. The simulator can enable a drive, run position and velocity moves, inject bus and feedback faults, and export CSV/JSON/Markdown reports. The important point is that the project does not just say "real-time"; it records cycle timing, jitter, missed cycles, packet loss, watchdog trips, recovery behavior, and pass/fail scenario evidence. Hardware integration is cleanly isolated behind the bus backend, so the remaining work is commissioning actual EtherCAT or CANopen devices, not rewriting the controller.
+This project is a software-first embedded real-time motion controller. I built the controller core in C++ with a 1 ms deterministic cycle model, a CiA 402-style axis state machine, watchdogs, telemetry, dependency-backed SOEM, and Linux SocketCAN/CANopen. The simulator can enable a drive, run position/velocity/coordinated moves, inject bus and feedback faults, and export CSV/JSON/Markdown reports. A pinned FreeRTOS port and a wall-clock host probe exercise execution outside the deterministic simulator. The project records cycle timing, jitter, missed cycles, packet loss, watchdog trips, recovery behavior, and pass/fail evidence. The remaining work is physical commissioning, not a missing software backend.
 
 ## 6-Minute Engineering Walkthrough
 
 Start with the architecture. The `RealTimeController` owns the cyclic execution order: fault injection, command dispatch, process-image exchange, axis update, watchdog evaluation, and telemetry. The axis implements CiA 402-style states from Not Ready through Operation Enabled and Fault. Motion commands are only accepted in valid states, and rejected commands become explicit fault evidence.
 
-The bus layer is deliberately abstract. It uses a deterministic simulated backend for controller scenarios, a replay backend for recorded exchanges, and a dependency-backed SOEM v2 implementation for future physical EtherCAT work. Controller injection tests prove outgoing controlwords and targets plus incoming statusword, position, and velocity traverse the same cyclic boundary.
+The bus layer is deliberately abstract. It uses deterministic simulation, recorded-exchange replay, dependency-backed SOEM v2, and Linux SocketCAN/CANopen. Controller injection tests prove outgoing controlwords/targets and incoming statusword/position/velocity traverse the same cyclic boundary. SocketCAN transport tests cover NMT, split PDOs, heartbeat, stale data, and transport failure without opening a physical interface.
 
 The safety-oriented layer includes loop, bus, heartbeat, following-error, encoder-feedback, and E-stop/safe-stop supervision. It does not claim certified safety. Instead, it shows disciplined fault handling and documents where certified hardware/process would be required.
 
@@ -16,4 +16,4 @@ The validation story is quantitative. The benchmark records cycle histograms, mi
 
 For a repeatable demonstration, run `scripts/demo_portfolio.ps1 -BuildDir build -OutDir reports/generated/demo`.
 
-The native Windows suite passes through a pinned portable CMake/MinGW-w64 workflow, and the SOEM path compiles/links against the pinned dependency. The next major boundary is a selected NIC and drive, followed by the documented low-energy commissioning sequence.
+The native Windows suite passes through a pinned portable CMake/MinGW-w64 workflow, and hosted Linux CI compiles SocketCAN, links the pinned SOEM dependency, executes the FreeRTOS POSIX smoke target, and runs both milestone gates. The next boundary is a selected interface and drive, followed by the documented low-energy commissioning sequence.

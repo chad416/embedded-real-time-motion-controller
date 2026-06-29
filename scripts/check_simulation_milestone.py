@@ -51,6 +51,11 @@ def project_version() -> str:
     return match.group(1) if match else ""
 
 
+def semantic_version(value: str) -> tuple[int, int, int]:
+    match = re.fullmatch(r"([0-9]+)\.([0-9]+)\.([0-9]+)", value)
+    return tuple(int(part) for part in match.groups()) if match else (0, 0, 0)
+
+
 def main() -> int:
     validate_project.main()
 
@@ -62,10 +67,11 @@ def main() -> int:
 
     version = str(definition["version"])
     tag = str(definition["tag"])
+    current_version = project_version()
     gate.check(
-        "project version",
-        project_version() == version,
-        f"CMake project version must be {version}",
+        "project version compatibility",
+        semantic_version(current_version) >= semantic_version(version),
+        f"current CMake version {current_version or '<missing>'} must preserve the {version} baseline",
     )
     gate.check(
         "tag identity",
