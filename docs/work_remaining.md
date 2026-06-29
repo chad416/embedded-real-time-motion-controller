@@ -13,12 +13,10 @@ This is the handoff record for work started after commit `2f5f388`. It separates
 
 ## Remaining Non-Hardware Work
 
-1. Make the new Linux SocketCAN build, FreeRTOS POSIX smoke run, reports, and existing jobs pass on the exact hosted GitHub CI run.
-2. Add and enforce a software-ready milestone/release gate beyond `v0.2.0-simulation-complete`.
-3. Update every adapter, architecture, test, benchmark, demo, status, and recruiter document that still describes SocketCAN or FreeRTOS as planning-only.
-4. Gate the new recovery graph, adapter configs, FreeRTOS port, and host timing assets in repository health checks and portfolio packaging.
-5. Run final 10,000-cycle Windows validation, SOEM compile, FreeRTOS smoke, adapter dry-runs, evidence tests, report generation, and claim audits.
-6. Commit and push any CI corrections, verify the exact final commit, then create the software-ready release record/tag.
+1. Add and enforce a software-ready milestone/release gate beyond `v0.2.0-simulation-complete`.
+2. Update every adapter, architecture, test, benchmark, demo, status, and recruiter document that still describes SocketCAN or FreeRTOS as planning-only.
+3. Complete the final claim audit and ensure the new software-ready gate distinguishes host timing from target hardware evidence.
+4. Create the software-ready release record/tag only after those documentation and gate changes pass locally and in hosted CI.
 
 ## Hardware-Only Work Afterward
 
@@ -31,4 +29,4 @@ This is the handoff record for work started after commit `2f5f388`. It separates
 
 ## Checkpoint Status
 
-The new code passes the local default Windows C++ tests and local FreeRTOS simulator smoke test. It is not the final software-ready milestone until the non-hardware list above is closed and the exact hosted commit passes.
+The new code passes the local 10,000-cycle Windows workflow, 45 C++ checks, FreeRTOS simulator smoke test, adapter dry-runs, repository gates, and evidence tests. Hosted run `28343390142` also passed the Linux SocketCAN build, dependency-backed SOEM tests, FreeRTOS POSIX smoke test, host timing probe, reports, packaging, and all project gates. The checkpoint is safely committed and pushed; it is not the final software-ready milestone until the shorter non-hardware list above is closed.

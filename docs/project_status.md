@@ -2,7 +2,7 @@
 
 Last updated: 2026-06-29
 
-Checkpoint note: post-`2f5f388` software-readiness work is implemented locally and being preserved in Git. It is not a final release until its exact hosted CI run passes. See [Work Remaining](work_remaining.md).
+Checkpoint note: post-`2f5f388` software-readiness work is committed and pushed, and hosted run `28343390142` passed. It remains a checkpoint rather than a final software-ready release because the release gate and documentation audit listed in [Work Remaining](work_remaining.md) are still open.
 
 ## Completion Snapshot
 
