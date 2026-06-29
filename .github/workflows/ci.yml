@@ -85,7 +85,7 @@ jobs:
         run: ctest --test-dir build-soem --build-config Release --output-on-failure
 
       - name: Run FreeRTOS POSIX cyclic-task smoke test
-        run: ctest --test-dir build-freertos --build-config Release --output-on-failure
+        run: ctest --test-dir build-freertos --build-config Release --output-on-failure -R emrtc_freertos_cyclic_smoke
 
       - name: Run simulator and export validation reports
         run: ./build/emrtc_sim --cycles 2500 --out reports/generated/ci-sim
