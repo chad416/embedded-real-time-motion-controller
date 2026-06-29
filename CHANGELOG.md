@@ -6,6 +6,11 @@ All notable project changes are recorded here.
 
 ### Added
 
+- Strict structured JSON parsing and schema-checked SOEM/CANopen runtime configuration.
+- SocketCAN CANopen NMT, RPDO/TPDO, heartbeat, and transport-loss implementation.
+- Wall-clock host timing probe and pinned FreeRTOS cyclic-task smoke path.
+- Quantitative baseline-versus-recovery metrics and comparison graph.
+
 - Pinned, checksum-verified portable Windows CMake and MinGW-w64 installer and runner.
 - Committed local Windows native build, CTest, benchmark, and report-generation validation record.
 - Evidence archive validator with digest, completeness, profile, review, and claim-boundary checks.
@@ -19,6 +24,9 @@ All notable project changes are recorded here.
 - External-backend and SOEM configuration/codec tests, bringing the native suite to 38 checks.
 
 ### Changed
+
+- Scenario loading no longer relies on regex extraction.
+- Newly observed axis faults are persisted even when latched before watchdog evaluation.
 
 - Toolchain checks now discover the bundled Codex Python runtime used by report generation.
 - The portfolio demo uses the same Python fallback and fails immediately on native command errors.

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "backend": "soem_ethercat",
+  "interface_name": "eth0",
+  "group": 0,
+  "io_map_bytes": 4096,
+  "expected_slave_count": 1,
+  "receive_timeout_us": 500,
+  "counts_per_unit": 1000.0,
+  "pdo_layout": {
+    "controlword_offset": 0,
+    "target_position_offset": 2,
+    "target_velocity_offset": 6,
+    "statusword_offset": 0,
+    "actual_position_offset": 2,
+    "actual_velocity_offset": 6
+  },
+  "object_mapping": [
+    {"field": "controlword", "object_index": "0x6040", "sub_index": 0, "bit_length": 16, "controller_to_drive": true},
+    {"field": "statusword", "object_index": "0x6041", "sub_index": 0, "bit_length": 16, "controller_to_drive": false},
+    {"field": "target_position", "object_index": "0x607A", "sub_index": 0, "bit_length": 32, "controller_to_drive": true},
+    {"field": "target_velocity", "object_index": "0x60FF", "sub_index": 0, "bit_length": 32, "controller_to_drive": true},
+    {"field": "actual_position", "object_index": "0x6064", "sub_index": 0, "bit_length": 32, "controller_to_drive": false},
+    {"field": "actual_velocity", "object_index": "0x606C", "sub_index": 0, "bit_length": 32, "controller_to_drive": false}
+  ]
+}

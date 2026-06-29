@@ -237,6 +237,21 @@ bool TelemetryRecorder::write_metrics_json(const RuntimeMetrics& metrics, const 
     write_json_field(out, "settling_time_limit_s", metrics.two_axis.settling_time_limit_s);
     write_json_field(out, "target_tolerance", metrics.two_axis.target_tolerance, false);
     out << "  },\n";
+    out << "  \"recovery_performance\": {\n";
+    write_json_bool_field(out, "available", metrics.recovery.available);
+    write_json_bool_field(out, "fault_observed", metrics.recovery.fault_observed);
+    write_json_bool_field(out, "operation_reenabled", metrics.recovery.operation_reenabled);
+    write_json_bool_field(out, "post_recovery_motion_settled", metrics.recovery.post_recovery_motion_settled);
+    write_json_field(out, "fault_injection_cycle", metrics.recovery.fault_injection_cycle);
+    write_json_field(out, "fault_detection_cycle", metrics.recovery.fault_detection_cycle);
+    write_json_field(out, "operation_reenabled_cycle", metrics.recovery.operation_reenabled_cycle);
+    write_json_field(out, "detection_latency_cycles", metrics.recovery.detection_latency_cycles);
+    write_json_field(out, "recovery_cycles", metrics.recovery.recovery_cycles);
+    write_json_field(out, "baseline_settling_time_s", metrics.recovery.baseline_settling_time_s);
+    write_json_field(out, "post_recovery_settling_time_s", metrics.recovery.post_recovery_settling_time_s);
+    write_json_field(out, "settling_time_ratio", metrics.recovery.settling_time_ratio);
+    write_json_field(out, "post_recovery_final_error", metrics.recovery.post_recovery_final_error, false);
+    out << "  },\n";
     out << "  \"bus\": {\n";
     write_json_field(out, "tx_packets", metrics.bus.tx_packets);
     write_json_field(out, "rx_packets", metrics.bus.rx_packets);
@@ -334,6 +349,21 @@ bool TelemetryRecorder::write_validation_markdown(const RuntimeMetrics& metrics,
         out << "| Path error limit | " << metrics.two_axis.path_error_limit << " |\n";
         out << "| Settling time (s) | " << metrics.two_axis.settling_time_s << " |\n";
         out << "| Settling time limit (s) | " << metrics.two_axis.settling_time_limit_s << " |\n\n";
+    }
+
+    if (metrics.recovery.available) {
+        out << "## Fault Recovery Performance\n\n";
+        out << "| Metric | Value |\n";
+        out << "| --- | ---: |\n";
+        out << "| Fault observed | " << (metrics.recovery.fault_observed ? "true" : "false") << " |\n";
+        out << "| Operation re-enabled | " << (metrics.recovery.operation_reenabled ? "true" : "false") << " |\n";
+        out << "| Post-recovery motion settled | " << (metrics.recovery.post_recovery_motion_settled ? "true" : "false") << " |\n";
+        out << "| Detection latency (cycles) | " << metrics.recovery.detection_latency_cycles << " |\n";
+        out << "| Recovery to operation enabled (cycles) | " << metrics.recovery.recovery_cycles << " |\n";
+        out << "| Baseline settling time (s) | " << metrics.recovery.baseline_settling_time_s << " |\n";
+        out << "| Post-recovery settling time (s) | " << metrics.recovery.post_recovery_settling_time_s << " |\n";
+        out << "| Settling-time ratio | " << metrics.recovery.settling_time_ratio << " |\n";
+        out << "| Post-recovery final error | " << metrics.recovery.post_recovery_final_error << " |\n\n";
     }
 
     out << "## Bus Diagnostics\n\n";

@@ -20,6 +20,10 @@ REQUIRED_FILES = [
     ".github/ISSUE_TEMPLATE/bench-run.md",
     ".github/ISSUE_TEMPLATE/adapter-commissioning.md",
     "include/emrtc/adapter_contract.hpp",
+    "include/emrtc/adapter_config.hpp",
+    "include/emrtc/canopen.hpp",
+    "include/emrtc/json.hpp",
+    "include/emrtc/realtime.hpp",
     "include/emrtc/controller.hpp",
     "include/emrtc/axis.hpp",
     "include/emrtc/bus.hpp",
@@ -32,6 +36,10 @@ REQUIRED_FILES = [
     "src/controller.cpp",
     "src/axis.cpp",
     "src/adapter_contract.cpp",
+    "src/adapter_config.cpp",
+    "src/canopen.cpp",
+    "src/json.cpp",
+    "src/realtime.cpp",
     "src/bus.cpp",
     "src/hardware_adapters.cpp",
     "src/multi_axis.cpp",
@@ -42,6 +50,8 @@ REQUIRED_FILES = [
     "apps/simulator_main.cpp",
     "apps/benchmark_main.cpp",
     "apps/diagnostic_cli_main.cpp",
+    "apps/realtime_probe_main.cpp",
+    "apps/freertos_smoke_main.cpp",
     "tests/test_runner.cpp",
     "tests/test_evidence_archive_validator.py",
     "tests/fixtures/evidence_archive/2026-06-29_simulated_loopback_target_nominal_profile_position_001/RUN_MANIFEST.json",
@@ -95,6 +105,7 @@ REQUIRED_FILES = [
     "reports/sample_control_response.svg",
     "reports/sample_two_axis_path.svg",
     "reports/sample_two_axis_acceptance.svg",
+    "reports/sample_recovery_comparison.svg",
     "reports/sample_capture_manifest.json",
     "reports/sample_capture_manifest.md",
     "reports/sample_hardware_target_manifest.json",
@@ -105,6 +116,11 @@ REQUIRED_FILES = [
     "config/hardware_evidence_run_manifest.schema.json",
     "config/milestones/simulation_complete_v0.2.0.json",
     "config/toolchains/windows_portable.json",
+    "config/adapters/soem_single_axis.example.json",
+    "config/adapters/socketcan_canopen_single_axis.example.json",
+    "ports/freertos/FreeRTOSConfig.h",
+    "ports/freertos/emrtc_freertos_task.hpp",
+    "ports/freertos/emrtc_freertos_task.cpp",
     "config/capture_profiles/idle_bus_online.json",
     "config/capture_profiles/nominal_profile_position.json",
     "config/capture_profiles/cpu_jitter_stress.json",
@@ -128,6 +144,7 @@ REQUIRED_FILES = [
     "scripts/benchmark.ps1",
     "scripts/run_all.ps1",
     "scripts/run_all_portable.ps1",
+    "scripts/realtime_probe.ps1",
     "scripts/generate_graphs.py",
     "scripts/generate_capture_manifest.py",
     "scripts/generate_hardware_target_manifest.py",
@@ -250,6 +267,15 @@ def check_json_reports() -> None:
         fail("sample two-axis final error exceeds configured tolerance")
     if two_axis.get("settling_time_s", 999.0) > two_axis.get("settling_time_limit_s", 0.0):
         fail("sample two-axis settling time exceeds configured limit")
+    recovery = metrics.get("recovery_performance", {})
+    if not recovery.get("available") or not recovery.get("fault_observed"):
+        fail("sample metrics must include observed recovery evidence")
+    if not recovery.get("operation_reenabled") or not recovery.get("post_recovery_motion_settled"):
+        fail("sample recovery must re-enable operation and settle motion")
+    if int(recovery.get("recovery_cycles", 999)) > 10:
+        fail("sample recovery exceeds the recovery-cycle limit")
+    if float(recovery.get("post_recovery_final_error", 999.0)) > 0.01:
+        fail("sample post-recovery final error exceeds the limit")
     if not fault_log:
         fail("sample fault log must contain replayable entries")
 

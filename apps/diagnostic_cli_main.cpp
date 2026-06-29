@@ -1,4 +1,5 @@
 #include "emrtc/controller.hpp"
+#include "emrtc/adapter_config.hpp"
 #include "emrtc/hardware_adapters.hpp"
 #include "emrtc/multi_axis.hpp"
 #include "emrtc/replay_adapter.hpp"
@@ -31,6 +32,7 @@ void print_help() {
         << "Usage:\n"
         << "  emrtc_cli show status\n"
         << "  emrtc_cli show adapters\n"
+        << "  emrtc_cli validate adapter-config <config.json>\n"
         << "  emrtc_cli run scenario [examples/scenarios/name.json]\n"
         << "  emrtc_cli run two-axis\n"
         << "  emrtc_cli run replay [examples/replay/name.csv]\n"
@@ -82,6 +84,17 @@ int main(int argc, char** argv) {
         print_adapter_status(socket_can.status());
         print_adapter_status(canopen_node.status());
         return 0;
+    }
+
+    if (verb == "validate" && noun == "adapter-config" && argc > 3) {
+        try {
+            const auto config = emrtc::load_runtime_adapter_config(argv[3]);
+            std::cout << emrtc::summarize_runtime_adapter_config(config);
+            return 0;
+        } catch (const std::exception& error) {
+            std::cerr << "adapter_config_error=" << error.what() << "\n";
+            return 1;
+        }
     }
 
     if (verb == "run" && noun == "scenario") {

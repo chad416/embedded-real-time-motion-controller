@@ -1,6 +1,7 @@
 #include "emrtc/controller.hpp"
 #include "emrtc/multi_axis.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <stdexcept>
 #include <sstream>
@@ -102,6 +103,7 @@ void RealTimeController::reset_faults() {
     estop_requested_ = false;
     force_watchdog_timeout_ = false;
     forced_extra_period_ns_ = 0;
+    last_recorded_fault_ = FaultCode::None;
     record_status("fault reset");
 }
 
@@ -115,6 +117,7 @@ void RealTimeController::cold_restart() {
     estop_requested_ = false;
     force_watchdog_timeout_ = false;
     forced_extra_period_ns_ = 0;
+    last_recorded_fault_ = FaultCode::None;
     record_status("cold restart");
 }
 
@@ -128,6 +131,7 @@ void RealTimeController::warm_restart() {
     estop_requested_ = false;
     force_watchdog_timeout_ = false;
     forced_extra_period_ns_ = 0;
+    last_recorded_fault_ = FaultCode::None;
     record_status("warm restart");
 }
 
@@ -283,6 +287,10 @@ void RealTimeController::execute_cycle() {
         record_fault(watchdog_status.fault, "watchdog supervisor trip");
         feedback = axis_.feedback();
     }
+    if (feedback.fault_code != FaultCode::None &&
+        feedback.fault_code != last_recorded_fault_) {
+        record_fault(feedback.fault_code, "new axis fault state observed");
+    }
 
     process_images_[0].statusword = feedback.statusword;
     process_images_[0].actual_position = feedback.position;
@@ -317,6 +325,9 @@ void RealTimeController::record_fault(FaultCode fault, const std::string& detail
                              static_cast<Nanoseconds>(cycle_) * config_.cycle_time_ns,
                              fault,
                              detail});
+    if (fault != FaultCode::None) {
+        last_recorded_fault_ = fault;
+    }
 }
 
 std::vector<ScenarioSummary> run_validation_scenarios(RuntimeMetrics* combined_metrics) {
@@ -583,7 +594,92 @@ RuntimeMetrics run_benchmark(std::uint64_t cycles) {
     metrics.two_axis.settling_time_s = two_axis.settling_time_s;
     metrics.two_axis.settling_time_limit_s = two_axis.settling_time_limit_s;
     metrics.two_axis.target_tolerance = two_axis.target_tolerance;
+    metrics.recovery = run_fault_recovery_benchmark();
     return metrics;
+}
+
+RecoveryPerformanceMetrics run_fault_recovery_benchmark() {
+    RecoveryPerformanceMetrics result;
+    result.available = true;
+
+    RealTimeController baseline;
+    enable_axis(baseline);
+    baseline.command({CommandType::MoveAbsolute, 1.0});
+    baseline.run_cycles(900);
+    const auto baseline_metrics = baseline.metrics();
+    result.baseline_settling_time_s =
+        std::max(0.0, baseline_metrics.motion.settling_time_s - 0.005);
+
+    RealTimeController recovery;
+    enable_axis(recovery);
+    recovery.command({CommandType::MoveAbsolute, 1.0});
+    recovery.run_cycles(300);
+    result.fault_injection_cycle = recovery.metrics().cycles.size();
+    recovery.fault_injector().schedule(
+        {result.fault_injection_cycle, FaultKind::BusDropout, 1.0, 3});
+    recovery.run_cycles(5);
+
+    auto faulted_metrics = recovery.metrics();
+    const auto fault = std::find_if(
+        faulted_metrics.fault_log.begin(),
+        faulted_metrics.fault_log.end(),
+        [](const auto& entry) { return entry.fault == FaultCode::BusDropout; });
+    if (fault != faulted_metrics.fault_log.end()) {
+        result.fault_observed = true;
+        result.fault_detection_cycle = fault->cycle;
+        result.detection_latency_cycles =
+            result.fault_detection_cycle >= result.fault_injection_cycle
+                ? result.fault_detection_cycle - result.fault_injection_cycle
+                : 0U;
+    }
+
+    recovery.reset_faults();
+    recovery.command({CommandType::Enable, 0.0});
+    for (std::uint64_t attempt = 0; attempt < 10U; ++attempt) {
+        recovery.run_cycles(1);
+        if (recovery.axis().state() == DriveState::OperationEnabled) {
+            result.operation_reenabled = true;
+            result.operation_reenabled_cycle = recovery.metrics().cycles.size() - 1U;
+            break;
+        }
+    }
+    if (result.operation_reenabled && result.fault_observed) {
+        result.recovery_cycles =
+            result.operation_reenabled_cycle >= result.fault_detection_cycle
+                ? result.operation_reenabled_cycle - result.fault_detection_cycle
+                : 0U;
+    }
+
+    const CycleIndex post_motion_command_cycle = recovery.metrics().cycles.size();
+    constexpr double kPostRecoveryTarget = 0.25;
+    recovery.command({CommandType::MoveAbsolute, kPostRecoveryTarget});
+    recovery.run_cycles(900);
+    const auto recovered_metrics = recovery.metrics();
+    if (!recovered_metrics.trace.empty()) {
+        result.post_recovery_final_error =
+            std::abs(kPostRecoveryTarget - recovered_metrics.trace.back().position);
+        bool suffix_settled = true;
+        for (std::size_t offset = 0; offset < recovered_metrics.trace.size(); ++offset) {
+            const auto index = recovered_metrics.trace.size() - 1U - offset;
+            const auto& entry = recovered_metrics.trace[index];
+            if (entry.cycle < post_motion_command_cycle) break;
+            const bool settled =
+                std::abs(entry.position - kPostRecoveryTarget) <= 0.010 &&
+                std::abs(entry.velocity) <= 0.010 && entry.fault == FaultCode::None;
+            suffix_settled = suffix_settled && settled;
+            if (suffix_settled) {
+                result.post_recovery_motion_settled = true;
+                result.post_recovery_settling_time_s =
+                    static_cast<double>(entry.cycle - post_motion_command_cycle) *
+                    static_cast<double>(recovery.config().cycle_time_ns) * kNsToSeconds;
+            }
+        }
+    }
+    if (result.baseline_settling_time_s > 0.0) {
+        result.settling_time_ratio =
+            result.post_recovery_settling_time_s / result.baseline_settling_time_s;
+    }
+    return result;
 }
 
 }  // namespace emrtc

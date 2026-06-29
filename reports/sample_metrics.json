@@ -64,6 +64,21 @@
     "settling_time_limit_s": 1.2,
     "target_tolerance": 0.005
   },
+  "recovery_performance": {
+    "available": true,
+    "fault_observed": true,
+    "operation_reenabled": true,
+    "post_recovery_motion_settled": true,
+    "fault_injection_cycle": 305,
+    "fault_detection_cycle": 305,
+    "operation_reenabled_cycle": 312,
+    "detection_latency_cycles": 0,
+    "recovery_cycles": 7,
+    "baseline_settling_time_s": 0.791,
+    "post_recovery_settling_time_s": 0.441,
+    "settling_time_ratio": 0.557522,
+    "post_recovery_final_error": 0.0
+  },
   "bus": {
     "tx_packets": 2500,
     "rx_packets": 2494,

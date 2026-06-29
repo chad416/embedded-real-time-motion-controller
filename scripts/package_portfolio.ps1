@@ -53,6 +53,7 @@ $docs = @(
     "docs/demo_walkthrough.md",
     "docs/demo_narratives.md",
     "docs/project_status.md",
+    "docs/work_remaining.md",
     "docs/portfolio_alignment.md",
     "docs/technical_article.md",
     "docs/architecture.md",
@@ -89,9 +90,11 @@ Copy-RequiredDirectory "docs/adapters" "docs/adapters"
 Copy-RequiredDirectory "docs/runbooks" "docs/runbooks"
 Copy-RequiredDirectory ".github/ISSUE_TEMPLATE" ".github/ISSUE_TEMPLATE"
 Copy-RequiredDirectory "config/capture_profiles" "config/capture_profiles"
+Copy-RequiredDirectory "config/adapters" "config/adapters"
 Copy-RequiredDirectory "config/hardware_targets" "config/hardware_targets"
 Copy-RequiredDirectory "config/milestones" "config/milestones"
 Copy-RequiredDirectory "config/toolchains" "config/toolchains"
+Copy-RequiredDirectory "ports/freertos" "ports/freertos"
 Copy-RequiredFile "config/hardware_evidence_run_manifest.schema.json" "config/hardware_evidence_run_manifest.schema.json"
 Copy-RequiredDirectory "examples/hardware_evidence" "examples/hardware_evidence"
 Copy-RequiredDirectory "examples/scenarios" "examples/scenarios"
@@ -100,6 +103,7 @@ Copy-RequiredFile "scripts/check_simulation_milestone.py" "scripts/check_simulat
 Copy-RequiredFile "scripts/validate_evidence_archive.py" "scripts/validate_evidence_archive.py"
 Copy-RequiredFile "scripts/install_portable_toolchain.ps1" "scripts/install_portable_toolchain.ps1"
 Copy-RequiredFile "scripts/run_all_portable.ps1" "scripts/run_all_portable.ps1"
+Copy-RequiredFile "scripts/realtime_probe.ps1" "scripts/realtime_probe.ps1"
 
 $reports = @(
     "reports/sample_metrics.json",
@@ -112,6 +116,7 @@ $reports = @(
     "reports/sample_control_response.svg",
     "reports/sample_two_axis_path.svg",
     "reports/sample_two_axis_acceptance.svg",
+    "reports/sample_recovery_comparison.svg",
     "reports/sample_capture_manifest.json",
     "reports/sample_capture_manifest.md",
     "reports/sample_hardware_target_manifest.json",

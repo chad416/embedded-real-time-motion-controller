@@ -3,7 +3,9 @@ cmake_minimum_required(VERSION 3.20)
 project(embedded_realtime_motion_controller
     VERSION 0.2.0
     DESCRIPTION "Software-first embedded real-time motion controller simulation and validation bench"
-    LANGUAGES CXX)
+    LANGUAGES C CXX)
+
+find_package(Threads REQUIRED)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -14,6 +16,10 @@ option(EMRTC_REQUIRE_SOEM "Fail configuration when SOEM v2 is requested but unav
 option(EMRTC_ENABLE_ETHERLAB "Enable EtherLab EtherCAT adapter integration point" OFF)
 option(EMRTC_ENABLE_SOCKETCAN "Enable SocketCAN CANopen adapter integration point" OFF)
 option(EMRTC_ENABLE_CANOPENNODE "Enable CANopenNode adapter integration point" OFF)
+option(EMRTC_ENABLE_FREERTOS_PORT "Build the FreeRTOS cyclic-task port" OFF)
+option(EMRTC_REQUIRE_FREERTOS "Fail when the requested FreeRTOS kernel is unavailable" OFF)
+set(EMRTC_FREERTOS_KERNEL_PATH "" CACHE PATH "Path to the pinned FreeRTOS-Kernel source tree")
+set(EMRTC_FREERTOS_PORT "GCC_POSIX" CACHE STRING "FreeRTOS kernel port used for build validation")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(EmrtcAdapterDiscovery)
@@ -21,12 +27,16 @@ include(EmrtcAdapterDiscovery)
 add_library(emrtc
     src/axis.cpp
     src/adapter_contract.cpp
+    src/adapter_config.cpp
     src/bus.cpp
+    src/canopen.cpp
     src/controller.cpp
     src/fault_injector.cpp
     src/hardware_adapters.cpp
+    src/json.cpp
     src/multi_axis.cpp
     src/process_image_mapping.cpp
+    src/realtime.cpp
     src/replay_adapter.cpp
     src/scenario.cpp
     src/telemetry.cpp
@@ -34,6 +44,7 @@ add_library(emrtc
     src/watchdog.cpp)
 
 target_include_directories(emrtc PUBLIC include)
+target_link_libraries(emrtc PRIVATE Threads::Threads)
 
 if(EMRTC_SOEM_INCLUDE_DIRS)
     target_include_directories(emrtc PRIVATE ${EMRTC_SOEM_INCLUDE_DIRS})
@@ -99,9 +110,41 @@ target_link_libraries(emrtc_benchmark PRIVATE emrtc)
 add_executable(emrtc_cli apps/diagnostic_cli_main.cpp)
 target_link_libraries(emrtc_cli PRIVATE emrtc)
 
+add_executable(emrtc_realtime_probe apps/realtime_probe_main.cpp)
+target_link_libraries(emrtc_realtime_probe PRIVATE emrtc)
+
 add_executable(emrtc_tests tests/test_runner.cpp)
 target_link_libraries(emrtc_tests PRIVATE emrtc)
 
 enable_testing()
 add_test(NAME emrtc_unit_integration COMMAND emrtc_tests)
 set_tests_properties(emrtc_unit_integration PROPERTIES WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+if(EMRTC_ENABLE_FREERTOS_PORT)
+    if(EXISTS "${EMRTC_FREERTOS_KERNEL_PATH}/CMakeLists.txt")
+        add_library(freertos_config INTERFACE)
+        target_include_directories(freertos_config SYSTEM INTERFACE
+            "${CMAKE_CURRENT_SOURCE_DIR}/ports/freertos")
+        set(FREERTOS_PORT "${EMRTC_FREERTOS_PORT}" CACHE STRING "" FORCE)
+        set(FREERTOS_HEAP "4" CACHE STRING "" FORCE)
+        add_subdirectory("${EMRTC_FREERTOS_KERNEL_PATH}"
+                         "${CMAKE_BINARY_DIR}/freertos-kernel")
+
+        add_library(emrtc_freertos_port
+            ports/freertos/emrtc_freertos_task.cpp)
+        target_include_directories(emrtc_freertos_port PUBLIC
+            "${CMAKE_CURRENT_SOURCE_DIR}/ports/freertos")
+        target_link_libraries(emrtc_freertos_port PUBLIC emrtc freertos_kernel)
+        target_compile_definitions(emrtc_freertos_port PUBLIC EMRTC_HAS_FREERTOS=1)
+
+        add_executable(emrtc_freertos_smoke apps/freertos_smoke_main.cpp)
+        target_link_libraries(emrtc_freertos_smoke PRIVATE emrtc_freertos_port)
+        add_test(NAME emrtc_freertos_cyclic_smoke COMMAND emrtc_freertos_smoke)
+        set_tests_properties(emrtc_freertos_cyclic_smoke PROPERTIES TIMEOUT 20)
+        message(STATUS "FreeRTOS cyclic-task port enabled: ${EMRTC_FREERTOS_PORT}")
+    elseif(EMRTC_REQUIRE_FREERTOS)
+        message(FATAL_ERROR "FreeRTOS port required but EMRTC_FREERTOS_KERNEL_PATH is invalid")
+    else()
+        message(STATUS "FreeRTOS port requested without a kernel source tree; port target omitted")
+    endif()
+endif()

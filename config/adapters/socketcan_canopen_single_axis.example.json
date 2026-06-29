@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "backend": "socketcan_canopen",
+  "interface_name": "can0",
+  "node_id": 1,
+  "receive_timeout_us": 500,
+  "heartbeat_timeout_cycles": 5,
+  "counts_per_unit": 1000.0,
+  "require_tpdo_each_cycle": true,
+  "cob_ids": {
+    "rpdo1": 513,
+    "rpdo2": 769,
+    "tpdo1": 385,
+    "tpdo2": 641,
+    "heartbeat": 1793
+  },
+  "object_mapping": [
+    {"field": "controlword", "object_index": "0x6040", "sub_index": 0, "bit_length": 16, "controller_to_drive": true},
+    {"field": "statusword", "object_index": "0x6041", "sub_index": 0, "bit_length": 16, "controller_to_drive": false},
+    {"field": "target_position", "object_index": "0x607A", "sub_index": 0, "bit_length": 32, "controller_to_drive": true},
+    {"field": "target_velocity", "object_index": "0x60FF", "sub_index": 0, "bit_length": 32, "controller_to_drive": true},
+    {"field": "actual_position", "object_index": "0x6064", "sub_index": 0, "bit_length": 32, "controller_to_drive": false},
+    {"field": "actual_velocity", "object_index": "0x606C", "sub_index": 0, "bit_length": 32, "controller_to_drive": false}
+  ]
+}

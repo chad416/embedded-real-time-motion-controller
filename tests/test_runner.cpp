@@ -1,15 +1,20 @@
 #include "emrtc/adapter_contract.hpp"
+#include "emrtc/adapter_config.hpp"
 #include "emrtc/controller.hpp"
 #include "emrtc/hardware_adapters.hpp"
+#include "emrtc/json.hpp"
 #include "emrtc/multi_axis.hpp"
 #include "emrtc/process_image_mapping.hpp"
 #include "emrtc/replay_adapter.hpp"
+#include "emrtc/realtime.hpp"
 #include "emrtc/scenario.hpp"
 
 #include <algorithm>
 #include <cmath>
+#include <deque>
 #include <filesystem>
 #include <iostream>
+#include <limits>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -71,6 +76,105 @@ private:
     emrtc::BusDiagnostics diagnostics_;
     std::uint16_t statusword_{0x0040U};
 };
+
+class FakeCanTransport final : public emrtc::ICanTransport {
+public:
+    bool open(const std::string& interface_name, std::string& detail) override {
+        opened_interface = interface_name;
+        open_ = allow_open;
+        detail = open_ ? "fake open" : "fake open failure";
+        return open_;
+    }
+
+    void close() override {
+        open_ = false;
+    }
+
+    bool send(const emrtc::CanFrame& frame, std::string& detail) override {
+        if (!open_ || fail_send) {
+            detail = "fake send failure";
+            return false;
+        }
+        sent.push_back(frame);
+        detail = "ok";
+        return true;
+    }
+
+    emrtc::CanReceiveStatus receive(emrtc::CanFrame& frame,
+                                    std::uint32_t timeout_us,
+                                    std::string& detail) override {
+        observed_timeouts.push_back(timeout_us);
+        if (!open_ || fail_receive) {
+            detail = "fake receive failure";
+            return emrtc::CanReceiveStatus::Error;
+        }
+        if (incoming.empty()) {
+            detail = "timeout";
+            return emrtc::CanReceiveStatus::Timeout;
+        }
+        frame = incoming.front();
+        incoming.pop_front();
+        detail = "ok";
+        return emrtc::CanReceiveStatus::Frame;
+    }
+
+    bool is_open() const override {
+        return open_;
+    }
+
+    bool allow_open{true};
+    bool fail_send{false};
+    bool fail_receive{false};
+    std::string opened_interface;
+    std::vector<emrtc::CanFrame> sent;
+    std::deque<emrtc::CanFrame> incoming;
+    std::vector<std::uint32_t> observed_timeouts;
+
+private:
+    bool open_{false};
+};
+
+void write_test_u16(emrtc::CanFrame& frame, std::size_t offset, std::uint16_t value) {
+    frame.data[offset] = static_cast<std::uint8_t>(value & 0xFFU);
+    frame.data[offset + 1U] = static_cast<std::uint8_t>((value >> 8U) & 0xFFU);
+}
+
+void write_test_i32(emrtc::CanFrame& frame, std::size_t offset, std::int32_t value) {
+    const auto encoded = static_cast<std::uint32_t>(value);
+    for (std::size_t index = 0; index < 4U; ++index) {
+        frame.data[offset + index] =
+            static_cast<std::uint8_t>((encoded >> (index * 8U)) & 0xFFU);
+    }
+}
+
+emrtc::CanFrame make_tpdo1(const emrtc::SocketCanCanOpenConfig& config,
+                           std::uint16_t statusword,
+                           std::int32_t position_counts) {
+    emrtc::CanFrame frame;
+    frame.id = config.tpdo1_cob_id;
+    frame.dlc = 6U;
+    write_test_u16(frame, 0U, statusword);
+    write_test_i32(frame, 2U, position_counts);
+    return frame;
+}
+
+emrtc::CanFrame make_tpdo2(const emrtc::SocketCanCanOpenConfig& config,
+                           std::int32_t velocity_counts) {
+    emrtc::CanFrame frame;
+    frame.id = config.tpdo2_cob_id;
+    frame.dlc = 4U;
+    write_test_i32(frame, 0U, velocity_counts);
+    return frame;
+}
+
+emrtc::CanFrame make_heartbeat(const emrtc::SocketCanCanOpenConfig& config,
+                               std::uint8_t state = 0x05U) {
+    emrtc::CanFrame frame;
+    frame.id = config.heartbeat_cob_id;
+    frame.dlc = 1U;
+    frame.data[0] = state;
+    return frame;
+}
 
 bool near(double value, double target, double tolerance) {
     return std::abs(value - target) <= tolerance;
@@ -416,6 +520,109 @@ TestResult test_json_scenario_loader() {
     return {"JSON scenario loader", pass, "fault matrix scenario loads and passes expectations"};
 }
 
+TestResult test_strict_json_parser() {
+    bool duplicate_rejected = false;
+    bool trailing_comma_rejected = false;
+    try {
+        (void)emrtc::parse_json("{\"value\":1,\"value\":2}", "duplicate.json");
+    } catch (const std::runtime_error&) {
+        duplicate_rejected = true;
+    }
+    try {
+        (void)emrtc::parse_json("[1,2,]", "trailing.json");
+    } catch (const std::runtime_error&) {
+        trailing_comma_rejected = true;
+    }
+    const auto valid = emrtc::parse_json(
+        "{\"array\":[true,false,null],\"escaped\":\"line\\nvalue\"}",
+        "valid.json");
+    const auto& object = valid.as_object("valid.json");
+    const bool valid_shape =
+        object.at("array").as_array("valid.json.array").size() == 3U &&
+        object.at("escaped").as_string("valid.json.escaped") == "line\nvalue";
+    return {"strict structured JSON parser",
+            duplicate_rejected && trailing_comma_rejected && valid_shape,
+            "valid JSON is structured while duplicate keys and trailing commas are rejected"};
+}
+
+TestResult test_runtime_adapter_config_validation() {
+    const auto soem = emrtc::load_runtime_adapter_config(
+        "config/adapters/soem_single_axis.example.json");
+    const auto canopen = emrtc::load_runtime_adapter_config(
+        "config/adapters/socketcan_canopen_single_axis.example.json");
+    const auto soem_summary = emrtc::summarize_runtime_adapter_config(soem);
+    const auto canopen_summary = emrtc::summarize_runtime_adapter_config(canopen);
+    return {"runtime adapter configuration validation",
+            soem.backend == emrtc::RuntimeAdapterBackend::SoemEtherCat &&
+                soem.soem.observed_mapping.size() == 6U &&
+                canopen.backend == emrtc::RuntimeAdapterBackend::SocketCanCanOpen &&
+                canopen.socketcan.node_id == 1U &&
+                canopen.socketcan.observed_mapping.size() == 6U &&
+                soem_summary.find("hardware_access=NONE") != std::string::npos &&
+                canopen_summary.find("validation=PASS") != std::string::npos,
+            "SOEM and SocketCAN examples validate without opening hardware"};
+}
+
+TestResult test_runtime_adapter_config_rejects_unsafe_values() {
+    auto config = emrtc::load_runtime_adapter_config(
+        "config/adapters/socketcan_canopen_single_axis.example.json");
+    config.socketcan.heartbeat_cob_id = config.socketcan.tpdo1_cob_id;
+    bool duplicate_id_rejected = false;
+    try {
+        emrtc::validate_runtime_adapter_config(config);
+    } catch (const std::runtime_error&) {
+        duplicate_id_rejected = true;
+    }
+    config = emrtc::load_runtime_adapter_config(
+        "config/adapters/soem_single_axis.example.json");
+    config.soem.counts_per_unit = std::numeric_limits<double>::quiet_NaN();
+    bool nonfinite_scale_rejected = false;
+    try {
+        emrtc::validate_runtime_adapter_config(config);
+    } catch (const std::runtime_error&) {
+        nonfinite_scale_rejected = true;
+    }
+    return {"runtime adapter configuration rejects unsafe values",
+            duplicate_id_rejected && nonfinite_scale_rejected,
+            "duplicate COB-IDs and non-finite scaling fail before hardware access"};
+}
+
+TestResult test_host_realtime_probe_uses_absolute_schedule() {
+    emrtc::RealtimeProbeConfig config;
+    config.cycles = 20U;
+    config.period_ns = 200'000;
+    config.deadline_tolerance_ns = 1'000'000;
+    std::uint64_t callback_count = 0;
+    const auto metrics = emrtc::run_realtime_probe(
+        config, [&callback_count](emrtc::CycleIndex) { ++callback_count; });
+    bool timestamps_increase = true;
+    for (std::size_t index = 1; index < metrics.samples.size(); ++index) {
+        timestamps_increase = timestamps_increase &&
+                              metrics.samples[index].wake_timestamp_ns >=
+                                  metrics.samples[index - 1U].wake_timestamp_ns;
+    }
+    bool invalid_rejected = false;
+    try {
+        auto invalid = config;
+        invalid.period_ns = 0;
+        (void)emrtc::run_realtime_probe(invalid);
+    } catch (const std::invalid_argument&) {
+        invalid_rejected = true;
+    }
+    const bool pass = metrics.samples.size() == config.cycles &&
+                      callback_count == config.cycles && timestamps_increase &&
+                      metrics.max_period_ns > 0 && metrics.mean_period_ns > 0.0 &&
+                      metrics.capabilities.monotonic_clock &&
+                      metrics.capabilities.absolute_sleep && invalid_rejected;
+    return {"host real-time probe absolute scheduling",
+            pass,
+            "samples=" + std::to_string(metrics.samples.size()) +
+                " callbacks=" + std::to_string(callback_count) +
+                " min_period_ns=" + std::to_string(metrics.min_period_ns) +
+                " timestamps_increase=" + (timestamps_increase ? "true" : "false") +
+                " invalid_rejected=" + (invalid_rejected ? "true" : "false")};
+}
+
 TestResult test_json_scenario_suite() {
     const auto files = emrtc::list_scenario_files("examples/scenarios");
     if (files.size() < 6) {
@@ -551,6 +758,109 @@ TestResult test_soem_pdo_codec_is_bounded_and_little_endian() {
                 image.drive_fault == emrtc::FaultCode::DriveFault &&
                 !bounded.ok,
             "PDO bytes round trip with explicit bounds and statusword fault decoding"};
+}
+
+TestResult test_canopen_pdo_codec_is_bounded_and_little_endian() {
+    const auto runtime = emrtc::load_runtime_adapter_config(
+        "config/adapters/socketcan_canopen_single_axis.example.json");
+    const auto& config = runtime.socketcan;
+    emrtc::ProcessImage image;
+    image.controlword = 0x1234U;
+    image.target_position = 1.25;
+    image.target_velocity = -0.5;
+    const auto rpdo1 = emrtc::encode_canopen_rpdo1(image, config);
+    const auto rpdo2 = emrtc::encode_canopen_rpdo2(image, config);
+
+    auto tpdo1 = make_tpdo1(config, 0x0027U, 1500);
+    auto tpdo2 = make_tpdo2(config, -250);
+    bool received_tpdo1 = false;
+    bool received_tpdo2 = false;
+    const auto decoded1 = emrtc::decode_canopen_tpdo(
+        tpdo1, config, image, received_tpdo1, received_tpdo2);
+    const auto decoded2 = emrtc::decode_canopen_tpdo(
+        tpdo2, config, image, received_tpdo1, received_tpdo2);
+    tpdo1.dlc = 5U;
+    const auto short_frame = emrtc::decode_canopen_tpdo(
+        tpdo1, config, image, received_tpdo1, received_tpdo2);
+
+    return {"CANopen PDO codec is bounded and little-endian",
+            rpdo1.id == config.rpdo1_cob_id && rpdo1.dlc == 6U &&
+                rpdo1.data[0] == 0x34U && rpdo1.data[1] == 0x12U &&
+                rpdo1.data[2] == 0xE2U && rpdo1.data[3] == 0x04U &&
+                rpdo2.id == config.rpdo2_cob_id && rpdo2.dlc == 4U &&
+                rpdo2.data[0] == 0x0CU && rpdo2.data[1] == 0xFEU &&
+                rpdo2.data[2] == 0xFFU && rpdo2.data[3] == 0xFFU &&
+                decoded1.ok && decoded2.ok && received_tpdo1 && received_tpdo2 &&
+                image.statusword == 0x0027U && near(image.actual_position, 1.5, 0.001) &&
+                near(image.actual_velocity, -0.25, 0.001) && !short_frame.ok,
+            "split classical-CAN RPDO/TPDO frames round trip with strict lengths"};
+}
+
+TestResult test_socketcan_canopen_backend_lifecycle_and_heartbeat() {
+    const auto runtime = emrtc::load_runtime_adapter_config(
+        "config/adapters/socketcan_canopen_single_axis.example.json");
+    const auto& config = runtime.socketcan;
+    FakeCanTransport transport;
+    emrtc::SocketCanCanOpenBackend backend(transport);
+    const auto configured = backend.configure(config);
+
+    std::vector<emrtc::ProcessImage> images(1);
+    images.front().controlword = 0x000FU;
+    images.front().target_position = 1.0;
+    images.front().target_velocity = 0.25;
+    transport.incoming.push_back(make_heartbeat(config));
+    transport.incoming.push_back(make_tpdo1(config, 0x0027U, 1000));
+    transport.incoming.push_back(make_tpdo2(config, 250));
+    const auto first_exchange = backend.exchange(0U, images);
+
+    bool healthy_before_timeout = true;
+    emrtc::BusExchangeResult timeout_exchange;
+    for (emrtc::CycleIndex cycle = 1U; cycle <= config.heartbeat_timeout_cycles; ++cycle) {
+        transport.incoming.push_back(make_tpdo1(config, 0x0027U, 1000));
+        transport.incoming.push_back(make_tpdo2(config, 250));
+        timeout_exchange = backend.exchange(cycle, images);
+        if (cycle < config.heartbeat_timeout_cycles) {
+            healthy_before_timeout = healthy_before_timeout && timeout_exchange.heartbeat_ok;
+        }
+    }
+
+    const auto diagnostics = backend.diagnostics();
+    const bool nmt_start = !transport.sent.empty() && transport.sent.front().id == 0U &&
+                           transport.sent.front().dlc == 2U &&
+                           transport.sent.front().data[0] == 0x01U &&
+                           transport.sent.front().data[1] == config.node_id;
+    return {"SocketCAN CANopen backend lifecycle and heartbeat",
+            configured.ok && transport.opened_interface == "can0" && nmt_start &&
+                first_exchange.ok && first_exchange.heartbeat_ok &&
+                near(images.front().actual_position, 1.0, 0.001) &&
+                near(images.front().actual_velocity, 0.25, 0.001) &&
+                healthy_before_timeout && !timeout_exchange.ok &&
+                !timeout_exchange.heartbeat_ok &&
+                diagnostics.heartbeat_timeout_count == 1U &&
+                diagnostics.online && !diagnostics.heartbeat_ok,
+            "NMT, RPDO/TPDO exchange, scaling, and heartbeat timeout use an injected transport"};
+}
+
+TestResult test_socketcan_canopen_backend_reports_transport_loss() {
+    const auto runtime = emrtc::load_runtime_adapter_config(
+        "config/adapters/socketcan_canopen_single_axis.example.json");
+    const auto& config = runtime.socketcan;
+    FakeCanTransport transport;
+    emrtc::SocketCanCanOpenBackend backend(transport);
+    const auto configured = backend.configure(config);
+    std::vector<emrtc::ProcessImage> images(1);
+    transport.incoming.push_back(make_heartbeat(config));
+    transport.incoming.push_back(make_tpdo1(config, 0x0027U, 0));
+    transport.incoming.push_back(make_tpdo2(config, 0));
+    const auto healthy = backend.exchange(0U, images);
+    transport.fail_send = true;
+    const auto failed = backend.exchange(1U, images);
+    return {"SocketCAN CANopen backend reports transport loss",
+            configured.ok && healthy.ok && !failed.ok &&
+                !backend.diagnostics().online &&
+                backend.diagnostics().dropout_count == 1U &&
+                backend.diagnostics().cable_disconnect_events == 1U,
+            "a transmit failure after a healthy cycle becomes an offline cable event"};
 }
 
 TestResult test_cia402_process_image_mapping_contract() {
@@ -737,8 +1047,16 @@ TestResult test_benchmark_motion_performance_metrics() {
                 metrics.two_axis.available &&
                 metrics.two_axis.acceptance_pass &&
                 metrics.two_axis.path_within_limit &&
-                metrics.two_axis.final_position_error <= metrics.two_axis.target_tolerance,
-            "benchmark reports overshoot, settling, steady-state, and two-axis acceptance metrics"};
+                metrics.two_axis.final_position_error <= metrics.two_axis.target_tolerance &&
+                metrics.recovery.available && metrics.recovery.fault_observed &&
+                metrics.recovery.operation_reenabled &&
+                metrics.recovery.post_recovery_motion_settled &&
+                metrics.recovery.detection_latency_cycles <= 1U &&
+                metrics.recovery.recovery_cycles <= 10U &&
+                metrics.recovery.post_recovery_final_error <= 0.01 &&
+                metrics.recovery.settling_time_ratio > 0.0 &&
+                metrics.recovery.settling_time_ratio <= 1.5,
+            "benchmark reports motion, two-axis, and quantitative recovery metrics"};
 }
 
 }  // namespace
@@ -769,11 +1087,18 @@ int main() {
         test_external_cia402_feedback_and_controlword_sequence(),
         test_controller_uses_injected_external_backend(),
         test_json_scenario_loader(),
+        test_strict_json_parser(),
+        test_runtime_adapter_config_validation(),
+        test_runtime_adapter_config_rejects_unsafe_values(),
+        test_host_realtime_probe_uses_absolute_schedule(),
         test_json_scenario_suite(),
         test_two_axis_coordinated_move(),
         test_hardware_adapter_skeletons_are_not_claiming_commissioning(),
         test_soem_configuration_guards_do_not_touch_hardware(),
         test_soem_pdo_codec_is_bounded_and_little_endian(),
+        test_canopen_pdo_codec_is_bounded_and_little_endian(),
+        test_socketcan_canopen_backend_lifecycle_and_heartbeat(),
+        test_socketcan_canopen_backend_reports_transport_loss(),
         test_cia402_process_image_mapping_contract(),
         test_adapter_mapping_validator_rejects_invalid_object_map(),
         test_adapter_exchange_monitor_detects_stale_pdo_data(),

@@ -67,6 +67,22 @@ def motion_rows(metrics: dict) -> list[list[object]]:
     ]
 
 
+def recovery_rows(metrics: dict) -> list[list[object]]:
+    recovery = metrics.get("recovery_performance", {})
+    return [
+        ["Metric", "Value"],
+        ["Fault observed", recovery.get("fault_observed", False)],
+        ["Operation re-enabled", recovery.get("operation_reenabled", False)],
+        ["Post-recovery settled", recovery.get("post_recovery_motion_settled", False)],
+        ["Detection latency cycles", recovery.get("detection_latency_cycles", 0)],
+        ["Recovery cycles", recovery.get("recovery_cycles", 0)],
+        ["Baseline settling s", recovery.get("baseline_settling_time_s", 0.0)],
+        ["Post-recovery settling s", recovery.get("post_recovery_settling_time_s", 0.0)],
+        ["Settling-time ratio", recovery.get("settling_time_ratio", 0.0)],
+        ["Post-recovery final error", recovery.get("post_recovery_final_error", 0.0)],
+    ]
+
+
 def build_pdf(metrics: dict, output: Path) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     styles = getSampleStyleSheet()
@@ -121,6 +137,9 @@ def build_pdf(metrics: dict, output: Path) -> None:
                 ["Cable disconnect events", bus["cable_disconnect_events"]],
             ]
         ),
+        Spacer(1, 12),
+        Paragraph("Fault Recovery Performance", styles["Heading2"]),
+        table(recovery_rows(metrics)),
         Spacer(1, 12),
         Paragraph("Jitter Distribution", styles["Heading2"]),
         table(histogram_rows(metrics)),

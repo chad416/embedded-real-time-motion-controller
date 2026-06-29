@@ -2,6 +2,8 @@
 
 Last updated: 2026-06-29
 
+Checkpoint note: post-`2f5f388` software-readiness work is implemented locally and being preserved in Git. It is not a final release until its exact hosted CI run passes. See [Work Remaining](work_remaining.md).
+
 ## Completion Snapshot
 
 | Area | Status | Notes |
@@ -16,10 +18,14 @@ Last updated: 2026-06-29
 | Telemetry and diagnostics | Implemented | CSV trace, JSON metrics, fault log, Markdown reports, and CLI commands. |
 | Automated scenarios | Expanded | Built-in scenarios plus JSON scenario suite covering fault matrix, heartbeat timeout, bus disconnect, command abuse, encoder loss, and timing stress. |
 | Two-axis coordination | Expanded | Optional two-axis straight-line coordinated move simulation now reports path error, final position error, settling limits, and acceptance pass/fail. |
-| Adapter implementations | Expanded | SOEM has guarded v2 lifecycle and cyclic PDO exchange; EtherLab, SocketCAN, and CANopenNode remain documented skeletons. |
+| Adapter implementations | Expanded | SOEM and SocketCAN/CANopen now have cyclic software implementations; physical commissioning remains pending. |
 | Adapter dependency discovery | Expanded | CMake discovers SOEM v2 packages or headers/library, supports strict required mode, and retains optional discovery for the other stacks. |
 | External controller backend | Added | Controller constructor injection forwards controlword/targets and applies external statusword, position, velocity, and drive faults through the normal watchdog path. |
 | SOEM dependency validation | Added | Pinned upstream SOEM builds in CI; local Windows dependency-backed compile/link passes, with hardware-free guards and PDO codec tests. |
+| SocketCAN/CANopen path | Implemented, not commissioned | Linux transport, NMT, split RPDO/TPDO codec, heartbeat timeout, transport-loss diagnostics, and fake-transport tests are present. |
+| Runtime adapter configuration | Implemented | Strict JSON and dry-run CLI validation cover mappings, scaling, layouts, COB-IDs, node ID, and timeouts without opening hardware. |
+| Host real-time execution | Implemented | Absolute-deadline wall-clock probe exports measured timing and Linux FIFO/memory-lock capability results. |
+| FreeRTOS execution port | Implemented, target-independent | Static periodic task and pinned V11.3.0 simulator smoke path exist; target timing remains hardware-specific. |
 | Process-image mapping contract | Added | CiA 402 object indexes, bit widths, directions, and counts/unit encode-decode helpers are tested independently of hardware stacks. |
 | Adapter exchange contract | Expanded | Mapping, stale receive data, heartbeat, bus-offline, restoration, invalid response, and outgoing command expectations are covered by adapter-level tests. |
 | Adapter replay harness | Added | Recorded nominal and fault/recovery process-image traces run through `IBusBackend`, CiA 402 scaling, and the exchange monitor with zero expected-fault mismatches. |
@@ -47,15 +53,12 @@ Last updated: 2026-06-29
 
 ## Current Completion Estimate
 
-Software/simulation/documentation side against the portfolio PDF target: about 93%.
+Software/simulation/documentation side at this checkpoint: about 96%.
 
-Full flagship scope including hardware commissioning, target timing capture, physical fault recovery, and a live bench demonstration: about 80%.
+Full flagship scope including hardware commissioning and live evidence: about 83%.
 
 The split estimate prevents the mature simulation package from hiding the substantial hardware work that remains.
 
 ## Immediate Next Actions
 
-1. Select a real EtherCAT NIC and CiA 402 drive only after current documentation, interfaces, and safety constraints are reviewed.
-2. Fill the SOEM runtime configuration from the verified drive PDO map and low-energy bench limits.
-3. Execute discovery, SAFE-OP/OP, low-speed motion, cable-loss, recovery, and timing captures.
-4. Convert the first native bus capture into the replay CSV contract and archive the complete evidence set before changing any validation claim.
+Complete the non-hardware checkpoint list in [Work Remaining](work_remaining.md), verify the exact hosted commit, and only then proceed to physical commissioning.

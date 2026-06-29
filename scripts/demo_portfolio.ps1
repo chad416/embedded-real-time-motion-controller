@@ -57,12 +57,19 @@ if (-not $SkipNative) {
     $cli = Get-ExecutablePath "emrtc_cli"
     $sim = Get-ExecutablePath "emrtc_sim"
     $benchmark = Get-ExecutablePath "emrtc_benchmark"
+    $realtimeProbe = Get-ExecutablePath "emrtc_realtime_probe"
 
     Write-Step "Diagnostic status"
     Invoke-Checked -Command $cli -Arguments @("show", "status")
 
     Write-Step "Adapter status"
     Invoke-Checked -Command $cli -Arguments @("show", "adapters")
+
+    Write-Step "Dry-run SOEM configuration validation"
+    Invoke-Checked -Command $cli -Arguments @("validate", "adapter-config", "config/adapters/soem_single_axis.example.json")
+
+    Write-Step "Dry-run SocketCAN CANopen configuration validation"
+    Invoke-Checked -Command $cli -Arguments @("validate", "adapter-config", "config/adapters/socketcan_canopen_single_axis.example.json")
 
     Write-Step "Two-axis coordinated motion"
     Invoke-Checked -Command $cli -Arguments @("run", "two-axis")
@@ -77,6 +84,10 @@ if (-not $SkipNative) {
     Write-Step "Deterministic benchmark"
     $benchmarkOut = Join-Path $OutDir "benchmark"
     Invoke-Checked -Command $benchmark -Arguments @("--cycles", "5000", "--out", $benchmarkOut)
+
+    Write-Step "Wall-clock host real-time probe"
+    $probeOut = Join-Path $OutDir "realtime_probe"
+    Invoke-Checked -Command $realtimeProbe -Arguments @("--cycles", "250", "--period-us", "1000", "--tolerance-us", "100", "--out", $probeOut)
 }
 
 $python = Get-PythonCommand

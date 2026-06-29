@@ -9,6 +9,7 @@ $ErrorActionPreference = "Stop"
 & "$PSScriptRoot/build.ps1" -BuildDir $BuildDir -Config $Config
 & "$PSScriptRoot/test.ps1" -BuildDir $BuildDir -Config $Config
 & "$PSScriptRoot/benchmark.ps1" -BuildDir $BuildDir -Config $Config -Cycles $Cycles
+& "$PSScriptRoot/realtime_probe.ps1" -BuildDir $BuildDir -Config $Config -Cycles 500
 
 $python = Get-Command python -ErrorAction SilentlyContinue
 if (-not $python) {

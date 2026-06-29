@@ -221,6 +221,42 @@ def write_two_axis_acceptance(metrics: dict, path: Path) -> None:
     path.write_text("\n".join(parts), encoding="utf-8")
 
 
+def write_recovery_comparison(metrics: dict, path: Path) -> None:
+    recovery = metrics.get("recovery_performance", {})
+    baseline = float(recovery.get("baseline_settling_time_s", 0.0))
+    recovered = float(recovery.get("post_recovery_settling_time_s", 0.0))
+    recovery_cycles = int(recovery.get("recovery_cycles", 0))
+    detection_cycles = int(recovery.get("detection_latency_cycles", 0))
+    passed = bool(recovery.get("fault_observed")) and bool(recovery.get("operation_reenabled")) and bool(recovery.get("post_recovery_motion_settled"))
+    width = 900
+    height = 420
+    max_time = max(baseline, recovered, 0.001)
+    scale = 500.0 / max_time
+    status_color = "#16a34a" if passed else "#dc2626"
+    parts = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
+        '<rect width="100%" height="100%" fill="#ffffff"/>',
+        '<text x="30" y="38" font-family="Arial" font-size="24" font-weight="700" fill="#1f2937">Fault Recovery Performance</text>',
+        '<text x="30" y="66" font-family="Arial" font-size="13" fill="#4b5563">Baseline and post-recovery settling with measured recovery-cycle evidence</text>',
+        f'<rect x="745" y="28" width="110" height="36" rx="4" fill="{status_color}"/>',
+        f'<text x="800" y="52" text-anchor="middle" font-family="Arial" font-size="16" font-weight="700" fill="#ffffff">{"PASS" if passed else "FAIL"}</text>',
+        '<text x="40" y="135" font-family="Arial" font-size="14" fill="#111827">Baseline settling</text>',
+        f'<rect x="220" y="112" width="{baseline * scale:.1f}" height="34" fill="#2563eb"/>',
+        f'<text x="{235 + baseline * scale:.1f}" y="135" font-family="Arial" font-size="13" fill="#374151">{baseline:.3f} s</text>',
+        '<text x="40" y="205" font-family="Arial" font-size="14" fill="#111827">Post-recovery settling</text>',
+        f'<rect x="220" y="182" width="{recovered * scale:.1f}" height="34" fill="#16a34a"/>',
+        f'<text x="{235 + recovered * scale:.1f}" y="205" font-family="Arial" font-size="13" fill="#374151">{recovered:.3f} s</text>',
+        '<line x1="220" y1="270" x2="720" y2="270" stroke="#9ca3af" stroke-width="2"/>',
+        '<circle cx="220" cy="270" r="7" fill="#dc2626"/>',
+        f'<text x="220" y="300" text-anchor="middle" font-family="Arial" font-size="12" fill="#374151">fault detected +{detection_cycles} cycles</text>',
+        '<circle cx="720" cy="270" r="7" fill="#16a34a"/>',
+        f'<text x="720" y="300" text-anchor="middle" font-family="Arial" font-size="12" fill="#374151">operation enabled +{recovery_cycles} cycles</text>',
+        f'<text x="40" y="365" font-family="Arial" font-size="13" fill="#4b5563">Post-recovery final error: {float(recovery.get("post_recovery_final_error", 0.0)):.6g}</text>',
+        '</svg>',
+    ]
+    path.write_text("\n".join(parts), encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--metrics", default="reports/sample_metrics.json")
@@ -234,6 +270,7 @@ def main() -> int:
     write_control_response(out / "sample_control_response.svg")
     write_two_axis_path(out / "sample_two_axis_path.svg")
     write_two_axis_acceptance(metrics, out / "sample_two_axis_acceptance.svg")
+    write_recovery_comparison(metrics, out / "sample_recovery_comparison.svg")
     print(out)
     return 0
 

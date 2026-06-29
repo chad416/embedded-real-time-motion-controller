@@ -62,6 +62,22 @@ struct TwoAxisPerformanceMetrics {
     double target_tolerance{0.0};
 };
 
+struct RecoveryPerformanceMetrics {
+    bool available{false};
+    bool fault_observed{false};
+    bool operation_reenabled{false};
+    bool post_recovery_motion_settled{false};
+    CycleIndex fault_injection_cycle{0};
+    CycleIndex fault_detection_cycle{0};
+    CycleIndex operation_reenabled_cycle{0};
+    std::uint64_t detection_latency_cycles{0};
+    std::uint64_t recovery_cycles{0};
+    double baseline_settling_time_s{0.0};
+    double post_recovery_settling_time_s{0.0};
+    double settling_time_ratio{0.0};
+    double post_recovery_final_error{0.0};
+};
+
 struct RuntimeMetrics {
     std::vector<CycleSample> cycles;
     std::vector<TraceEvent> trace;
@@ -78,6 +94,7 @@ struct RuntimeMetrics {
     std::uint64_t deadline_overruns{0};
     MotionPerformanceMetrics motion;
     TwoAxisPerformanceMetrics two_axis;
+    RecoveryPerformanceMetrics recovery;
 };
 
 class TelemetryRecorder {

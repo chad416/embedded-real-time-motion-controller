@@ -141,6 +141,7 @@ Key committed visuals include jitter, scenario matrix, control response, two-axi
 ## Documentation Index
 
 - [Project Status](docs/project_status.md)
+- [Checkpoint And Work Remaining](docs/work_remaining.md)
 - [Portfolio Alignment](docs/portfolio_alignment.md)
 - [Recruiter One-Pager](docs/recruiter_one_pager.md)
 - [Portfolio Demo Walkthrough](docs/demo_walkthrough.md)

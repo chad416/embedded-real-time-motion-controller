@@ -54,9 +54,11 @@ private:
     bool estop_requested_{false};
     bool force_watchdog_timeout_{false};
     Nanoseconds forced_extra_period_ns_{0};
+    FaultCode last_recorded_fault_{FaultCode::None};
 };
 
 std::vector<ScenarioSummary> run_validation_scenarios(RuntimeMetrics* combined_metrics = nullptr);
 RuntimeMetrics run_benchmark(std::uint64_t cycles);
+RecoveryPerformanceMetrics run_fault_recovery_benchmark();
 
 }  // namespace emrtc

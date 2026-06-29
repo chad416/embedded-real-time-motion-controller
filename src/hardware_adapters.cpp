@@ -423,20 +423,6 @@ EtherLabEtherCatBackend::EtherLabEtherCatBackend()
 #endif
       ) {}
 
-SocketCanCanOpenBackend::SocketCanCanOpenBackend()
-    : PlannedHardwareBackend("SocketCAN CANopen",
-#ifdef EMRTC_ENABLE_SOCKETCAN
-                             true,
-#else
-                             false,
-#endif
-#ifdef EMRTC_HAS_SOCKETCAN
-                             true
-#else
-                             false
-#endif
-      ) {}
-
 CanOpenNodeBackend::CanOpenNodeBackend()
     : PlannedHardwareBackend("CANopenNode",
 #ifdef EMRTC_ENABLE_CANOPENNODE
