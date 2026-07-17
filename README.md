@@ -2,11 +2,36 @@
 
 [![Motion Controller CI](https://github.com/chad416/embedded-real-time-motion-controller/actions/workflows/ci.yml/badge.svg)](https://github.com/chad416/embedded-real-time-motion-controller/actions/workflows/ci.yml)
 
+![Embedded Real-Time Motion Controller overview](docs/assets/emrtc-portfolio-overview.svg)
+
 Software-first embedded real-time motion controller for an industrial automation portfolio. The project demonstrates deterministic cyclic control, CiA 402-style drive handling, injectable bus backends, watchdog supervision, fault injection, telemetry, diagnostics, and validation reporting.
 
 This repository does not claim certified SIL/PL safety and does not claim real EtherCAT/CANopen hardware validation. The current scope includes a safety-oriented deterministic software bench, dependency-backed SOEM v2, Linux SocketCAN/CANopen, a pinned FreeRTOS cyclic-task port, and a wall-clock host timing probe. Both fieldbus backends remain physically uncommissioned.
 
 Current release: `v0.3.0-software-ready`, the machine-gated completion of all defined non-hardware work. The historical `v0.2.0-simulation-complete` baseline remains enforced.
+
+## Portfolio-Ready Status
+
+Yes: the non-hardware scope is complete and publishable as a software-ready project. The repo can be presented as deterministic motion-control software with simulation, replay, host timing evidence, adapter contracts, documentation, and portfolio packaging complete.
+
+Do not present it as commissioned industrial hardware. The honest boundary is that physical drive selection, device-specific PDO/OD mapping, target timing capture, real encoder measurements, physical stop-path testing, and certified safety validation remain Phase 2.
+
+Key public evidence:
+
+- `v0.3.0-software-ready` release gate.
+- 45 C++ checks and 21/21 deterministic scenarios.
+- 1 ms nominal loop benchmark with injected missed-cycle and deadline-overrun evidence.
+- Fault recovery evidence with 0-cycle detection latency and 7-cycle recovery to operation re-enabled.
+- Motion metrics: 0.0 overshoot, 0.8 s settling time, two-axis acceptance pass.
+- Portfolio bundle generation through `scripts/package_portfolio.ps1`.
+
+## Visual Evidence
+
+| Overview | Control Architecture | Validation Dashboard |
+| --- | --- | --- |
+| ![Controller overview](docs/assets/emrtc-portfolio-overview.svg) | ![Control architecture](docs/assets/emrtc-control-architecture.svg) | ![Validation dashboard](docs/assets/emrtc-validation-dashboard.svg) |
+
+Graph-first engineering evidence is also committed under `reports/`: jitter histogram, scenario pass/fail matrix, control response, two-axis path, two-axis acceptance, recovery comparison, and timing PDF.
 
 ## What Is Included
 
@@ -153,6 +178,7 @@ Key committed visuals include jitter, scenario matrix, control response, two-axi
 - [Hardware Commissioning Remaining](docs/work_remaining.md)
 - [Software-Ready Milestone](docs/software_ready_milestone.md)
 - [Portfolio Alignment](docs/portfolio_alignment.md)
+- [Website Project Entry](portfolio_evidence/website_project_entry.md)
 - [Recruiter One-Pager](docs/recruiter_one_pager.md)
 - [Portfolio Demo Walkthrough](docs/demo_walkthrough.md)
 - [Graph-First Technical Article](docs/technical_article.md)

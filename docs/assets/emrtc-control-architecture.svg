@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Control loop and architecture map</title>
+  <desc id="desc">Controller loop modules, bus adapters, diagnostics, and evidence exports for the embedded real-time motion controller.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="1" stop-color="#151923"/>
+    </linearGradient>
+    <style>
+      .title{font:700 38px Arial, sans-serif;fill:#f8fafc}
+      .subtitle{font:500 18px Arial, sans-serif;fill:#cbd5e1}
+      .h{font:700 18px Arial, sans-serif;fill:#f8fafc}
+      .t{font:500 14px Arial, sans-serif;fill:#cbd5e1}
+      .m{font:700 14px Consolas, monospace;fill:#dbeafe}
+      .stage{fill:#101827;stroke:#3b4d63;stroke-width:2}
+      .host{fill:#132131;stroke:#36d1dc;stroke-width:2}
+      .fault{fill:#2a1720;stroke:#ff6b6b;stroke-width:2}
+      .evidence{fill:#1f2430;stroke:#f6d365;stroke-width:2}
+    </style>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <path d="M110 600 C260 560 390 625 540 580 C735 522 865 620 1086 552" fill="none" stroke="#243244" stroke-width="3"/>
+  <text x="72" y="72" class="title">Cyclic Control Architecture</text>
+  <text x="72" y="106" class="subtitle">A deterministic loop that turns timing, fieldbus, and feedback failures into measurable recovery evidence.</text>
+
+  <rect x="70" y="160" width="190" height="92" rx="12" class="stage"/>
+  <text x="95" y="194" class="h">1. Schedule</text>
+  <text x="95" y="221" class="t">absolute cycle deadline</text>
+  <text x="95" y="242" class="m">cycle_time_ns</text>
+
+  <rect x="290" y="160" width="190" height="92" rx="12" class="stage"/>
+  <text x="315" y="194" class="h">2. Command</text>
+  <text x="315" y="221" class="t">guarded axis request</text>
+  <text x="315" y="242" class="m">position / velocity</text>
+
+  <rect x="510" y="160" width="190" height="92" rx="12" class="host"/>
+  <text x="535" y="194" class="h">3. Bus Exchange</text>
+  <text x="535" y="221" class="t">process image I/O</text>
+  <text x="535" y="242" class="m">SOEM / CANopen</text>
+
+  <rect x="730" y="160" width="190" height="92" rx="12" class="stage"/>
+  <text x="755" y="194" class="h">4. Axis Model</text>
+  <text x="755" y="221" class="t">CiA 402 state path</text>
+  <text x="755" y="242" class="m">statusword 0x0027</text>
+
+  <rect x="950" y="160" width="180" height="92" rx="12" class="fault"/>
+  <text x="975" y="194" class="h">5. Supervise</text>
+  <text x="975" y="221" class="t">timing layer</text>
+  <text x="975" y="242" class="m">watchdogs</text>
+
+  <path d="M260 206 H290 M480 206 H510 M700 206 H730 M920 206 H950" stroke="#8bd3ff" stroke-width="4" stroke-linecap="round"/>
+  <polygon points="282,196 300,206 282,216" fill="#8bd3ff"/>
+  <polygon points="502,196 520,206 502,216" fill="#8bd3ff"/>
+  <polygon points="722,196 740,206 722,216" fill="#8bd3ff"/>
+  <polygon points="942,196 960,206 942,216" fill="#8bd3ff"/>
+
+  <rect x="88" y="330" width="250" height="205" rx="14" class="host"/>
+  <text x="118" y="369" class="h">Adapter Boundary</text>
+  <text x="118" y="402" class="t">Simulated backend</text>
+  <text x="118" y="430" class="t">Replay trace backend</text>
+  <text x="118" y="458" class="t">SOEM EtherCAT path</text>
+  <text x="118" y="486" class="t">SocketCAN/CANopen path</text>
+  <text x="118" y="514" class="t">Strict runtime config validation</text>
+
+  <rect x="386" y="330" width="250" height="205" rx="14" class="fault"/>
+  <text x="416" y="369" class="h">Fault Injection</text>
+  <text x="416" y="402" class="t">missed cycle and CPU spike</text>
+  <text x="416" y="430" class="t">heartbeat timeout</text>
+  <text x="416" y="458" class="t">bus dropout and packet loss</text>
+  <text x="416" y="486" class="t">encoder loss and following error</text>
+  <text x="416" y="514" class="t">invalid command abuse</text>
+
+  <rect x="684" y="330" width="250" height="205" rx="14" class="evidence"/>
+  <text x="714" y="369" class="h">Evidence Exports</text>
+  <text x="714" y="402" class="t">CSV trace and fault log</text>
+  <text x="714" y="430" class="t">JSON metrics and reports</text>
+  <text x="714" y="458" class="t">jitter and recovery SVG plots</text>
+  <text x="714" y="486" class="t">timing PDF appendix</text>
+  <text x="714" y="514" class="t">portfolio bundle ZIP</text>
+
+  <rect x="982" y="330" width="150" height="205" rx="14" fill="#111827" stroke="#94a3b8" stroke-width="2"/>
+  <text x="1008" y="369" class="h">Boundary</text>
+  <text x="1008" y="402" class="t">No SIL/PL claim</text>
+  <text x="1008" y="430" class="t">No physical bus</text>
+  <text x="1008" y="458" class="t">No real encoder</text>
+  <text x="1008" y="486" class="t">Bench evidence</text>
+  <text x="1008" y="514" class="t">required later</text>
+
+  <rect x="70" y="590" width="1060" height="68" rx="13" fill="#0b1220" stroke="#334155" stroke-width="2"/>
+  <text x="98" y="632" class="subtitle">Interview angle: deterministic behavior is measured under stress, then published as replayable traces and quantitative recovery metrics.</text>
+</svg>

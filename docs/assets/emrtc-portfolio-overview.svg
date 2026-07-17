@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Embedded Real-Time Motion Controller portfolio overview</title>
+  <desc id="desc">Software-ready deterministic motion controller overview with cyclic control, fieldbus adapters, telemetry, and hardware boundary.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c1220"/>
+      <stop offset="0.52" stop-color="#111827"/>
+      <stop offset="1" stop-color="#101820"/>
+    </linearGradient>
+    <linearGradient id="rail" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#36d1dc"/>
+      <stop offset="0.5" stop-color="#f6d365"/>
+      <stop offset="1" stop-color="#ff6b6b"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#020617" flood-opacity="0.42"/>
+    </filter>
+    <style>
+      .panel{fill:#111827;stroke:#314155;stroke-width:2;filter:url(#shadow)}
+      .soft{fill:#172033;stroke:#40526a;stroke-width:1.4}
+      .accent{fill:#36d1dc}
+      .warn{fill:#f6d365}
+      .fault{fill:#ff6b6b}
+      .ok{fill:#7dd3a8}
+      .title{font:700 42px Arial, sans-serif;fill:#f8fafc;letter-spacing:0}
+      .subtitle{font:500 20px Arial, sans-serif;fill:#cbd5e1}
+      .label{font:700 18px Arial, sans-serif;fill:#f8fafc}
+      .small{font:500 15px Arial, sans-serif;fill:#cbd5e1}
+      .tiny{font:500 13px Arial, sans-serif;fill:#94a3b8}
+      .metric{font:700 25px Arial, sans-serif;fill:#f8fafc}
+      .mono{font:700 16px Consolas, monospace;fill:#dbeafe}
+    </style>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <path d="M0 502 C160 462 265 520 420 482 C575 444 695 512 865 468 C1010 430 1095 455 1200 418 L1200 630 L0 630 Z" fill="#0b1020" opacity="0.75"/>
+  <path d="M90 515 L1110 515" stroke="#293548" stroke-width="2"/>
+  <path d="M108 515 L1092 515" stroke="url(#rail)" stroke-width="7" stroke-linecap="round"/>
+
+  <text x="70" y="75" class="title">Embedded Real-Time Motion Controller</text>
+  <text x="70" y="112" class="subtitle">Software-ready deterministic control bench for bus timing, CiA 402 behavior, watchdogs, and fault recovery.</text>
+
+  <rect x="70" y="150" width="315" height="255" rx="14" class="panel"/>
+  <circle cx="112" cy="190" r="21" fill="#0f766e" stroke="#5eead4" stroke-width="2"/>
+  <text x="148" y="187" class="label">MCU deterministic task</text>
+  <text x="148" y="212" class="small">FreeRTOS-style cyclic execution</text>
+  <rect x="98" y="245" width="240" height="36" rx="8" class="soft"/>
+  <text x="118" y="268" class="mono">1 ms controller loop</text>
+  <rect x="98" y="296" width="240" height="36" rx="8" class="soft"/>
+  <text x="118" y="319" class="mono">jitter + missed-cycle probe</text>
+  <rect x="98" y="347" width="240" height="36" rx="8" class="soft"/>
+  <text x="118" y="370" class="mono">watchdog fault path</text>
+
+  <rect x="443" y="150" width="315" height="255" rx="14" class="panel"/>
+  <circle cx="485" cy="190" r="21" fill="#854d0e" stroke="#fde68a" stroke-width="2"/>
+  <text x="521" y="187" class="label">Motion and bus core</text>
+  <text x="521" y="212" class="small">CiA 402 state + process image</text>
+  <rect x="471" y="245" width="240" height="36" rx="8" class="soft"/>
+  <text x="491" y="268" class="mono">axis abstraction</text>
+  <rect x="471" y="296" width="240" height="36" rx="8" class="soft"/>
+  <text x="491" y="319" class="mono">SOEM / SocketCAN paths</text>
+  <rect x="471" y="347" width="240" height="36" rx="8" class="soft"/>
+  <text x="491" y="370" class="mono">replay + simulated bus</text>
+
+  <rect x="815" y="150" width="315" height="255" rx="14" class="panel"/>
+  <circle cx="857" cy="190" r="21" fill="#7f1d1d" stroke="#fca5a5" stroke-width="2"/>
+  <text x="893" y="187" class="label">Evidence and diagnostics</text>
+  <text x="893" y="212" class="small">Reportable recovery behavior</text>
+  <rect x="843" y="245" width="240" height="36" rx="8" class="soft"/>
+  <text x="863" y="268" class="mono">CSV trace + JSON metrics</text>
+  <rect x="843" y="296" width="240" height="36" rx="8" class="soft"/>
+  <text x="863" y="319" class="mono">persistent fault log</text>
+  <rect x="843" y="347" width="240" height="36" rx="8" class="soft"/>
+  <text x="863" y="370" class="mono">timing PDF + SVG plots</text>
+
+  <path d="M385 275 H443" stroke="#36d1dc" stroke-width="4" stroke-linecap="round"/>
+  <path d="M758 275 H815" stroke="#f6d365" stroke-width="4" stroke-linecap="round"/>
+  <polygon points="432,265 452,275 432,285" fill="#36d1dc"/>
+  <polygon points="804,265 824,275 804,285" fill="#f6d365"/>
+
+  <rect x="70" y="450" width="1060" height="110" rx="16" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+  <rect x="94" y="470" width="275" height="62" rx="10" fill="#111827" stroke="#334155" stroke-width="1.4"/>
+  <text x="116" y="493" class="small">Release status</text>
+  <text x="116" y="523" class="metric">v0.3.0 ready</text>
+  <rect x="406" y="470" width="330" height="62" rx="10" fill="#111827" stroke="#334155" stroke-width="1.4"/>
+  <text x="428" y="493" class="small">Validation</text>
+  <text x="428" y="523" class="metric">45 checks, 21 scenarios</text>
+  <rect x="773" y="470" width="300" height="62" rx="10" fill="#111827" stroke="#334155" stroke-width="1.4"/>
+  <text x="795" y="493" class="small">Boundary</text>
+  <text x="795" y="523" class="metric">Hardware Phase 2</text>
+  <text x="100" y="548" class="tiny">No certified SIL/PL or commissioned EtherCAT/CANopen hardware claim is made.</text>
+</svg>

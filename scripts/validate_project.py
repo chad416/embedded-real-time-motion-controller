@@ -7,6 +7,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from xml.etree import ElementTree
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -56,6 +57,9 @@ REQUIRED_FILES = [
     "tests/test_evidence_archive_validator.py",
     "tests/fixtures/evidence_archive/2026-06-29_simulated_loopback_target_nominal_profile_position_001/RUN_MANIFEST.json",
     "docs/architecture.md",
+    "docs/assets/emrtc-portfolio-overview.svg",
+    "docs/assets/emrtc-control-architecture.svg",
+    "docs/assets/emrtc-validation-dashboard.svg",
     "docs/bom.md",
     "docs/commissioning_logbook.md",
     "docs/demo_walkthrough.md",
@@ -123,6 +127,7 @@ REQUIRED_FILES = [
     "ports/freertos/FreeRTOSConfig.h",
     "ports/freertos/emrtc_freertos_task.hpp",
     "ports/freertos/emrtc_freertos_task.cpp",
+    "portfolio_evidence/website_project_entry.md",
     "config/capture_profiles/idle_bus_online.json",
     "config/capture_profiles/nominal_profile_position.json",
     "config/capture_profiles/cpu_jitter_stress.json",
@@ -428,6 +433,43 @@ def check_safety_language() -> None:
         fail("documentation must use safety-oriented language")
 
 
+def check_portfolio_assets() -> None:
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    entry = (ROOT / "portfolio_evidence/website_project_entry.md").read_text(encoding="utf-8")
+    required_assets = [
+        "docs/assets/emrtc-portfolio-overview.svg",
+        "docs/assets/emrtc-control-architecture.svg",
+        "docs/assets/emrtc-validation-dashboard.svg",
+    ]
+
+    for asset in required_assets:
+        path = ROOT / asset
+        if asset not in readme:
+            fail(f"README.md does not link portfolio visual: {asset}")
+        text = path.read_text(encoding="utf-8")
+        try:
+            root = ElementTree.fromstring(text)
+        except ElementTree.ParseError as exc:
+            fail(f"{asset} is not valid SVG XML: {exc}")
+        if root.tag.split("}", 1)[-1] != "svg":
+            fail(f"{asset} root element is not svg")
+        title_count = sum(1 for element in root.iter() if element.tag.split("}", 1)[-1] == "title")
+        text_count = sum(1 for element in root.iter() if element.tag.split("}", 1)[-1] == "text")
+        if title_count < 1 or text_count < 6:
+            fail(f"{asset} must include a title and enough visible text labels")
+
+    required_entry_phrases = [
+        "Software-ready",
+        "hardware commissioning remains Phase 2",
+        "21/21",
+        "0-cycle detection latency",
+        "Do not claim commissioned EtherCAT/CANopen hardware",
+    ]
+    missing = [phrase for phrase in required_entry_phrases if phrase not in entry]
+    if missing:
+        fail("website project entry missing phrase(s): " + ", ".join(missing))
+
+
 def main() -> int:
     check_required_files()
     check_json_reports()
@@ -436,6 +478,7 @@ def main() -> int:
     check_evidence_manifest_assets()
     check_markdown_links()
     check_safety_language()
+    check_portfolio_assets()
     print("PASS: repository health checks")
     return 0
 

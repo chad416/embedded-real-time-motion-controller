@@ -26,6 +26,7 @@
 - Absolute-deadline host timing probe with stress and Linux scheduling-capability evidence.
 - Quantitative fault detection, re-enable, post-recovery settling, ratio, and final-error evidence.
 - Controller injection of external bus backends and measured drive feedback.
+- GitHub and portfolio-facing SVG visuals plus website-ready project copy enforced by the repository health check.
 - Machine-enforced `0.3.0` software-ready release gate.
 - Professional documentation set.
 

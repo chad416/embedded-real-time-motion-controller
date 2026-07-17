@@ -14,6 +14,7 @@ This project maps to the embedded real-time motion controller blueprint in the p
 | Quantitative report | Markdown, JSON, CSV, timing PDF, jitter/scenario/control/two-axis/recovery SVGs, and capture-profile manifest | Populate equivalent reports from bench captures. |
 | Diagnostic shell | CLI commands for status, adapters, strict config validation, scenario/replay/two-axis execution, fault injection/reset, and report export | Bind commands to the selected physical interface during commissioning. |
 | Graph-first article | `docs/technical_article.md` linked to committed timing, motion, scenario, and recovery visuals | Add physical plots without replacing the software baseline. |
+| Portfolio website entry | `portfolio_evidence/website_project_entry.md` plus GitHub-rendered SVG overview, control architecture, and validation dashboard visuals under `docs/assets/` | Keep website copy synchronized with future hardware evidence. |
 | Recruiter-facing summary | `docs/recruiter_one_pager.md` generated from metrics and capture manifest | Keep synchronized with future hardware evidence. |
 | Evidence packaging | `scripts/package_portfolio.ps1` exports docs, reports, graphs, capture profiles, and manifest | Add live bench evidence once available. |
 | Hardware evidence archive | Immutable run-folder convention, structured manifest schema, archive validator, digest/completeness tests, parameter backups, raw traces, media, and review rules | Populate it with real bench evidence after hardware exists. |

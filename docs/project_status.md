@@ -51,6 +51,7 @@ Release note: annotated tag `v0.3.0-software-ready` points to commit `6862f016a1
 | GitHub CI | Passing | Latest hosted run builds, tests, benchmarks, generates reports, runs health checks, and uploads artifacts. |
 | Software-ready release gate | Implemented | `0.3.0` definition enforces tests, scenarios, recovery, adapters, execution ports, CI paths, evidence, and claim boundaries. |
 | Portfolio PDF alignment | Software scope complete | Every hardware-free deliverable is implemented; target timing, physical fieldbus/motion, and stop-path evidence require the bench. |
+| Portfolio visuals and website copy | Added | GitHub-rendered SVG overview, control-architecture, validation-dashboard visuals, and `portfolio_evidence/website_project_entry.md` are versioned and validator-enforced. |
 | Hardware commissioning | Not started | Software adapters exist; remaining work is physical device selection/connection, vendor-verified mapping, target measurements, motion/fault/stop tests, and evidence capture. |
 
 ## Current Completion Estimate

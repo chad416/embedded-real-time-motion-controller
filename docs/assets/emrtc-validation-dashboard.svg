@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Validation dashboard for software-ready motion controller</title>
+  <desc id="desc">Dashboard of timing, scenario, motion, recovery, and hardware boundary metrics.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c1220"/>
+      <stop offset="1" stop-color="#171717"/>
+    </linearGradient>
+    <style>
+      .title{font:700 40px Arial, sans-serif;fill:#f8fafc}
+      .subtitle{font:500 18px Arial, sans-serif;fill:#cbd5e1}
+      .card{fill:#101827;stroke:#334155;stroke-width:2}
+      .metric{font:700 38px Arial, sans-serif;fill:#f8fafc}
+      .label{font:700 17px Arial, sans-serif;fill:#e2e8f0}
+      .small{font:500 14px Arial, sans-serif;fill:#cbd5e1}
+      .tiny{font:500 12px Arial, sans-serif;fill:#94a3b8}
+      .ok{fill:#7dd3a8}
+      .cyan{fill:#36d1dc}
+      .amber{fill:#f6d365}
+      .red{fill:#ff6b6b}
+    </style>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <text x="72" y="76" class="title">Software-Ready Evidence Dashboard</text>
+  <text x="72" y="110" class="subtitle">Current public claim: all defined non-hardware work is complete; physical commissioning remains Phase 2.</text>
+
+  <rect x="70" y="150" width="245" height="140" rx="14" class="card"/>
+  <text x="98" y="190" class="label">Scenarios</text>
+  <text x="98" y="242" class="metric">21/21</text>
+  <text x="98" y="268" class="small">fault, timing, motion, replay</text>
+
+  <rect x="345" y="150" width="245" height="140" rx="14" class="card"/>
+  <text x="373" y="190" class="label">C++ checks</text>
+  <text x="373" y="242" class="metric">45</text>
+  <text x="373" y="268" class="small">unit and integration coverage</text>
+
+  <rect x="620" y="150" width="245" height="140" rx="14" class="card"/>
+  <text x="648" y="190" class="label">Recovery</text>
+  <text x="648" y="242" class="metric">7 cycles</text>
+  <text x="648" y="268" class="small">fault to operation re-enabled</text>
+
+  <rect x="895" y="150" width="235" height="140" rx="14" class="card"/>
+  <text x="923" y="190" class="label">Motion error</text>
+  <text x="923" y="242" class="metric">0.0</text>
+  <text x="923" y="268" class="small">final and path error sample</text>
+
+  <rect x="70" y="334" width="510" height="205" rx="14" class="card"/>
+  <text x="98" y="374" class="label">Jitter distribution with injected stress</text>
+  <line x1="105" y1="492" x2="540" y2="492" stroke="#475569" stroke-width="2"/>
+  <rect x="120" y="438" width="18" height="54" class="cyan"/>
+  <rect x="150" y="430" width="18" height="62" class="cyan"/>
+  <rect x="180" y="435" width="18" height="57" class="cyan"/>
+  <rect x="210" y="426" width="18" height="66" class="cyan"/>
+  <rect x="240" y="432" width="18" height="60" class="cyan"/>
+  <rect x="270" y="429" width="18" height="63" class="cyan"/>
+  <rect x="300" y="436" width="18" height="56" class="cyan"/>
+  <rect x="330" y="431" width="18" height="61" class="cyan"/>
+  <rect x="360" y="423" width="18" height="69" class="cyan"/>
+  <rect x="400" y="398" width="18" height="94" class="amber"/>
+  <rect x="454" y="360" width="22" height="132" class="red"/>
+  <text x="118" y="520" class="tiny">nominal +/- 10 us buckets</text>
+  <text x="390" y="520" class="tiny">stress outliers captured</text>
+
+  <rect x="620" y="334" width="510" height="205" rx="14" class="card"/>
+  <text x="648" y="374" class="label">Fault recovery timeline</text>
+  <line x1="675" y1="455" x2="1075" y2="455" stroke="#475569" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="715" cy="455" r="13" class="red"/>
+  <text x="685" y="425" class="tiny">fault injected</text>
+  <circle cx="715" cy="455" r="5" fill="#fff"/>
+  <circle cx="715" cy="455" r="13" fill="none" stroke="#ff6b6b" stroke-width="3"/>
+  <circle cx="805" cy="455" r="13" class="amber"/>
+  <text x="765" y="425" class="tiny">detected</text>
+  <circle cx="935" cy="455" r="13" class="cyan"/>
+  <text x="885" y="425" class="tiny">reset path</text>
+  <circle cx="1048" cy="455" r="13" class="ok"/>
+  <text x="1000" y="425" class="tiny">re-enabled</text>
+  <text x="648" y="510" class="small">Detection: 0 cycles. Recovery: 7 cycles.</text>
+  <text x="648" y="530" class="small">Post-recovery final error: 0.0.</text>
+
+  <rect x="70" y="568" width="1060" height="38" rx="10" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+  <text x="98" y="593" class="small">Boundary: software/simulation and host-validation evidence only. Hardware timing, real bus exchange, encoder data, and certified safety validation are not claimed.</text>
+</svg>
